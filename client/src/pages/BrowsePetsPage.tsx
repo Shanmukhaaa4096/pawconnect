@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PawPrint, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 import { Pet, PetFilterOptions } from '../types';
 import { api } from '../services/api';
 import { PetFilters } from '../components/pets/PetFilters';
 import { PetCard } from '../components/common/PetCard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { KawaiiPaw, KawaiiSparkle, KawaiiEmptyPet } from '../components/common/KawaiiIcons';
 
 export const BrowsePetsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -81,16 +82,17 @@ export const BrowsePetsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EDE6DC] pb-6">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-orange-600">
-            Adoption Directory
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Find Adoptable Pets
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF2EE] text-[#FF7E67] text-xs font-black uppercase tracking-wider mb-2">
+            <KawaiiPaw className="w-3.5 h-3.5" />
+            <span>Adoption Directory</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black text-[#2B2523] tracking-tight">
+            Meet Adoptable Friends
           </h1>
-          <p className="text-sm text-slate-500">
-            Showing verified rescues available for adoption and foster care.
+          <p className="text-sm text-[#7A6E68] mt-1 font-medium">
+            Showing verified companions looking for loving forever homes and gentle fosters.
           </p>
         </div>
 
@@ -99,19 +101,19 @@ export const BrowsePetsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-xs"
+            className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-[#EDE6DC] bg-white text-xs font-bold text-[#2B2523] shadow-xs hover:border-[#FF7E67] transition-all"
           >
-            <SlidersHorizontal className="w-4 h-4 text-orange-600" />
+            <SlidersHorizontal className="w-4 h-4 text-[#FF7E67]" />
             <span>Filters</span>
           </button>
 
-          <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 shadow-xs">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-            <span>Sort by:</span>
+          <div className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-2xl border border-[#EDE6DC] text-xs font-bold text-[#2B2523] shadow-xs">
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#FF7E67]" />
+            <span className="text-[#7A6E68] font-semibold">Sort:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
+              className="bg-transparent font-extrabold text-[#2B2523] focus:outline-none cursor-pointer"
             >
               <option value="newest">Newest Listed</option>
               <option value="age">Age (Youngest First)</option>
@@ -135,7 +137,7 @@ export const BrowsePetsPage: React.FC = () => {
 
         {/* Mobile Filter Drawer */}
         {mobileFilterOpen && (
-          <div className="lg:hidden col-span-1 mb-6">
+          <div className="lg:hidden col-span-1 mb-6 animate-fadeIn">
             <PetFilters
               filters={filters}
               onChange={(f) => {
@@ -153,24 +155,22 @@ export const BrowsePetsPage: React.FC = () => {
           {loading ? (
             <LoadingSpinner label="Searching adoptable pets..." />
           ) : pets.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 shadow-xs space-y-4">
-              <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mx-auto">
-                <PawPrint className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900">No Pets Match Your Criteria</h3>
-              <p className="text-sm text-slate-500 max-w-md mx-auto">
-                Try loosening your filters or searching a broader city/state radius to see more lovely companions.
+            <div className="bg-white rounded-3xl p-10 sm:p-14 text-center border border-[#EDE6DC] shadow-xs space-y-4 max-w-lg mx-auto">
+              <KawaiiEmptyPet className="w-44 h-36 mx-auto" />
+              <h3 className="text-xl font-black text-[#2B2523]">No Little Friends Found</h3>
+              <p className="text-sm text-[#7A6E68] max-w-sm mx-auto leading-relaxed">
+                We couldn't find pets matching these exact filters. Try clearing species or expanding your location!
               </p>
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-600/20"
+                className="px-6 py-2.5 rounded-2xl bg-[#FF7E67] hover:bg-[#F26B53] text-white font-extrabold text-xs shadow-md shadow-[#FF7E67]/20 transition-all active:scale-98"
               >
                 Clear All Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
               {pets.map((pet) => (
                 <PetCard key={pet._id} pet={pet} />
               ))}
@@ -181,3 +181,4 @@ export const BrowsePetsPage: React.FC = () => {
     </div>
   );
 };
+

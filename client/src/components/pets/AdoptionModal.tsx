@@ -4,6 +4,7 @@ import { Pet, ApplicationQuestionnaire } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { KawaiiPaw, KawaiiSparkle } from '../common/KawaiiIcons';
 
 interface AdoptionModalProps {
   pet: Pet;
@@ -87,14 +88,14 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#2B2523]/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-[#EDE6DC] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Modal Header */}
-        <div className="bg-slate-900 text-white p-6 relative">
+        <div className="bg-[#2B2523] text-white p-6 sm:p-7 relative">
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="absolute top-5 right-5 p-2 rounded-full text-[#A89D93] hover:text-white hover:bg-[#3D3531] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -103,16 +104,17 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
             <img
               src={pet.photos[0] || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=200&q=80'}
               alt={pet.name}
-              className="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/20"
+              className="w-16 h-16 rounded-2xl object-cover ring-2 ring-[#FF7E67]/40 shrink-0"
             />
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-orange-400">
-                Official Adoption Request
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF9B8A] font-display flex items-center gap-1">
+                <KawaiiPaw size={13} fill="#FF9B8A" />
+                Adoption Questionnaire
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-white">
+              <h2 className="text-xl sm:text-2xl font-black font-display text-white">
                 Apply to Adopt {pet.name}
               </h2>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-[#C9BFB5]">
                 {pet.breed} • {pet.age} yrs old • {pet.location.city}, {pet.location.state}
               </p>
             </div>
@@ -120,18 +122,18 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
 
           {/* Stepper Header (if not completed) */}
           {!isCompleted && (
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800 text-xs">
-              <span className={`flex items-center gap-1.5 ${step >= 1 ? 'text-orange-400 font-bold' : 'text-slate-500'}`}>
-                <User className="w-4 h-4" /> 1. Contact
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-[#3D3531] text-[11px] font-bold">
+              <span className={`flex items-center gap-1.5 ${step >= 1 ? 'text-[#FF9B8A]' : 'text-[#7D7268]'}`}>
+                <User className="w-3.5 h-3.5" /> 1. Contact
               </span>
-              <span className={`flex items-center gap-1.5 ${step >= 2 ? 'text-orange-400 font-bold' : 'text-slate-500'}`}>
-                <Home className="w-4 h-4" /> 2. Home & Lifestyle
+              <span className={`flex items-center gap-1.5 ${step >= 2 ? 'text-[#FF9B8A]' : 'text-[#7D7268]'}`}>
+                <Home className="w-3.5 h-3.5" /> 2. Home
               </span>
-              <span className={`flex items-center gap-1.5 ${step >= 3 ? 'text-orange-400 font-bold' : 'text-slate-500'}`}>
-                <Heart className="w-4 h-4" /> 3. Experience & Care
+              <span className={`flex items-center gap-1.5 ${step >= 3 ? 'text-[#FF9B8A]' : 'text-[#7D7268]'}`}>
+                <Heart className="w-3.5 h-3.5" /> 3. Experience
               </span>
-              <span className={`flex items-center gap-1.5 ${step >= 4 ? 'text-orange-400 font-bold' : 'text-slate-500'}`}>
-                <FileText className="w-4 h-4" /> 4. Review
+              <span className={`flex items-center gap-1.5 ${step >= 4 ? 'text-[#FF9B8A]' : 'text-[#7D7268]'}`}>
+                <FileText className="w-3.5 h-3.5" /> 4. Review
               </span>
             </div>
           )}
@@ -140,35 +142,35 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
         {/* Modal Body */}
         <div className="p-6 sm:p-8">
           {error && (
-            <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+            <div className="mb-6 p-4 rounded-2xl bg-[#FFF0F2] border border-[#FDD5DC] text-[#A62639] text-xs font-bold">
               {error}
             </div>
           )}
 
           {isCompleted ? (
-            /* Success Screen */
-            <div className="text-center py-8 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-md shadow-emerald-500/10">
-                <CheckCircle className="w-10 h-10" />
+            /* Success Screen with Kawaii Character Illustration */
+            <div className="text-center py-6 space-y-4">
+              <div className="w-16 h-16 rounded-3xl bg-[#EEF8F5] text-[#1C6C57] border border-[#D1EFE6] flex items-center justify-center mx-auto shadow-md">
+                <CheckCircle className="w-9 h-9" />
               </div>
-              <h3 className="text-2xl font-extrabold text-slate-900">
-                Application Submitted!
+              <h3 className="text-2xl font-black font-display text-[#2B2523]">
+                Application Submitted With Care!
               </h3>
-              <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                Thank you, <span className="font-semibold text-slate-900">{formData.fullName}</span>! Your adoption application for <span className="font-semibold text-slate-900">{pet.name}</span> has been routed to the shelter team. You can monitor the review status directly in your dashboard.
+              <p className="text-xs sm:text-sm text-[#6B6159] max-w-md mx-auto leading-relaxed">
+                Thank you, <span className="font-extrabold text-[#2B2523]">{formData.fullName}</span>! Your adoption questionnaire for <span className="font-extrabold text-[#2B2523]">{pet.name}</span> has been received by the shelter team. You can monitor the review timeline directly in your dashboard.
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   to="/dashboard?tab=applications"
                   onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-600 text-white font-bold text-sm hover:bg-orange-500 transition-colors shadow-md shadow-orange-600/20"
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#FF7E67] hover:bg-[#F26850] text-white font-extrabold text-xs transition-all shadow-md shadow-[#FF7E67]/25"
                 >
                   View in My Dashboard
                 </Link>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-colors"
+                  className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#FAF7F2] text-[#594E46] font-extrabold text-xs hover:bg-[#F2ECE3] transition-colors border border-[#E5DCD0]"
                 >
                   Close Window
                 </button>
@@ -179,13 +181,13 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
               {/* STEP 1: CONTACT INFO */}
               {step === 1 && (
                 <div className="space-y-4">
-                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <User className="w-5 h-5 text-orange-600" />
+                  <h4 className="text-base font-extrabold text-[#2B2523] font-display flex items-center gap-2">
+                    <User className="w-4 h-4 text-[#FF7E67]" />
                     Applicant Information
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Full Legal Name *
                       </label>
                       <input
@@ -194,11 +196,11 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                         value={formData.fullName}
                         onChange={(e) => handleInputChange('fullName', e.target.value)}
                         placeholder="e.g. Jane Doe"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Phone Number *
                       </label>
                       <input
@@ -207,13 +209,13 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                         value={formData.phone}
                         onChange={(e) => handleInputChange('phone', e.target.value)}
                         placeholder="e.g. +1 (555) 000-0000"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                       Current Residential Address
                     </label>
                     <input
@@ -221,7 +223,7 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                       value={formData.address || ''}
                       onChange={(e) => handleInputChange('address', e.target.value)}
                       placeholder="e.g. 123 Maple Street, Apt 4B, Austin, TX"
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                      className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
                     />
                   </div>
                 </div>
@@ -230,19 +232,19 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
               {/* STEP 2: LIVING & HOME ENVIRONMENT */}
               {step === 2 && (
                 <div className="space-y-4">
-                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Home className="w-5 h-5 text-orange-600" />
-                    Living & Household Environment
+                  <h4 className="text-base font-extrabold text-[#2B2523] font-display flex items-center gap-2">
+                    <Home className="w-4 h-4 text-[#FF7E67]" />
+                    Household & Living Space
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Housing Type
                       </label>
                       <select
                         value={formData.housingType}
                         onChange={(e) => handleInputChange('housingType', e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
                       >
                         <option value="House with Yard">House with Yard</option>
                         <option value="House without Yard">House without Yard</option>
@@ -253,13 +255,13 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Home Ownership
                       </label>
                       <select
                         value={formData.ownership}
                         onChange={(e) => handleInputChange('ownership', e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
                       >
                         <option value="Own">Own Home</option>
                         <option value="Rent">Rent (Pet-friendly lease)</option>
@@ -268,12 +270,12 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                   </div>
 
                   <div className="pt-2">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-800 cursor-pointer">
+                    <label className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#423730] cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.hasOtherPets}
                         onChange={(e) => handleInputChange('hasOtherPets', e.target.checked)}
-                        className="w-4 h-4 text-orange-600 rounded-sm focus:ring-orange-500"
+                        className="w-4 h-4 text-[#FF7E67] rounded-sm focus:ring-[#FF7E67]"
                       />
                       <span>Do you currently have other animals/pets at home?</span>
                     </label>
@@ -283,18 +285,18 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                         value={formData.otherPetsDetails || ''}
                         onChange={(e) => handleInputChange('otherPetsDetails', e.target.value)}
                         placeholder="Please list breeds, species, and ages of your current pets"
-                        className="mt-2 w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="mt-2 w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67]"
                       />
                     )}
                   </div>
 
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-800 cursor-pointer">
+                    <label className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#423730] cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.hasChildren}
                         onChange={(e) => handleInputChange('hasChildren', e.target.checked)}
-                        className="w-4 h-4 text-orange-600 rounded-sm focus:ring-orange-500"
+                        className="w-4 h-4 text-[#FF7E67] rounded-sm focus:ring-[#FF7E67]"
                       />
                       <span>Are there children living in or frequently visiting your household?</span>
                     </label>
@@ -303,39 +305,39 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                         type="text"
                         value={formData.childrenAges || ''}
                         onChange={(e) => handleInputChange('childrenAges', e.target.value)}
-                        placeholder="Ages of children (e.g. 5 and 9)"
-                        className="mt-2 w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        placeholder="Ages of children (e.g. 4 and 8)"
+                        className="mt-2 w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67]"
                       />
                     )}
                   </div>
                 </div>
               )}
 
-              {/* STEP 3: EXPERIENCE & DAILY SCHEDULE */}
+              {/* STEP 3: EXPERIENCE & MOTIVATION */}
               {step === 3 && (
                 <div className="space-y-4">
-                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-orange-600" />
-                    Routine, Experience & Motivation
+                  <h4 className="text-base font-extrabold text-[#2B2523] font-display flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#FF7E67]" />
+                    Routine, Experience & Care
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Previous Pet Experience
                       </label>
                       <select
                         value={formData.petExperience}
                         onChange={(e) => handleInputChange('petExperience', e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67]"
                       >
-                        <option value="First-time Owner">First-time Owner</option>
-                        <option value="Previous Owner">Previous Pet Owner</option>
+                        <option value="First-time Owner">First-time Pet Companion</option>
+                        <option value="Previous Owner">Previous Pet Parent</option>
                         <option value="Experienced Caretaker">Experienced Caretaker</option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                      <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                         Est. Hours Pet Will Be Alone Daily
                       </label>
                       <input
@@ -344,13 +346,13 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                         max="24"
                         value={formData.hoursAlonePerDay}
                         onChange={(e) => handleInputChange('hoursAlonePerDay', Number(e.target.value))}
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                        className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1 font-display">
                       Why do you want to adopt {pet.name}? *
                     </label>
                     <textarea
@@ -359,60 +361,60 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                       value={formData.reasonForAdopting}
                       onChange={(e) => handleInputChange('reasonForAdopting', e.target.value)}
                       placeholder={`Tell the shelter about your lifestyle, plans for ${pet.name}, and why you feel you would be a great match...`}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                      className="w-full px-4 py-2.5 rounded-2xl border border-[#E5DCD0] bg-[#FAF7F2] text-xs sm:text-sm focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67]"
                     />
                   </div>
                 </div>
               )}
 
-              {/* STEP 4: REVIEW & SUBMIT */}
+              {/* STEP 4: REVIEW & DECLARATION */}
               {step === 4 && (
                 <div className="space-y-4">
-                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-orange-600" />
-                    Review Your Application Summary
+                  <h4 className="text-base font-extrabold text-[#2B2523] font-display flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#FF7E67]" />
+                    Review Application Summary
                   </h4>
 
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2.5">
-                    <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                      <span className="text-slate-500 font-semibold">Applicant:</span>
-                      <span className="font-bold text-slate-800">{formData.fullName} ({formData.phone})</span>
+                  <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-[#EFE8DE] text-xs space-y-2">
+                    <div className="flex justify-between border-b border-[#E5DCD0]/60 pb-2">
+                      <span className="text-[#80746A] font-bold">Applicant:</span>
+                      <span className="font-extrabold text-[#2B2523]">{formData.fullName} ({formData.phone})</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                      <span className="text-slate-500 font-semibold">Residence:</span>
-                      <span className="font-bold text-slate-800">{formData.housingType} ({formData.ownership})</span>
+                    <div className="flex justify-between border-b border-[#E5DCD0]/60 pb-2">
+                      <span className="text-[#80746A] font-bold">Living Space:</span>
+                      <span className="font-extrabold text-[#2B2523]">{formData.housingType} ({formData.ownership})</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                      <span className="text-slate-500 font-semibold">Other Pets / Kids:</span>
-                      <span className="font-bold text-slate-800">
+                    <div className="flex justify-between border-b border-[#E5DCD0]/60 pb-2">
+                      <span className="text-[#80746A] font-bold">Pets / Kids:</span>
+                      <span className="font-extrabold text-[#2B2523]">
                         {formData.hasOtherPets ? 'Yes' : 'No'} / {formData.hasChildren ? 'Yes' : 'No'}
                       </span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                      <span className="text-slate-500 font-semibold">Experience Level:</span>
-                      <span className="font-bold text-slate-800">{formData.petExperience}</span>
+                    <div className="flex justify-between border-b border-[#E5DCD0]/60 pb-2">
+                      <span className="text-[#80746A] font-bold">Experience Level:</span>
+                      <span className="font-extrabold text-[#2B2523]">{formData.petExperience}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 font-semibold block mb-1">Reason for Adopting:</span>
-                      <p className="text-slate-700 italic bg-white p-2 rounded-lg border border-slate-200">
+                      <span className="text-[#80746A] font-bold block mb-1">Reason for Adopting:</span>
+                      <p className="text-[#4A3F35] italic bg-white p-2.5 rounded-xl border border-[#E5DCD0]">
                         "{formData.reasonForAdopting}"
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-slate-500 leading-relaxed">
-                    By submitting, you certify that all information provided is accurate and agree to allow the shelter coordinator to contact your references and verify lease pet policies.
+                  <p className="text-[11px] text-[#80746A] leading-relaxed">
+                    By submitting, you certify that all information provided is accurate and agree to allow the shelter coordinator to verify veterinary and residential guidelines.
                   </p>
                 </div>
               )}
 
-              {/* Navigation buttons */}
-              <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-5">
+              {/* Navigation Footer */}
+              <div className="mt-8 flex items-center justify-between border-t border-[#F4EFE8] pt-5">
                 {step > 1 ? (
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-[#E0D7CC] text-xs font-bold text-[#594E46] hover:bg-[#FAF7F2] transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" /> Back
                   </button>
@@ -424,7 +426,7 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold transition-all shadow-md shadow-orange-600/20"
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-2xl bg-[#FF7E67] hover:bg-[#F26850] text-white text-xs font-bold transition-all shadow-md shadow-[#FF7E67]/25"
                   >
                     Next Step <ChevronRight className="w-4 h-4" />
                   </button>
@@ -432,9 +434,9 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-1.5 px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-7 py-3 rounded-2xl bg-[#54B499] hover:bg-[#439C83] text-white text-xs font-bold transition-all shadow-md shadow-[#54B499]/25 disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Submitting Application...' : 'Confirm & Submit Application'}
+                    {isSubmitting ? 'Sending Request...' : 'Confirm & Submit Application'}
                   </button>
                 )}
               </div>

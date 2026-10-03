@@ -11,54 +11,60 @@ export const StatusBadge: React.FC<BadgeProps> = ({ status, size = 'md', classNa
   const getStyles = () => {
     switch (status) {
       case 'Available':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-500/20';
+        return 'bg-[#EEF8F5] text-[#1C6C57] border-[#D1EFE6] shadow-xs';
       case 'Reserved':
-        return 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-500/20';
+        return 'bg-[#FFF6EC] text-[#965B20] border-[#FCE2C6] shadow-xs';
       case 'Adopted':
-        return 'bg-purple-50 text-purple-700 border-purple-200 ring-purple-500/20';
+        return 'bg-[#F2F1FD] text-[#4844B3] border-[#DFDCFB] shadow-xs';
       case 'Pending':
-        return 'bg-blue-50 text-blue-700 border-blue-200 ring-blue-500/20';
+        return 'bg-[#EFF6FF] text-[#1E5699] border-[#D6E6FD] shadow-xs';
       case 'Approved':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-500/20';
+        return 'bg-[#EEF8F5] text-[#1C6C57] border-[#D1EFE6] shadow-xs';
       case 'Rejected':
-        return 'bg-rose-50 text-rose-700 border-rose-200 ring-rose-500/20';
+        return 'bg-[#FFF0F2] text-[#A62639] border-[#FDD5DC] shadow-xs';
       case 'Completed':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-200 ring-indigo-500/20';
+        return 'bg-[#F4F1FD] text-[#5540B6] border-[#E1DBFB] shadow-xs';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200 ring-slate-500/20';
+        return 'bg-[#F6F2EC] text-[#63574D] border-[#E8DFC2] shadow-xs';
+    }
+  };
+
+  const getDotColor = () => {
+    switch (status) {
+      case 'Available':
+      case 'Approved':
+        return 'bg-[#3EB897]';
+      case 'Reserved':
+      case 'Pending':
+        return 'bg-[#F59E0B] animate-pulse';
+      case 'Adopted':
+      case 'Completed':
+        return 'bg-[#8B89E8]';
+      case 'Rejected':
+        return 'bg-[#F43F5E]';
+      default:
+        return 'bg-[#A89F91]';
     }
   };
 
   const getSize = () => {
     switch (size) {
       case 'sm':
-        return 'px-2 py-0.5 text-xs';
+        return 'px-2.5 py-0.5 text-[11px] font-bold';
       case 'lg':
-        return 'px-3.5 py-1.5 text-sm font-semibold';
+        return 'px-3.5 py-1.5 text-xs font-extrabold';
       case 'md':
       default:
-        return 'px-2.5 py-1 text-xs font-medium';
+        return 'px-3 py-1 text-xs font-bold';
     }
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border ring-1 ring-inset shadow-xs ${getStyles()} ${getSize()} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border transition-all duration-200 ${getStyles()} ${getSize()} ${className}`}
     >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          ['Available', 'Approved', 'Completed'].includes(status)
-            ? 'bg-emerald-500'
-            : ['Reserved', 'Pending'].includes(status)
-            ? 'bg-amber-500 animate-pulse'
-            : status === 'Adopted'
-            ? 'bg-purple-500'
-            : status === 'Rejected'
-            ? 'bg-rose-500'
-            : 'bg-slate-400'
-        }`}
-      />
-      {status}
+      <span className={`h-1.5 w-1.5 rounded-full ${getDotColor()}`} />
+      <span className="tracking-tight">{status}</span>
     </span>
   );
 };

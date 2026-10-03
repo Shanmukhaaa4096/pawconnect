@@ -2,17 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Heart,
-  Share2,
   MapPin,
   ShieldCheck,
-  Building2,
-  Calendar,
   Check,
-  X as XIcon,
   MessageSquare,
-  Sparkles,
   ArrowLeft,
-  Award,
+  Sparkles,
 } from 'lucide-react';
 import { Pet, User } from '../types';
 import { api } from '../services/api';
@@ -21,6 +16,7 @@ import { useFavorites } from '../context/FavoritesContext';
 import { StatusBadge } from '../components/common/Badge';
 import { AdoptionModal } from '../components/pets/AdoptionModal';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { KawaiiPaw, KawaiiSparkle } from '../components/common/KawaiiIcons';
 
 export const PetDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -57,11 +53,11 @@ export const PetDetailsPage: React.FC = () => {
   if (!pet) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-slate-900">Pet Profile Not Found</h2>
-        <p className="text-slate-500">The pet you are looking for may have been adopted or unlisted.</p>
+        <h2 className="text-2xl font-black text-[#2B2523]">Pet Profile Not Found</h2>
+        <p className="text-[#7A6E68]">The pet you are looking for may have found their forever home or been unlisted.</p>
         <Link
           to="/browse"
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-orange-600 text-white font-bold text-sm"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-[#FF7E67] hover:bg-[#F26B53] text-white font-extrabold text-sm shadow-md"
         >
           <ArrowLeft className="w-4 h-4" /> Browse Other Pets
         </Link>
@@ -104,22 +100,22 @@ export const PetDetailsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       {/* Back button */}
       <div>
         <Link
           to="/browse"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#EDE6DC] text-xs font-extrabold text-[#5C524E] hover:text-[#FF7E67] hover:border-[#FF7E67] transition-all shadow-2xs"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to All Pets
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to All Pets
         </Link>
       </div>
 
       {/* Main Grid: Gallery on left, Details on right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* LEFT: PHOTO GALLERY */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative aspect-4/3 w-full bg-slate-100 rounded-3xl overflow-hidden shadow-md border border-slate-200">
+          <div className="relative aspect-4/3 w-full bg-[#FFF6EC] rounded-[2rem] overflow-hidden shadow-sm border border-[#EDE6DC]">
             <img
               src={
                 pet.photos[activePhotoIndex] ||
@@ -135,10 +131,10 @@ export const PetDetailsPage: React.FC = () => {
             {/* Favorite button */}
             <button
               onClick={handleFavoriteClick}
-              className={`absolute top-4 right-4 p-3 rounded-full transition-all shadow-md ${
+              className={`absolute top-4 right-4 p-3 rounded-2xl transition-all shadow-md active:scale-90 ${
                 isFav
-                  ? 'bg-rose-500 text-white scale-110'
-                  : 'bg-white/90 text-slate-700 hover:text-rose-500 hover:bg-white backdrop-blur-xs'
+                  ? 'bg-[#FF7E67] text-white scale-105'
+                  : 'bg-white/90 text-[#5C524E] hover:text-[#FF7E67] hover:bg-white backdrop-blur-xs'
               }`}
               title={isFav ? 'Remove from favorites' : 'Save to favorites'}
             >
@@ -155,8 +151,8 @@ export const PetDetailsPage: React.FC = () => {
                   onClick={() => setActivePhotoIndex(idx)}
                   className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${
                     activePhotoIndex === idx
-                      ? 'border-orange-600 ring-2 ring-orange-500/20'
-                      : 'border-transparent opacity-70 hover:opacity-100'
+                      ? 'border-[#FF7E67] ring-2 ring-[#FF7E67]/25'
+                      : 'border-[#EDE6DC] opacity-75 hover:opacity-100'
                   }`}
                 >
                   <img src={url} alt="" className="w-full h-full object-cover" />
@@ -166,19 +162,22 @@ export const PetDetailsPage: React.FC = () => {
           )}
 
           {/* About description card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-            <h3 className="text-xl font-extrabold text-slate-900">About {pet.name}</h3>
-            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EDE6DC] shadow-xs space-y-5">
+            <div className="flex items-center gap-2">
+              <KawaiiPaw className="w-5 h-5 text-[#FF7E67]" />
+              <h3 className="text-xl font-black text-[#2B2523]">Meet {pet.name}</h3>
+            </div>
+            <p className="text-[#5C524E] text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
               {pet.description}
             </p>
 
             {/* Health & Medical History */}
-            <div className="pt-4 border-t border-slate-100 space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="pt-4 border-t border-[#EDE6DC] space-y-2">
+              <h4 className="text-[11px] font-black uppercase tracking-wider text-[#A49B95]">
                 Medical & Veterinary Records
               </h4>
-              <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                {pet.health.medicalHistory || 'Up-to-date with vaccinations and routine examinations.'}
+              <p className="text-xs text-[#5C524E] bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EDE6DC] leading-relaxed">
+                {pet.health.medicalHistory || 'Up-to-date with essential vaccinations and gentle routine examinations.'}
               </p>
             </div>
           </div>
@@ -187,17 +186,17 @@ export const PetDetailsPage: React.FC = () => {
         {/* RIGHT: PET ATTRIBUTES & ADOPTION ACTIONS */}
         <div className="lg:col-span-5 space-y-6">
           {/* Main Info Box */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EDE6DC] shadow-xs space-y-6">
             <div>
               <div className="flex items-center justify-between gap-2">
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900">{pet.name}</h1>
-                <span className="text-xl font-black text-orange-600">
+                <h1 className="text-3xl sm:text-4xl font-black text-[#2B2523] tracking-tight">{pet.name}</h1>
+                <span className="text-xl font-black text-[#FF7E67] px-3 py-1 bg-[#FFF2EE] rounded-full border border-[#FCD7CE]">
                   {pet.adoptionFee ? `$${pet.adoptionFee}` : 'Free'}
                 </span>
               </div>
-              <p className="text-base font-semibold text-slate-600 mt-1">{pet.breed}</p>
-              <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-2">
-                <MapPin className="w-4 h-4 text-orange-500" />
+              <p className="text-base font-bold text-[#5C524E] mt-1">{pet.breed}</p>
+              <div className="flex items-center gap-1.5 text-xs text-[#7A6E68] mt-2 font-medium">
+                <MapPin className="w-4 h-4 text-[#FF7E67]" />
                 <span>
                   {pet.location.city}, {pet.location.state}
                 </span>
@@ -206,72 +205,72 @@ export const PetDetailsPage: React.FC = () => {
 
             {/* Attributes Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                <span className="text-slate-400 font-bold block uppercase tracking-wider text-[10px]">
+              <div className="bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EDE6DC]">
+                <span className="text-[#A49B95] font-black block uppercase tracking-wider text-[10px]">
                   Age
                 </span>
-                <span className="font-extrabold text-slate-900 text-sm">
+                <span className="font-extrabold text-[#2B2523] text-sm">
                   {pet.age} {pet.age === 1 ? 'Year' : 'Years'} ({pet.ageGroup})
                 </span>
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                <span className="text-slate-400 font-bold block uppercase tracking-wider text-[10px]">
+              <div className="bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EDE6DC]">
+                <span className="text-[#A49B95] font-black block uppercase tracking-wider text-[10px]">
                   Gender
                 </span>
-                <span className="font-extrabold text-slate-900 text-sm">{pet.gender}</span>
+                <span className="font-extrabold text-[#2B2523] text-sm">{pet.gender}</span>
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                <span className="text-slate-400 font-bold block uppercase tracking-wider text-[10px]">
+              <div className="bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EDE6DC]">
+                <span className="text-[#A49B95] font-black block uppercase tracking-wider text-[10px]">
                   Size
                 </span>
-                <span className="font-extrabold text-slate-900 text-sm">
+                <span className="font-extrabold text-[#2B2523] text-sm">
                   {pet.size} {pet.weightKg ? `(${pet.weightKg} kg)` : ''}
                 </span>
               </div>
 
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                <span className="text-slate-400 font-bold block uppercase tracking-wider text-[10px]">
+              <div className="bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EDE6DC]">
+                <span className="text-[#A49B95] font-black block uppercase tracking-wider text-[10px]">
                   Species
                 </span>
-                <span className="font-extrabold text-slate-900 text-sm">{pet.species}</span>
+                <span className="font-extrabold text-[#2B2523] text-sm">{pet.species}</span>
               </div>
             </div>
 
             {/* Health & Compatibility Badges */}
-            <div className="space-y-3 pt-2 border-t border-slate-100">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="space-y-3 pt-2 border-t border-[#EDE6DC]">
+              <h4 className="text-[11px] font-black uppercase tracking-wider text-[#A49B95]">
                 Health & Good Habits
               </h4>
               <div className="flex flex-wrap gap-2 text-xs">
                 {pet.health.vaccinated && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF8F5] text-[#1C6C57] font-bold border border-[#CCE8DF]">
                     <Check className="w-3.5 h-3.5" /> Vaccinated
                   </span>
                 )}
                 {pet.health.spayedNeutered && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF8F5] text-[#1C6C57] font-bold border border-[#CCE8DF]">
                     <Check className="w-3.5 h-3.5" /> Spayed / Neutered
                   </span>
                 )}
                 {pet.health.microchipped && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF8F5] text-[#1C6C57] font-bold border border-[#CCE8DF]">
                     <Check className="w-3.5 h-3.5" /> Microchipped
                   </span>
                 )}
                 {pet.goodWith?.children && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-blue-50 text-blue-700 font-bold border border-blue-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F2F1FD] text-[#4844B3] font-bold border border-[#DFDCF7]">
                     <Check className="w-3.5 h-3.5" /> Good with Kids
                   </span>
                 )}
                 {pet.goodWith?.dogs && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F2F1FD] text-[#4844B3] font-bold border border-[#DFDCF7]">
                     <Check className="w-3.5 h-3.5" /> Dog Friendly
                   </span>
                 )}
                 {pet.goodWith?.cats && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-purple-50 text-purple-700 font-bold border border-purple-200">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F2F1FD] text-[#4844B3] font-bold border border-[#DFDCF7]">
                     <Check className="w-3.5 h-3.5" /> Cat Friendly
                   </span>
                 )}
@@ -279,17 +278,17 @@ export const PetDetailsPage: React.FC = () => {
             </div>
 
             {/* Temperament */}
-            <div className="space-y-2 pt-2 border-t border-slate-100">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <div className="space-y-2 pt-2 border-t border-[#EDE6DC]">
+              <h4 className="text-[11px] font-black uppercase tracking-wider text-[#A49B95]">
                 Temperament & Personality
               </h4>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {pet.temperament.map((t, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-orange-50 text-orange-700 border border-orange-200"
+                    className="px-3 py-1 rounded-full text-xs font-bold bg-[#FFF6EC] text-[#965B20] border border-[#F8E2CA]"
                   >
-                    {t}
+                    🐾 {t}
                   </span>
                 ))}
               </div>
@@ -301,13 +300,13 @@ export const PetDetailsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleApplyClick}
-                  className="w-full py-4 px-6 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-extrabold text-base transition-all shadow-lg shadow-orange-600/30 flex items-center justify-center gap-2"
+                  className="w-full py-4 px-6 rounded-2xl bg-[#FF7E67] hover:bg-[#F26B53] text-white font-black text-base transition-all shadow-md shadow-[#FF7E67]/25 flex items-center justify-center gap-2 active:scale-98"
                 >
-                  <Sparkles className="w-5 h-5" />
+                  <KawaiiSparkle className="w-5 h-5 text-white" />
                   Apply to Adopt {pet.name}
                 </button>
               ) : (
-                <div className="w-full py-3.5 px-4 rounded-2xl bg-slate-100 text-slate-500 text-center font-bold text-sm">
+                <div className="w-full py-3.5 px-4 rounded-2xl bg-[#FAF7F2] border border-[#EDE6DC] text-[#7A6E68] text-center font-bold text-sm">
                   This pet is currently {pet.status.toLowerCase()}
                 </div>
               )}
@@ -315,9 +314,9 @@ export const PetDetailsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleMessageShelter}
-                className="w-full py-3.5 px-6 rounded-2xl border border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-2xl border border-[#EDE6DC] hover:border-[#FF7E67] bg-white text-[#2B2523] font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-2xs active:scale-98"
               >
-                <MessageSquare className="w-4 h-4 text-orange-600" />
+                <MessageSquare className="w-4 h-4 text-[#FF7E67]" />
                 Message Shelter Directly
               </button>
             </div>
@@ -325,32 +324,32 @@ export const PetDetailsPage: React.FC = () => {
 
           {/* Shelter Card */}
           {shelter && (
-            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex items-center gap-4">
+            <div className="bg-white rounded-3xl p-6 border border-[#EDE6DC] shadow-xs flex items-center gap-4">
               <img
                 src={
                   shelter.avatar ||
                   'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=200&q=80'
                 }
                 alt={shelter.name}
-                className="w-14 h-14 rounded-2xl object-cover ring-2 ring-orange-500/20 shrink-0"
+                className="w-14 h-14 rounded-2xl object-cover ring-2 ring-[#FF7E67]/20 shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 flex items-center gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#1C6C57] flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5" /> Certified Shelter
                   </span>
                 </div>
-                <h4 className="font-extrabold text-slate-900 text-base truncate">
+                <h4 className="font-black text-[#2B2523] text-base truncate">
                   {shelter.organization?.name || shelter.name}
                 </h4>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#7A6E68] font-medium">
                   {shelter.location?.city || 'Austin'}, {shelter.location?.state || 'TX'}
                 </p>
               </div>
 
               <Link
                 to={`/shelters/${shelter._id}`}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors shrink-0"
+                className="px-4 py-2 rounded-2xl text-xs font-black bg-[#FAF7F2] hover:bg-[#FFF2EE] hover:text-[#FF7E67] text-[#2B2523] border border-[#EDE6DC] transition-all shrink-0"
               >
                 Profile
               </Link>
@@ -370,3 +369,4 @@ export const PetDetailsPage: React.FC = () => {
     </div>
   );
 };
+
