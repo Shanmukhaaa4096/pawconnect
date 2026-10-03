@@ -1,5 +1,7 @@
 # 🐾 PawConnect — Modern Full-Stack Pet Adoption Platform
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FShanmukhaaa4096%2Fpawconnect)
+
 PawConnect is a full-stack, responsive pet adoption platform designed to connect prospective pet adopters with certified animal shelters, foster parents, and animal welfare NGOs.
 
 ---
