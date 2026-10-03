@@ -1,0 +1,14 @@
+{
+  "name": "pawconnect",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "PawConnect - Modern Full-Stack Pet Adoption Platform",
+  "scripts": {
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "node server/src/index.js",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "node start-dev.js"
+  }
+}
