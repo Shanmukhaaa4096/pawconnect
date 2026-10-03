@@ -37,7 +37,7 @@ app.use(async (req, res, next) => {
 });
 
 // API Health and Status
-app.get(['/api/health', '/health'], (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ app.get(['/api/health', '/health'], (req, res) => {
   });
 });
 
-app.get(['/api', '/'], (req, res) => {
+app.get('/api', (req, res) => {
   res.json({
     message: 'PawConnect API is live and healthy',
     endpoints: [
@@ -61,13 +61,13 @@ app.get(['/api', '/'], (req, res) => {
   });
 });
 
-// Mount Routes on both /api/* and /* to handle any rewrite variations
-app.use(['/api/auth', '/auth'], authRoutes);
-app.use(['/api/pets', '/pets'], petRoutes);
-app.use(['/api/applications', '/applications'], applicationRoutes);
-app.use(['/api/favorites', '/favorites'], favoriteRoutes);
-app.use(['/api/messages', '/messages'], messageRoutes);
-app.use(['/api/shelters', '/shelters'], shelterRoutes);
+// Mount Routes on /api/*
+app.use('/api/auth', authRoutes);
+app.use('/api/pets', petRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/shelters', shelterRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
