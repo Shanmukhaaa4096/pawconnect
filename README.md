@@ -137,3 +137,34 @@ PawConnect comes pre-seeded with realistic pets, shelters, applications, and mes
 - `GET /api/shelters` — List registered shelters & NGOs
 - `GET /api/shelters/:id` — Shelter details and their listed pets
 - `GET /api/shelters/stats` — Platform-wide statistics
+
+---
+
+## ☁️ Deployment Guide
+
+### Option 1: Deploy on Vercel (Recommended for instant cloud hosting)
+
+PawConnect includes a zero-config [`vercel.json`](./vercel.json) ready for automatic deployment:
+
+1. Push your changes to GitHub:
+   ```bash
+   git push origin main
+   ```
+2. Go to **[vercel.com/new](https://vercel.com/new)**.
+3. Import your repository: **`Shanmukhaaa4096/pawconnect`**.
+4. Vercel automatically detects the configuration:
+   - **Framework Preset**: Vite
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `client/dist`
+5. *(Optional)* Add Environment Variables in the Vercel project dashboard:
+   - `JWT_SECRET`: Any secure random string
+   - `MONGODB_URI`: Your MongoDB Atlas URI (optional; if omitted, PawConnect activates its built-in in-memory store)
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: (optional, for photo uploads)
+6. Click **Deploy**!
+   Your site will be live on `https://pawconnect-xxx.vercel.app`.
+
+### Option 2: Deploy on Render / Railway / Docker
+PawConnect includes [`render.yaml`](./render.yaml) and [`Dockerfile`](./Dockerfile) for containerized and monolithic hosting:
+- Build command: `npm run build`
+- Start command: `npm start`
+
