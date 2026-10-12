@@ -5,6 +5,7 @@ import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { getSocket, joinConversationRoom, leaveConversationRoom } from '../../services/socket';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import { KawaiiPaw, KawaiiSparkle } from '../common/KawaiiIcons';
 
 interface ChatWindowProps {
   initialConversationId?: string;
@@ -188,29 +189,29 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   if (loading) {
-    return <LoadingSpinner label="Loading secure conversations..." />;
+    return <LoadingSpinner label="Loading cozy conversations..." />;
   }
 
-    return (
-    <div className="bg-white rounded-[2rem] border border-[#EDE6DC] shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[720px] max-h-[85vh]">
+  return (
+    <div className="bg-white rounded-[2.5rem] border-2 border-[#FFE4EC] shadow-md overflow-hidden grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[720px] max-h-[85vh]">
       {/* CONVERSATION LIST (LEFT PANE) */}
-      <div className="border-r border-[#EDE6DC] flex flex-col h-full bg-[#FAF7F2]/60">
-        <div className="p-4 border-b border-[#EDE6DC] flex items-center justify-between bg-white/70 backdrop-blur-xs">
+      <div className="border-r border-[#F0E6F4] flex flex-col h-full bg-[#FAF5EE]/70">
+        <div className="p-4 border-b border-[#F0E6F4] flex items-center justify-between bg-white/80 backdrop-blur-xs">
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-[#FF7E67]" />
-            <h3 className="font-black text-[#2B2523] text-sm">Conversations</h3>
+            <MessageSquare className="w-5 h-5 text-[#FF6584]" />
+            <h3 className="font-black text-[#493D50] text-sm">Conversations</h3>
           </div>
-          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFF6EC] border border-[#F8E2CA] text-[#965B20]">
+          <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FFE4EC] border border-[#FFC6D9] text-[#FF6584]">
             {conversations.length}
           </span>
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-[#EDE6DC]/60">
+        <div className="flex-1 overflow-y-auto divide-y divide-[#F0E6F4]/60">
           {conversations.length === 0 ? (
-            <div className="p-8 text-center text-[#7A6E68] space-y-2">
-              <MessageSquare className="w-8 h-8 mx-auto text-[#D5CEC8]" />
-              <p className="text-xs font-bold text-[#2B2523]">No messages yet!</p>
-              <p className="text-[11px] text-[#7A6E68] leading-relaxed">
+            <div className="p-8 text-center text-[#8E7F9B] space-y-2">
+              <KawaiiPaw className="w-8 h-8 mx-auto text-[#D8CCE6]" />
+              <p className="text-xs font-black text-[#493D50]">No messages yet!</p>
+              <p className="text-[11px] text-[#8E7F9B] leading-relaxed">
                 Inquire on any pet's page to start a friendly chat with the shelter.
               </p>
             </div>
@@ -224,7 +225,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   onClick={() => setActiveConversation(conv)}
                   className={`w-full text-left p-3.5 flex items-start gap-3 transition-all ${
                     isSelected
-                      ? 'bg-[#FFF6EC] border-l-4 border-[#FF7E67]'
+                      ? 'bg-[#FFE4EC]/50 border-l-4 border-[#FF6584]'
                       : 'hover:bg-white/80'
                   }`}
                 >
@@ -235,26 +236,26 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
                       }
                       alt={recipient?.name || 'User'}
-                      className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[#EDE6DC]"
+                      className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[#FFC6D9]"
                     />
                     {recipient?.role === 'shelter' && (
-                      <span className="absolute -bottom-1 -right-1 p-0.5 bg-[#1C6C57] text-white rounded-full">
+                      <span className="absolute -bottom-1 -right-1 p-0.5 bg-[#059669] text-white rounded-full">
                         <Building2 className="w-2.5 h-2.5" />
                       </span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-bold text-[#2B2523] truncate">
+                      <p className="text-xs font-black text-[#493D50] truncate">
                         {recipient?.name || 'Support'}
                       </p>
                     </div>
                     {conv.pet && (
-                      <p className="text-[11px] font-bold text-[#FF7E67] truncate flex items-center gap-1">
+                      <p className="text-[11px] font-black text-[#FF6584] truncate flex items-center gap-1">
                         <Sparkles className="w-2.5 h-2.5" /> About {conv.pet.name}
                       </p>
                     )}
-                    <p className="text-[11px] text-[#7A6E68] truncate mt-0.5 font-medium">
+                    <p className="text-[11px] text-[#8E7F9B] truncate mt-0.5 font-semibold">
                       {conv.lastMessage || 'No messages yet'}
                     </p>
                   </div>
@@ -273,7 +274,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             {(() => {
               const recipient = getRecipient(activeConversation);
               return (
-                <div className="p-4 border-b border-[#EDE6DC] bg-white flex items-center justify-between">
+                <div className="p-4 border-b border-[#F0E6F4] bg-white flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <img
                       src={
@@ -281,18 +282,18 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
                       }
                       alt={recipient?.name}
-                      className="w-11 h-11 rounded-2xl object-cover ring-2 ring-[#FF7E67]/20"
+                      className="w-11 h-11 rounded-2xl object-cover ring-2 ring-[#FFC6D9]"
                     />
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-black text-[#2B2523] text-sm">
+                        <h4 className="font-black text-[#493D50] text-sm">
                           {recipient?.name}
                         </h4>
-                        <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#FFF2EE] text-[#FF7E67] border border-[#FCD7CE] capitalize">
+                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FFE4EC] text-[#FF6584] border border-[#FFC6D9] capitalize">
                           {recipient?.role}
                         </span>
                       </div>
-                      <p className="text-xs text-[#7A6E68] font-medium">
+                      <p className="text-xs text-[#8E7F9B] font-bold">
                         {recipient?.role === 'shelter'
                           ? recipient.organization?.name || 'Certified Rescue Shelter'
                           : 'Adoption Applicant'}
@@ -302,15 +303,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
                   {/* Connected Pet Badge */}
                   {activeConversation.pet && (
-                    <div className="flex items-center gap-2 p-1.5 pr-3 bg-[#FAF7F2] rounded-2xl border border-[#EDE6DC]">
+                    <div className="flex items-center gap-2 p-1.5 pr-3 bg-[#FAF5EE] rounded-2xl border border-[#F0E6F4]">
                       <img
                         src={activeConversation.pet.photos?.[0]}
                         alt={activeConversation.pet.name}
                         className="w-8 h-8 rounded-xl object-cover"
                       />
                       <div className="text-left">
-                        <span className="block text-[10px] uppercase font-black text-[#A49B95]">Regarding</span>
-                        <span className="block text-xs font-black text-[#2B2523] leading-tight">
+                        <span className="block text-[10px] uppercase font-black text-[#A89AB8]">Regarding</span>
+                        <span className="block text-xs font-black text-[#493D50] leading-tight">
                           {activeConversation.pet.name}
                         </span>
                       </div>
@@ -321,11 +322,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             })()}
 
             {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#FFFDF9]">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#FFFDFB]">
               {messages.length === 0 ? (
-                <div className="text-center py-12 text-[#7A6E68] space-y-2">
-                  <p className="text-xs font-bold text-[#2B2523]">This is the start of your warm conversation. 🐾</p>
-                  <p className="text-[11px] text-[#7A6E68] max-w-sm mx-auto">
+                <div className="text-center py-12 text-[#8E7F9B] space-y-2">
+                  <p className="text-xs font-black text-[#493D50]">This is the start of your warm conversation. (✿◠‿◠)</p>
+                  <p className="text-[11px] text-[#8E7F9B] max-w-sm mx-auto font-medium">
                     Feel free to ask about routines, meet & greets, home environments, or dietary needs!
                   </p>
                 </div>
@@ -342,13 +343,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       <div
                         className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
                           isMine
-                            ? 'bg-[#FF7E67] text-white rounded-br-xs font-medium'
-                            : 'bg-white text-[#2B2523] border border-[#EDE6DC] rounded-bl-xs font-medium'
+                            ? 'bg-gradient-to-r from-[#FF6584] to-[#FF8DA1] text-white rounded-br-xs font-bold'
+                            : 'bg-white text-[#493D50] border-2 border-[#F0E6F4] rounded-bl-xs font-bold'
                         }`}
                       >
                         {msg.text}
                       </div>
-                      <span className="text-[10px] text-[#A49B95] mt-1 px-1 font-semibold">
+                      <span className="text-[10px] text-[#A89AB8] mt-1 px-1 font-bold">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -361,8 +362,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
               {/* Typing indicator */}
               {typingUser && (
-                <div className="flex items-center gap-1.5 text-xs text-[#FF7E67] italic font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-[#FF7E67] animate-ping" />
+                <div className="flex items-center gap-1.5 text-xs text-[#FF6584] italic font-black">
+                  <span className="w-2 h-2 rounded-full bg-[#FF6584] animate-ping" />
                   <span>🐾 {typingUser} is typing...</span>
                 </div>
               )}
@@ -373,29 +374,29 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             {/* Input Form */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3 sm:p-4 bg-white border-t border-[#EDE6DC] flex items-center gap-2"
+              className="p-3 sm:p-4 bg-white border-t border-[#F0E6F4] flex items-center gap-2"
             >
               <input
                 type="text"
                 value={inputText}
                 onChange={handleInputChange}
                 placeholder="Type your friendly message..."
-                className="flex-1 px-4 py-3 text-sm bg-[#FAF7F2] border border-[#EDE6DC] rounded-2xl text-[#2B2523] placeholder-[#A49B95] focus:outline-none focus:border-[#FF7E67] transition-all font-medium"
+                className="kawaii-input flex-1 py-3 text-sm font-medium"
               />
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="p-3 rounded-2xl bg-[#FF7E67] hover:bg-[#F26B53] text-white font-extrabold transition-all shadow-md shadow-[#FF7E67]/20 disabled:opacity-40 disabled:hover:bg-[#FF7E67] active:scale-95"
+                className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FF6584] to-[#FF8DA1] hover:from-[#F24E71] hover:to-[#FF7893] text-white font-black transition-all shadow-md shadow-[#FF6584]/25 disabled:opacity-40 disabled:hover:from-[#FF6584] active:scale-95"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#7A6E68] space-y-3 bg-[#FFFDF9]">
-            <MessageSquare className="w-12 h-12 text-[#D5CEC8]" />
-            <h4 className="text-base font-black text-[#2B2523]">No Conversation Selected</h4>
-            <p className="text-xs text-[#7A6E68] max-w-sm leading-relaxed">
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#8E7F9B] space-y-3 bg-[#FFFDFB]">
+            <MessageSquare className="w-12 h-12 text-[#D8CCE6]" />
+            <h4 className="text-base font-black text-[#493D50]">No Conversation Selected</h4>
+            <p className="text-xs text-[#8E7F9B] max-w-sm leading-relaxed font-medium">
               Select an existing chat thread from the left or browse pets and click "Message Shelter Directly".
             </p>
           </div>

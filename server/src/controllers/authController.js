@@ -33,7 +33,16 @@ export const register = async (req, res) => {
       role: validRole,
       phone: phone || '',
       location: location || { city: '', state: '' },
-      organization: validRole === 'shelter' ? (organization || { name, verified: true }) : {},
+      organization:
+        validRole === 'shelter'
+          ? {
+              name: organization?.name || name,
+              licenseNumber: organization?.licenseNumber || '',
+              description: organization?.description || bio || '',
+              website: organization?.website || '',
+              verified: false,
+            }
+          : {},
       bio: bio || '',
       avatar:
         validRole === 'shelter'

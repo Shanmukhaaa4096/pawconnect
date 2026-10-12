@@ -1,5 +1,4 @@
 import React from 'react';
-import { KawaiiPaw } from './KawaiiIcons';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -9,33 +8,25 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
-  label = 'Fetching with care...',
+  label = 'Loading…',
   className = '',
 }) => {
-  const pawSizes = {
-    sm: 18,
-    md: 26,
-    lg: 38,
-  }[size];
-
-  const ringSizes = {
-    sm: 'w-8 h-8',
-    md: 'w-14 h-14',
-    lg: 'w-20 h-20',
-  }[size];
+  const ringSize = { sm: 'w-6 h-6', md: 'w-10 h-10', lg: 'w-14 h-14' }[size];
 
   return (
-    <div className={`flex flex-col items-center justify-center p-8 gap-3.5 ${className}`}>
-      <div className={`relative ${ringSizes} flex items-center justify-center`}>
-        {/* Soft rotating outer halo */}
-        <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#FFC7BC] animate-spin duration-1000" />
-        {/* Cute center paw print with subtle bounce */}
-        <div className="animate-pulse">
-          <KawaiiPaw size={pawSizes} fill="#FF7E67" />
-        </div>
-      </div>
+    <div className={`flex flex-col items-center justify-center p-10 gap-4 ${className}`}>
+      <div
+        className={`${ringSize} rounded-full border-2 animate-spin`}
+        style={{
+          borderColor: '#DDE0D8',
+          borderTopColor: '#263A32',
+          animationDuration: '0.8s',
+        }}
+        role="status"
+        aria-label={label}
+      />
       {label && (
-        <p className="text-xs font-bold text-[#7A6E65] tracking-wide font-display">
+        <p className="text-sm font-medium" style={{ color: '#9BA097', fontFamily: "'Inter', sans-serif" }}>
           {label}
         </p>
       )}

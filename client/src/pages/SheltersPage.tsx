@@ -4,7 +4,6 @@ import { ShieldCheck, MapPin, Globe, Phone, ArrowRight } from 'lucide-react';
 import { User } from '../types';
 import { api } from '../services/api';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { KawaiiPaw, KawaiiSparkle } from '../components/common/KawaiiIcons';
 
 export const SheltersPage: React.FC = () => {
   const [shelters, setShelters] = useState<User[]>([]);
@@ -22,88 +21,120 @@ export const SheltersPage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchShelters();
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF2EE] text-[#FF7E67] text-xs font-black uppercase tracking-wider">
-          <KawaiiPaw className="w-3.5 h-3.5" />
-          <span>Ethical Rescue Network</span>
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-[#2B2523] tracking-tight">
-          Verified Shelters & Compassionate NGOs
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14" style={{ background: '#F7F5EF' }}>
+
+      {/* Page Header */}
+      <div className="max-w-2xl mb-12">
+        <p className="section-label">Partner organisations</p>
+        <h1
+          style={{
+            fontFamily: "'Lora', serif",
+            fontWeight: 600,
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+            color: '#252825',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.15,
+          }}
+        >
+          Verified shelters & rescues
         </h1>
-        <p className="text-sm text-[#7A6E68] font-medium leading-relaxed">
-          Every organization on PawConnect is verified for non-profit license credentials and compassionate animal welfare standards.
+        <p className="mt-3 text-sm leading-relaxed" style={{ color: '#6B7068', maxWidth: '50ch' }}>
+          Every organisation on PawConnect is independently verified for non-profit credentials and compassionate animal welfare standards.
         </p>
       </div>
 
       {loading ? (
-        <LoadingSpinner label="Loading partner rescue shelters..." />
+        <LoadingSpinner label="Loading partner shelters…" />
+      ) : shelters.length === 0 ? (
+        <div
+          className="p-10 text-center rounded-lg border max-w-md mx-auto"
+          style={{ background: '#EAECE4', borderColor: '#DDE0D8' }}
+        >
+          <p className="text-sm font-medium" style={{ color: '#6B7068' }}>No shelters listed yet.</p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {shelters.map((shelter) => (
             <div
               key={shelter._id}
-              className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EDE6DC] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+              className="editorial-card p-6 sm:p-7 flex flex-col justify-between"
             >
               <div className="space-y-4">
+                {/* Header row */}
                 <div className="flex items-start gap-4">
                   <img
-                    src={
-                      shelter.avatar ||
-                      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=200&q=80'
-                    }
+                    src={shelter.avatar || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=200&q=80'}
                     alt={shelter.name}
-                    className="w-16 h-16 rounded-2xl object-cover ring-2 ring-[#FF7E67]/20 shrink-0"
+                    className="w-14 h-14 rounded object-cover shrink-0"
+                    style={{ border: '1px solid #DDE0D8' }}
                   />
-                  <div>
-                    <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#EEF8F5] text-[#1C6C57] border border-[#CCE8DF] mb-1">
-                      <ShieldCheck className="w-3 h-3" /> Certified 501(c)(3)
-                    </div>
-                    <h3 className="text-xl font-black text-[#2B2523] leading-tight">
+                  <div className="flex-1 min-w-0">
+                    {shelter.organization?.verified ? (
+                      <div className="inline-flex items-center gap-1.5 mb-1">
+                        <ShieldCheck className="w-3.5 h-3.5" style={{ color: '#263A32' }} />
+                        <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#263A32' }}>
+                          Verified Partner
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1.5 mb-1">
+                        <span className="text-[10px] font-medium uppercase tracking-widest" style={{ color: '#9BA097' }}>
+                          Verification Pending
+                        </span>
+                      </div>
+                    )}
+                    <h3
+                      className="font-semibold text-base leading-tight"
+                      style={{ fontFamily: "'Lora', serif", color: '#252825' }}
+                    >
                       {shelter.organization?.name || shelter.name}
                     </h3>
-                    <p className="text-xs text-[#7A6E68] flex items-center gap-1 mt-1 font-medium">
-                      <MapPin className="w-3.5 h-3.5 text-[#FF7E67]" />
+                    <p className="flex items-center gap-1 mt-1 text-xs" style={{ color: '#9BA097' }}>
+                      <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: '#C8795A' }} />
                       {shelter.location?.city || 'Austin'}, {shelter.location?.state || 'TX'}
                     </p>
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-[#5C524E] leading-relaxed font-normal">
-                  {shelter.organization?.description ||
-                    shelter.bio ||
+                {/* Description */}
+                <p className="text-sm leading-relaxed" style={{ color: '#6B7068' }}>
+                  {shelter.organization?.description || shelter.bio ||
                     'Dedicated to rescuing, rehabilitating, and finding responsible forever families for abandoned and vulnerable animals.'}
                 </p>
 
-                <div className="pt-2 border-t border-[#EDE6DC] flex flex-wrap gap-4 text-xs text-[#7A6E68]">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <Phone className="w-3.5 h-3.5 text-[#FF7E67]" />
+                {/* Contact */}
+                <div className="pt-3 border-t flex flex-wrap gap-4 text-xs" style={{ borderColor: '#E8EBE3', color: '#9BA097' }}>
+                  <div className="flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5" style={{ color: '#C8795A' }} />
                     <span>{shelter.phone || '+1 (555) 000-0000'}</span>
                   </div>
                   {shelter.organization?.website && (
-                    <div className="flex items-center gap-1.5 font-medium">
-                      <Globe className="w-3.5 h-3.5 text-[#FF7E67]" />
-                      <span className="truncate max-w-[180px]">{shelter.organization.website}</span>
+                    <div className="flex items-center gap-1.5">
+                      <Globe className="w-3.5 h-3.5" style={{ color: '#C8795A' }} />
+                      <span className="truncate max-w-[200px]">{shelter.organization.website}</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-[#EDE6DC] flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#A49B95]">
-                  License: {shelter.organization?.licenseNumber || 'Active NGO'}
+              {/* Footer row */}
+              <div
+                className="pt-5 mt-5 border-t flex items-center justify-between"
+                style={{ borderColor: '#E8EBE3' }}
+              >
+                <span className="text-xs" style={{ color: '#9BA097' }}>
+                  Licence: {shelter.organization?.licenseNumber || 'Active NGO'}
                 </span>
                 <Link
                   to={`/shelters/${shelter._id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-[#FFF2EE] hover:bg-[#FFE3DC] text-[#FF7E67] font-extrabold text-xs border border-[#FCD7CE] transition-all"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+                  style={{ color: '#263A32', textDecoration: 'none' }}
                 >
-                  <span>View Shelter Profile</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  View profile <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
@@ -113,4 +144,3 @@ export const SheltersPage: React.FC = () => {
     </div>
   );
 };
-

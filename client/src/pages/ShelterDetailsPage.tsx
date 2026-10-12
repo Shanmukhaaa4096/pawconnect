@@ -5,7 +5,6 @@ import { User, Pet } from '../types';
 import { api } from '../services/api';
 import { PetCard } from '../components/common/PetCard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { KawaiiPaw, KawaiiEmptyPet } from '../components/common/KawaiiIcons';
 
 export const ShelterDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,105 +26,125 @@ export const ShelterDetailsPage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchShelterData();
   }, [id]);
 
-  if (loading) {
-    return <LoadingSpinner label="Loading shelter profile..." />;
-  }
+  if (loading) return <LoadingSpinner label="Loading shelter profile…" />;
 
   if (!shelter) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-2xl font-black text-[#2B2523]">Shelter Not Found</h2>
-        <Link to="/shelters" className="text-[#FF7E67] font-extrabold hover:underline">
-          Back to Directory
+        <h2 style={{ fontFamily: "'Lora', serif", fontSize: '1.5rem', color: '#252825' }}>Shelter not found</h2>
+        <Link to="/shelters" className="text-sm font-medium" style={{ color: '#263A32' }}>
+          Back to directory
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10" style={{ background: '#F7F5EF' }}>
+
+      {/* Back */}
       <Link
         to="/shelters"
-        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#EDE6DC] text-xs font-extrabold text-[#5C524E] hover:text-[#FF7E67] hover:border-[#FF7E67] transition-all shadow-2xs"
+        className="inline-flex items-center gap-2 text-sm font-medium transition-colors"
+        style={{ color: '#6B7068', textDecoration: 'none' }}
       >
-        <ArrowLeft className="w-3.5 h-3.5" /> Back to Shelters Directory
+        <ArrowLeft className="w-4 h-4" />
+        Back to shelter directory
       </Link>
 
-      {/* Shelter Profile Header Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#EDE6DC] shadow-xs flex flex-col md:flex-row items-start md:items-center gap-6">
+      {/* Shelter Profile Card */}
+      <div
+        className="rounded-lg border p-6 sm:p-10 flex flex-col md:flex-row items-start md:items-center gap-6"
+        style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
+      >
         <img
-          src={
-            shelter.avatar ||
-            'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=250&q=80'
-          }
+          src={shelter.avatar || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=250&q=80'}
           alt={shelter.name}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover ring-4 ring-[#FF7E67]/20 shrink-0"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded object-cover shrink-0"
+          style={{ border: '1px solid #DDE0D8' }}
         />
-        <div className="flex-1 space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-[#EEF8F5] text-[#1C6C57] border border-[#CCE8DF]">
-            <ShieldCheck className="w-3.5 h-3.5" /> Verified Animal Welfare Organization
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#2B2523]">
+        <div className="flex-1 space-y-3">
+          {shelter.organization?.verified ? (
+            <div className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4" style={{ color: '#263A32' }} />
+              <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#263A32' }}>
+                Verified animal welfare organisation
+              </span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1.5">
+              <span className="text-[10px] font-medium uppercase tracking-widest" style={{ color: '#9BA097' }}>
+                Organisation verification pending review
+              </span>
+            </div>
+          )}
+          <h1
+            style={{
+              fontFamily: "'Lora', serif",
+              fontWeight: 600,
+              fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)',
+              color: '#252825',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.15,
+            }}
+          >
             {shelter.organization?.name || shelter.name}
           </h1>
-          <p className="text-xs sm:text-sm text-[#5C524E] leading-relaxed max-w-3xl font-normal">
+          <p className="text-sm leading-relaxed" style={{ color: '#6B7068', maxWidth: '60ch' }}>
             {shelter.organization?.description || shelter.bio}
           </p>
 
-          <div className="flex flex-wrap gap-4 text-xs text-[#7A6E68] pt-2">
-            <span className="flex items-center gap-1.5 font-medium">
-              <MapPin className="w-4 h-4 text-[#FF7E67]" />
+          <div className="flex flex-wrap gap-5 text-xs pt-1" style={{ color: '#9BA097' }}>
+            <span className="flex items-center gap-1.5">
+              <MapPin className="w-4 h-4" style={{ color: '#C8795A' }} />
               {shelter.location?.city || 'Austin'}, {shelter.location?.state || 'TX'}
             </span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <Phone className="w-4 h-4 text-[#FF7E67]" />
+            <span className="flex items-center gap-1.5">
+              <Phone className="w-4 h-4" style={{ color: '#C8795A' }} />
               {shelter.phone || '+1 (555) 000-0000'}
             </span>
             {shelter.organization?.website && (
-              <span className="flex items-center gap-1.5 font-medium">
-                <Globe className="w-4 h-4 text-[#FF7E67]" />
-                <a
-                  href={shelter.organization.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:underline text-[#FF7E67] font-semibold"
-                >
-                  {shelter.organization.website}
-                </a>
-              </span>
+              <a
+                href={shelter.organization.website}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 transition-colors"
+                style={{ color: '#9BA097', textDecoration: 'none' }}
+              >
+                <Globe className="w-4 h-4" style={{ color: '#C8795A' }} />
+                {shelter.organization.website}
+              </a>
             )}
           </div>
         </div>
       </div>
 
-      {/* Shelter's Listed Pets */}
+      {/* Pets Section */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF2EE] text-[#FF7E67] text-xs font-black uppercase tracking-wider mb-2">
-              <KawaiiPaw className="w-3.5 h-3.5" />
-              <span>Current Residents</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#2B2523]">
-              Adoptable Pets at this Shelter
-            </h2>
-            <p className="text-xs text-[#7A6E68] font-medium mt-0.5">
-              {pets.length} {pets.length === 1 ? 'animal' : 'animals'} currently housed or fostered
-            </p>
-          </div>
+        <div>
+          <p className="section-label">Current residents</p>
+          <h2 style={{ fontFamily: "'Lora', serif", fontWeight: 600, fontSize: '1.5rem', color: '#252825' }}>
+            Adoptable pets at this shelter
+          </h2>
+          <p className="mt-1.5 text-sm" style={{ color: '#6B7068' }}>
+            {pets.length} {pets.length === 1 ? 'animal' : 'animals'} currently available
+          </p>
         </div>
 
         {pets.length === 0 ? (
-          <div className="bg-white rounded-3xl p-10 sm:p-14 text-center border border-[#EDE6DC] shadow-xs space-y-4 max-w-lg mx-auto">
-            <KawaiiEmptyPet className="w-44 h-36 mx-auto" />
-            <p className="text-sm font-black text-[#2B2523]">No pets currently listed by this shelter.</p>
+          <div
+            className="p-10 text-center rounded-lg border max-w-md"
+            style={{ background: '#EAECE4', borderColor: '#DDE0D8' }}
+          >
+            <p className="text-sm font-medium" style={{ color: '#6B7068' }}>
+              No pets currently listed by this shelter.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {pets.map((pet) => (
               <PetCard key={pet._id} pet={pet} />
             ))}
@@ -135,4 +154,3 @@ export const ShelterDetailsPage: React.FC = () => {
     </div>
   );
 };
-

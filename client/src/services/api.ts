@@ -207,4 +207,11 @@ export const api = {
       };
     }>('/shelters/stats');
   },
+
+  async verifyShelter(id: string, verified: boolean) {
+    return customFetch<{ message: string; shelter: User }>(`/shelters/${id}/verify`, {
+      method: 'PATCH',
+      body: JSON.stringify({ verified }),
+    });
+  },
 };

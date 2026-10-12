@@ -1,7 +1,6 @@
 import React from 'react';
-import { Search, RotateCcw, Filter, MapPin } from 'lucide-react';
+import { Search, RotateCcw, MapPin } from 'lucide-react';
 import { PetFilterOptions } from '../../types';
-import { KawaiiPaw, KawaiiSparkle } from '../common/KawaiiIcons';
 
 interface PetFiltersProps {
   filters: PetFilterOptions;
@@ -10,6 +9,16 @@ interface PetFiltersProps {
   totalCount: number;
 }
 
+/* Shared label style */
+const FilterLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <label
+    className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5"
+    style={{ color: '#9BA097', fontFamily: "'Inter', sans-serif" }}
+  >
+    {children}
+  </label>
+);
+
 export const PetFilters: React.FC<PetFiltersProps> = ({
   filters,
   onChange,
@@ -17,207 +26,181 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
   totalCount,
 }) => {
   const speciesList = ['All', 'Dog', 'Cat', 'Rabbit', 'Bird', 'Other'];
-  const ageGroups = ['All', 'Baby', 'Young', 'Adult', 'Senior'];
-  const statuses = ['All', 'Available', 'Reserved', 'Adopted'];
-  const genders = ['All', 'Male', 'Female'];
-  const sizes = ['All', 'Small', 'Medium', 'Large', 'Extra Large'];
+  const ageGroups   = ['All', 'Baby', 'Young', 'Adult', 'Senior'];
+  const statuses    = ['All', 'Available', 'Reserved', 'Adopted'];
+  const genders     = ['All', 'Male', 'Female'];
+  const sizes       = ['All', 'Small', 'Medium', 'Large', 'Extra Large'];
 
   const handleChange = (key: keyof PetFilterOptions, value: string) => {
-    onChange({
-      ...filters,
-      [key]: value === 'All' ? '' : value,
-    });
+    onChange({ ...filters, [key]: value === 'All' ? '' : value });
   };
 
+  /* Pill button factory */
+  const FilterPill = ({
+    label,
+    selected,
+    onClick,
+  }: {
+    label: string;
+    selected: boolean;
+    onClick: () => void;
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      className="px-3 py-1 text-xs font-medium rounded border transition-all"
+      style={{
+        background:   selected ? '#263A32' : '#FFFFFF',
+        color:        selected ? '#F7F5EF' : '#6B7068',
+        borderColor:  selected ? '#263A32' : '#DDE0D8',
+        fontFamily:   "'Inter', sans-serif",
+      }}
+    >
+      {label}
+    </button>
+  );
+
   return (
-    <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#EDE6DC] shadow-xs space-y-6">
+    <div
+      className="rounded-lg border p-5 space-y-5"
+      style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#F4EFE8] pb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#FFF0ED] text-[#FF7E67] flex items-center justify-center">
-            <Filter className="w-4 h-4" />
-          </div>
-          <h3 className="font-extrabold text-[#2B2523] text-base font-display">
-            Filter Companions
-          </h3>
-        </div>
-        <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-[#FFF0ED] text-[#B54A34] border border-[#FFE0D7]">
-          {totalCount} {totalCount === 1 ? 'Pet' : 'Pets'}
+      <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: '#E8EBE3' }}>
+        <h3 className="font-semibold text-sm" style={{ color: '#252825' }}>Filters</h3>
+        <span
+          className="text-[11px] font-medium px-2.5 py-0.5 rounded"
+          style={{ background: '#EAECE4', color: '#263A32' }}
+        >
+          {totalCount} {totalCount === 1 ? 'pet' : 'pets'}
         </span>
       </div>
 
       {/* Keyword Search */}
       <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1.5 font-display">
-          Keyword Search
-        </label>
+        <FilterLabel>Keyword</FilterLabel>
         <div className="relative">
-          <Search className="w-4 h-4 text-[#A89D93] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
           <input
             type="text"
             value={filters.search || ''}
             onChange={(e) => handleChange('search', e.target.value)}
-            placeholder="Search by name, breed, keywords..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#FAF7F2] border border-[#E5DCD0] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523] transition-all"
+            placeholder="Name, breed…"
+            className="editorial-input pl-9"
+            style={{ height: '2.5rem', fontSize: '0.875rem' }}
           />
         </div>
       </div>
 
-      {/* Location Filter */}
+      {/* Location */}
       <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1.5 font-display">
-          Location (City or State)
-        </label>
+        <FilterLabel>Location</FilterLabel>
         <div className="relative">
-          <MapPin className="w-4 h-4 text-[#FF7E67] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <MapPin className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
           <input
             type="text"
             value={filters.location || ''}
             onChange={(e) => handleChange('location', e.target.value)}
-            placeholder="e.g. Austin, Seattle, WA..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#FAF7F2] border border-[#E5DCD0] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523] transition-all"
+            placeholder="City or state…"
+            className="editorial-input pl-9"
+            style={{ height: '2.5rem', fontSize: '0.875rem' }}
           />
         </div>
       </div>
 
-      {/* Pet Type Chips */}
+      {/* Pet Type */}
       <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-2 font-display flex items-center gap-1">
-          <span>Pet Type</span>
-          <KawaiiSparkle size={11} fill="#FF7E67" />
-        </label>
+        <FilterLabel>Pet type</FilterLabel>
         <div className="flex flex-wrap gap-1.5">
-          {speciesList.map((sp) => {
-            const isSelected = (!filters.species && sp === 'All') || filters.species === sp;
-            return (
-              <button
-                key={sp}
-                type="button"
-                onClick={() => handleChange('species', sp)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  isSelected
-                    ? 'bg-[#FF7E67] text-white shadow-xs'
-                    : 'bg-[#FAF7F2] text-[#5C5248] hover:bg-[#F2ECE3] border border-[#EBE3D8]'
-                }`}
-              >
-                {sp}
-              </button>
-            );
-          })}
+          {speciesList.map((sp) => (
+            <FilterPill
+              key={sp}
+              label={sp}
+              selected={(!filters.species && sp === 'All') || filters.species === sp}
+              onClick={() => handleChange('species', sp)}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Availability Status */}
+      {/* Availability */}
       <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-2 font-display">
-          Availability Status
-        </label>
-        <div className="grid grid-cols-2 gap-2">
-          {statuses.map((st) => {
-            const isSelected = (!filters.status && st === 'All') || filters.status === st;
-            return (
-              <button
-                key={st}
-                type="button"
-                onClick={() => handleChange('status', st)}
-                className={`px-3 py-2 rounded-xl text-xs font-bold text-center border transition-all ${
-                  isSelected
-                    ? 'bg-[#FFF0ED] border-[#FF7E67] text-[#B54A34] ring-2 ring-[#FF7E67]/10'
-                    : 'bg-[#FAF7F2] border-[#EDE6DC] text-[#594E46] hover:bg-[#F2ECE3]'
-                }`}
-              >
-                {st}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Age Group */}
-      <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-2 font-display">
-          Age Stage
-        </label>
+        <FilterLabel>Availability</FilterLabel>
         <div className="flex flex-wrap gap-1.5">
-          {ageGroups.map((age) => {
-            const isSelected = (!filters.ageGroup && age === 'All') || filters.ageGroup === age;
-            return (
-              <button
-                key={age}
-                type="button"
-                onClick={() => handleChange('ageGroup', age)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  isSelected
-                    ? 'bg-[#2B2523] text-white'
-                    : 'bg-[#FAF7F2] text-[#5C5248] hover:bg-[#F2ECE3] border border-[#EBE3D8]'
-                }`}
-              >
-                {age}
-              </button>
-            );
-          })}
+          {statuses.map((st) => (
+            <FilterPill
+              key={st}
+              label={st}
+              selected={(!filters.status && st === 'All') || filters.status === st}
+              onClick={() => handleChange('status', st)}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Gender & Size Selects */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Age */}
+      <div>
+        <FilterLabel>Age stage</FilterLabel>
+        <div className="flex flex-wrap gap-1.5">
+          {ageGroups.map((age) => (
+            <FilterPill
+              key={age}
+              label={age}
+              selected={(!filters.ageGroup && age === 'All') || filters.ageGroup === age}
+              onClick={() => handleChange('ageGroup', age)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Gender + Size */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1.5 font-display">
-            Gender
-          </label>
+          <FilterLabel>Gender</FilterLabel>
           <select
             value={filters.gender || 'All'}
             onChange={(e) => handleChange('gender', e.target.value)}
-            className="w-full px-3 py-2 text-xs font-bold bg-[#FAF7F2] border border-[#E5DCD0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
+            className="editorial-input"
+            style={{ height: '2.5rem', fontSize: '0.8125rem', paddingLeft: '0.75rem' }}
           >
-            {genders.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
+            {genders.map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
         </div>
-
         <div>
-          <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1.5 font-display">
-            Size
-          </label>
+          <FilterLabel>Size</FilterLabel>
           <select
             value={filters.size || 'All'}
             onChange={(e) => handleChange('size', e.target.value)}
-            className="w-full px-3 py-2 text-xs font-bold bg-[#FAF7F2] border border-[#E5DCD0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
+            className="editorial-input"
+            style={{ height: '2.5rem', fontSize: '0.8125rem', paddingLeft: '0.75rem' }}
           >
-            {sizes.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
+            {sizes.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
       </div>
 
-      {/* Breed Input */}
+      {/* Breed */}
       <div>
-        <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#73675F] mb-1.5 font-display">
-          Breed Keyword
-        </label>
+        <FilterLabel>Breed</FilterLabel>
         <input
           type="text"
           value={filters.breed || ''}
           onChange={(e) => handleChange('breed', e.target.value)}
-          placeholder="e.g. Golden Retriever, Lop, Husky..."
-          className="w-full px-3 py-2 text-xs bg-[#FAF7F2] border border-[#E5DCD0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7E67]/20 focus:border-[#FF7E67] text-[#2B2523]"
+          placeholder="e.g. Golden Retriever…"
+          className="editorial-input"
+          style={{ height: '2.5rem', fontSize: '0.875rem' }}
         />
       </div>
 
-      {/* Reset Button */}
+      {/* Reset */}
       <button
         type="button"
         onClick={onReset}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-extrabold text-[#5C5248] bg-[#FAF7F2] hover:bg-[#F2ECE3] transition-colors border border-[#E0D7CC]"
+        className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded border transition-colors hover:bg-[#EAECE4]"
+        style={{ color: '#6B7068', borderColor: '#DDE0D8' }}
       >
         <RotateCcw className="w-3.5 h-3.5" />
-        Reset All Filters
+        Reset filters
       </button>
     </div>
   );

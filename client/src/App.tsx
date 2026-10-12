@@ -22,7 +22,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <AuthProvider>
         <FavoritesProvider>
-          <div className="flex flex-col min-h-screen bg-[#FAF7F2] font-body text-[#2B2523] selection:bg-[#FFD7CE] selection:text-[#9E3320]">
+          <div className="flex flex-col min-h-screen" style={{ background: '#F7F5EF', color: '#252825' }}>
             <Navbar />
             <main className="flex-1">
               <Routes>

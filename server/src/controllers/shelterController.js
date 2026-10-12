@@ -34,3 +34,31 @@ export const getPlatformStats = async (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve platform stats', error: error.message });
   }
 };
+
+export const verifyShelter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { verified = true } = req.body;
+
+    const shelter = await repository.findUserById(id);
+    if (!shelter || shelter.role !== 'shelter') {
+      return res.status(404).json({ message: 'Shelter not found' });
+    }
+
+    const updatedShelter = await repository.updateUser(id, {
+      organization: {
+        ...shelter.organization,
+        verified: Boolean(verified),
+      },
+    });
+
+    res.json({
+      message: `Shelter verification updated to ${Boolean(verified)}`,
+      shelter: updatedShelter,
+    });
+  } catch (error) {
+    console.error('verifyShelter error:', error);
+    res.status(500).json({ message: 'Failed to update shelter verification', error: error.message });
+  }
+};
+

@@ -15,7 +15,7 @@ export const MessagesPage: React.FC = () => {
   const conversationId = searchParams.get('conversationId') || undefined;
 
   if (loading) {
-    return <LoadingSpinner label="Opening secure messaging..." />;
+    return <LoadingSpinner label="Opening your cozy inbox..." />;
   }
 
   if (!user) {
@@ -26,15 +26,15 @@ export const MessagesPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF2EE] text-[#FF7E67] text-xs font-black uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FFE4EC] text-[#FF6584] text-xs font-black uppercase tracking-wider mb-2 border border-[#FFC6D9]">
             <KawaiiPaw className="w-3.5 h-3.5" />
-            <span>Direct Inquiries</span>
+            <span>Direct Inquiries (✿◠‿◠)</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#2B2523] tracking-tight flex items-center gap-2.5">
-            <MessageSquare className="w-7 h-7 text-[#FF7E67]" />
+          <h1 className="text-2xl sm:text-3xl font-black text-[#493D50] tracking-tight flex items-center gap-2.5">
+            <MessageSquare className="w-7 h-7 text-[#FF6584]" />
             Adoption Messages & Inquiries
           </h1>
-          <p className="text-sm text-[#7A6E68] mt-1 font-medium">
+          <p className="text-sm text-[#8E7F9B] mt-1 font-bold">
             Connect directly with shelter coordinators and adoption applicants in real-time.
           </p>
         </div>
@@ -48,4 +48,3 @@ export const MessagesPage: React.FC = () => {
     </div>
   );
 };
-

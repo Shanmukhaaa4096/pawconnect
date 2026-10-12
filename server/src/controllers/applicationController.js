@@ -17,6 +17,19 @@ export const createApplication = async (req, res) => {
       return res.status(400).json({ message: 'This pet has already been adopted' });
     }
 
+    // Prevent duplicate active applications
+    const existingApps = await repository.findApplicationsByAdopter(req.user._id);
+    const hasActiveApp = existingApps.some(
+      (app) =>
+        (app.pet?._id?.toString() === pet._id.toString() || app.pet?.toString() === pet._id.toString()) &&
+        ['Pending', 'Approved'].includes(app.status)
+    );
+    if (hasActiveApp) {
+      return res.status(400).json({
+        message: 'You already have an active application in review for this pet.',
+      });
+    }
+
     const shelterId = pet.shelter?._id || pet.shelter;
 
     const application = await repository.createApplication({
