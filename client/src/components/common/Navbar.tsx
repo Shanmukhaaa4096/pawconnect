@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-[#F3E6E6]/95 backdrop-blur-md border-b border-[#EAD2D3] transition-all">
+      <header className="sticky top-0 z-30 bg-[#FCE8D0]/95 backdrop-blur-md border-b border-[#EBC9A5] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
 
@@ -74,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
               <button
                 type="button"
                 onClick={onOpenDrawer}
-                className="md:hidden p-2 -ml-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/60 transition"
+                className="md:hidden p-2 -ml-2 rounded-xl text-[#3E1F1A] hover:text-[#C2572F] hover:bg-white/60 transition"
                 aria-label="Open mobile menu"
               >
                 <Menu className="w-6 h-6" />
@@ -82,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
 
               {/* Brand Logo (coral styling) */}
               <Link to="/" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-2xl bg-[#C96366] flex items-center justify-center text-white shadow-md shadow-[#C96366]/25 group-hover:scale-105 transition">
+                <div className="w-9 h-9 rounded-2xl bg-[#C2572F] flex items-center justify-center text-white shadow-md shadow-[#C2572F]/25 group-hover:scale-105 transition">
                   <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <ellipse cx="7" cy="11" rx="3" ry="4" fill="currentColor" />
                     <ellipse cx="13" cy="7" rx="3" ry="4.5" fill="currentColor" />
@@ -92,10 +92,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                   </svg>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-extrabold text-lg text-[#292323] tracking-tight leading-none">
-                    Paw<span className="text-[#C96366]">Connect</span>
+                  <span className="font-extrabold text-lg text-[#3E1F1A] tracking-tight leading-none">
+                    Paw<span className="text-[#C2572F]">Connect</span>
                   </span>
-                  <span className="text-[10px] text-[#736363] font-bold tracking-wider uppercase hidden sm:block">
+                  <span className="text-[10px] text-[#8A5A48] font-bold tracking-wider uppercase hidden sm:block">
                     Pet Adoption & Supplies
                   </span>
                 </div>
@@ -109,8 +109,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
               className="flex flex-col items-center px-3 py-1 rounded-xl hover:bg-white/60 transition group cursor-pointer"
               title="Click to change location"
             >
-              <span className="text-[10px] text-[#736363] font-bold uppercase tracking-wider">Location</span>
-              <div className="flex items-center gap-1 text-xs sm:text-sm font-extrabold text-[#C96366] group-hover:text-[#98494B]">
+              <span className="text-[10px] text-[#8A5A48] font-bold uppercase tracking-wider">Location</span>
+              <div className="flex items-center gap-1 text-xs sm:text-sm font-extrabold text-[#C2572F] group-hover:text-[#8E3B22]">
                 <MapPin className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate max-w-[120px] sm:max-w-none">{locationCity}</span>
               </div>
@@ -128,8 +128,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                   to={to}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                     isActive(to)
-                      ? 'bg-[#C96366] text-white shadow-sm'
-                      : 'text-[#292323] hover:text-[#C96366] hover:bg-white/80'
+                      ? 'bg-[#C2572F] text-white shadow-sm'
+                      : 'text-[#3E1F1A] hover:text-[#C2572F] hover:bg-white/80'
                   }`}
                 >
                   {label}
@@ -142,14 +142,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
               {/* Desktop Favorites link */}
               <Link
                 to="/favorites"
-                className={`hidden md:flex items-center justify-center p-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/80 transition relative ${
-                  isActive('/favorites') ? 'bg-white text-[#C96366]' : ''
+                className={`hidden md:flex items-center justify-center p-2 rounded-xl text-[#3E1F1A] hover:text-[#C2572F] hover:bg-white/80 transition relative ${
+                  isActive('/favorites') ? 'bg-white text-[#C2572F]' : ''
                 }`}
                 title="Your saved favorites"
               >
                 <Heart className="w-5 h-5" />
                 {favorites.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#C96366] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                  <span className="absolute -top-1 -right-1 bg-[#C2572F] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                     {favorites.length}
                   </span>
                 )}
@@ -158,12 +158,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
               {/* Shop / Cart Icon */}
               <Link
                 to="/shop"
-                className="flex items-center justify-center p-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/80 transition relative"
+                className="flex items-center justify-center p-2 rounded-xl text-[#3E1F1A] hover:text-[#C2572F] hover:bg-white/80 transition relative"
                 title="Pet Shop Cart"
               >
                 <ShoppingBag className="w-5 h-5" />
                 {totalCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#C96366] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                  <span className="absolute -top-1 -right-1 bg-[#C2572F] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
                     {totalCount}
                   </span>
                 )}
@@ -174,32 +174,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                 <button
                   type="button"
                   onClick={() => setDemoDropdownOpen(!demoDropdownOpen)}
-                  className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full bg-white border border-[#EAD2D3] text-[#736363] hover:text-[#C96366] transition shadow-xs"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full bg-white border border-[#EBC9A5] text-[#8A5A48] hover:text-[#C2572F] transition shadow-xs"
                 >
                   <span>Demo Switcher</span>
                   <ChevronDown className="w-3 h-3 opacity-60" />
                 </button>
 
                 {demoDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-[#EAD2D3] py-2 z-50 animate-in fade-in zoom-in-95">
-                    <div className="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#A89898]">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-[4px_4px_0_#4A2218] border-2 border-[#4A2218] py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#B99A86]">
                       Switch Role
                     </div>
                     <button
                       onClick={() => handleDemo('adopter')}
-                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F] transition"
                     >
                       🐶 Sarah Jenkins (Adopter)
                     </button>
                     <button
                       onClick={() => handleDemo('shelter')}
-                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F] transition"
                     >
                       🏡 Haven Rescue (Shelter)
                     </button>
                     <button
                       onClick={() => handleDemo('admin')}
-                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F] transition"
                     >
                       🛡️ Platform Admin
                     </button>
@@ -221,28 +221,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                           'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
                         }
                         alt={user.name}
-                        className="w-8 h-8 rounded-full object-cover border-2 border-[#C96366]"
+                        className="w-8 h-8 rounded-full object-cover border-2 border-[#C2572F]"
                       />
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
                     </div>
-                    <span className="hidden sm:block text-xs font-bold text-[#292323] max-w-[100px] truncate">
+                    <span className="hidden sm:block text-xs font-bold text-[#3E1F1A] max-w-[100px] truncate">
                       {user.name.split(' ')[0]}
                     </span>
                   </button>
 
                   {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-[#EAD2D3] py-2 z-50 animate-in fade-in zoom-in-95">
-                      <div className="px-4 py-2 border-b border-[#F4E4E4]">
-                        <p className="text-xs font-extrabold text-[#292323] truncate">{user.name}</p>
-                        <p className="text-[11px] text-[#736363] truncate">{user.email}</p>
-                        <span className="inline-block mt-1 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded bg-[#FDEEEF] text-[#C96366]">
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-[4px_4px_0_#4A2218] border-2 border-[#4A2218] py-2 z-50 animate-in fade-in zoom-in-95">
+                      <div className="px-4 py-2 border-b border-[#F3DCC0]">
+                        <p className="text-xs font-extrabold text-[#3E1F1A] truncate">{user.name}</p>
+                        <p className="text-[11px] text-[#8A5A48] truncate">{user.email}</p>
+                        <span className="inline-block mt-1 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded bg-[#FFF3E2] text-[#C2572F]">
                           {user.role}
                         </span>
                       </div>
                       <Link
                         to="/dashboard"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F]"
                       >
                         <LayoutDashboard className="w-4 h-4" />
                         <span>Dashboard & Applications</span>
@@ -250,7 +250,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                       <Link
                         to="/messages"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F]"
                       >
                         <MessageCircle className="w-4 h-4" />
                         <span>Messages</span>
@@ -258,14 +258,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                       <Link
                         to="/favorites"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#3E1F1A] hover:bg-[#FFF3E2] hover:text-[#C2572F]"
                       >
                         <Heart className="w-4 h-4" />
                         <span>Saved Favourites</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 border-t border-[#F4E4E4] mt-1"
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 border-t border-[#F3DCC0] mt-1"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
@@ -278,7 +278,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                   <button
                     type="button"
                     onClick={() => handleLazyLogin('adopter')}
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-black bg-gradient-to-r from-amber-500 to-[#C96366] hover:from-amber-600 hover:to-[#98494B] text-white rounded-full shadow hover:shadow-md transition cursor-pointer active:scale-95"
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-black bg-gradient-to-r from-amber-500 to-[#C2572F] hover:from-amber-600 hover:to-[#8E3B22] text-white rounded-full shadow hover:shadow-md transition cursor-pointer active:scale-95"
                     title="1-Click Instant Adopter Login"
                   >
                     <Zap className="w-3.5 h-3.5 fill-current" />
@@ -286,13 +286,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                   </button>
                   <Link
                     to="/login"
-                    className="px-2.5 py-1.5 text-xs font-bold text-[#C96366] hover:bg-white/80 rounded-full transition"
+                    className="px-2.5 py-1.5 text-xs font-bold text-[#C2572F] hover:bg-white/80 rounded-full transition"
                   >
                     Log In
                   </Link>
                   <Link
                     to="/register"
-                    className="hidden sm:inline-block px-3 py-1.5 text-xs font-bold bg-[#C96366] text-white rounded-full shadow hover:bg-[#98494B] transition"
+                    className="hidden sm:inline-block px-3 py-1.5 text-xs font-bold bg-[#C2572F] text-white rounded-full shadow hover:bg-[#8E3B22] transition"
                   >
                     Sign Up
                   </Link>
@@ -308,12 +308,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
       {/* Location Selector Modal */}
       {locationModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[#EAD2D3] animate-in zoom-in-95">
-            <h3 className="font-extrabold text-lg text-[#292323] flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-[#C96366]" />
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-[4px_4px_0_#4A2218] border-2 border-[#4A2218] animate-in zoom-in-95">
+            <h3 className="font-extrabold text-lg text-[#3E1F1A] flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-[#C2572F]" />
               Choose Your Location
             </h3>
-            <p className="text-xs text-[#736363] mt-1">
+            <p className="text-xs text-[#8A5A48] mt-1">
               Select your region to find pets and fast local pet supplies delivery.
             </p>
 
@@ -327,8 +327,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
                   }}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between ${
                     locationCity === loc
-                      ? 'bg-[#C96366] text-white shadow'
-                      : 'bg-[#F3E6E6] text-[#292323] hover:bg-[#EAD2D3]'
+                      ? 'bg-[#C2572F] text-white shadow'
+                      : 'bg-[#FCE8D0] text-[#3E1F1A] hover:bg-[#EBC9A5]'
                   }`}
                 >
                   <span>{loc}</span>
@@ -339,7 +339,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
 
             <button
               onClick={() => setLocationModalOpen(false)}
-              className="mt-5 w-full py-2.5 text-xs font-bold text-[#736363] hover:bg-gray-100 rounded-xl transition"
+              className="mt-5 w-full py-2.5 text-xs font-bold text-[#8A5A48] hover:bg-gray-100 rounded-xl transition"
             >
               Close
             </button>

@@ -19,12 +19,12 @@ router.get('/:id', optionalAuth, getPetById);
 router.post(
   '/',
   verifyToken,
-  requireRole('shelter', 'admin'),
+  requireRole('shelter', 'owner', 'admin'),
   upload.array('photos', 5),
   createPet
 );
-router.put('/:id', verifyToken, requireRole('shelter', 'admin'), updatePet);
-router.delete('/:id', verifyToken, requireRole('shelter', 'admin'), deletePet);
-router.patch('/:id/status', verifyToken, requireRole('shelter', 'admin'), updatePetStatus);
+router.put('/:id', verifyToken, requireRole('shelter', 'owner', 'admin'), updatePet);
+router.delete('/:id', verifyToken, requireRole('shelter', 'owner', 'admin'), deletePet);
+router.patch('/:id/status', verifyToken, requireRole('shelter', 'owner', 'admin'), updatePetStatus);
 
 export default router;

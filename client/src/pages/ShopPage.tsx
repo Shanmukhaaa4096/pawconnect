@@ -58,19 +58,19 @@ export const ShopPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3E6E6] py-6 sm:py-10">
+    <div className="min-h-screen bg-[#FCE8D0] py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDEEEF] text-[#C96366] text-xs font-black uppercase tracking-wider mb-2 border border-[#EAD2D3]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF3E2] text-[#C2572F] text-xs font-black uppercase tracking-wider mb-2 border border-[#EBC9A5]">
               <ShoppingBag className="w-3.5 h-3.5" />
               <span>Pet Supplies & Nutrition</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#292323] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#3E1F1A] tracking-tight">
               PawConnect Pet Shop
             </h1>
-            <p className="text-xs sm:text-sm text-[#736363] mt-1 font-medium">
+            <p className="text-xs sm:text-sm text-[#8A5A48] mt-1 font-medium">
               Wholesome food, safe toys, and cozy beds for your new family member.
             </p>
           </div>
@@ -79,7 +79,7 @@ export const ShopPage: React.FC = () => {
           {totalCount > 0 && (
             <Link
               to="/checkout"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#C96366] text-white text-xs font-black shadow-md hover:bg-[#98494B] transition shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#C2572F] text-white text-xs font-black shadow-md hover:bg-[#8E3B22] transition shrink-0"
             >
               <ShoppingBag className="w-4 h-4" />
               <span>View Cart & Checkout ({totalCount} items · ${total.toFixed(2)})</span>
@@ -89,31 +89,31 @@ export const ShopPage: React.FC = () => {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-white rounded-3xl p-4 sm:p-5 border border-[#EAD2D3] shadow-sm mb-8 space-y-4">
+        <div className="bg-white rounded-3xl p-4 sm:p-5 border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A89898]" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B99A86]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search food, toys, beds..."
-                className="w-full h-10 pl-10 pr-4 rounded-full bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs font-medium text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
+                className="w-full h-10 pl-10 pr-4 rounded-full bg-[#FCE8D0]/60 border border-[#EBC9A5] text-xs font-medium text-[#3E1F1A] placeholder-[#B99A86] focus:outline-none focus:border-[#C2572F]"
               />
             </div>
 
             {/* Pet Type Filter */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <span className="text-[11px] font-bold text-[#736363] uppercase tracking-wider mr-1">Pet:</span>
+              <span className="text-[11px] font-bold text-[#8A5A48] uppercase tracking-wider mr-1">Pet:</span>
               {petTypes.map((pt) => (
                 <button
                   key={pt}
                   onClick={() => setSelectedPetType(pt)}
                   className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
                     selectedPetType === pt
-                      ? 'bg-[#C96366] text-white shadow-xs'
-                      : 'bg-[#F3E6E6] text-[#736363] hover:bg-[#EAD2D3]'
+                      ? 'bg-[#C2572F] text-white shadow-xs'
+                      : 'bg-[#FCE8D0] text-[#8A5A48] hover:bg-[#EBC9A5]'
                   }`}
                 >
                   {pt}
@@ -130,8 +130,8 @@ export const ShopPage: React.FC = () => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold transition shrink-0 ${
                   selectedCategory === cat
-                    ? 'bg-[#98494B] text-white shadow-xs'
-                    : 'bg-[#FDEEEF] text-[#C96366] hover:bg-[#C96366] hover:text-white'
+                    ? 'bg-[#8E3B22] text-white shadow-xs'
+                    : 'bg-[#FFF3E2] text-[#C2572F] hover:bg-[#C2572F] hover:text-white'
                 }`}
               >
                 {cat}
@@ -149,10 +149,10 @@ export const ShopPage: React.FC = () => {
                 <LoadingSpinner label="Loading pet supplies..." />
               </div>
             ) : products.length === 0 ? (
-              <div className="bg-white rounded-3xl p-10 text-center border border-[#EAD2D3] shadow-sm">
-                <ShoppingBag className="w-12 h-12 text-[#A89898] mx-auto mb-3" />
-                <h3 className="font-extrabold text-base text-[#292323]">No items match your filter</h3>
-                <p className="text-xs text-[#736363] mt-1">Try selecting "All" categories or changing keywords.</p>
+              <div className="bg-white rounded-3xl p-10 text-center border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218]">
+                <ShoppingBag className="w-12 h-12 text-[#B99A86] mx-auto mb-3" />
+                <h3 className="font-extrabold text-base text-[#3E1F1A]">No items match your filter</h3>
+                <p className="text-xs text-[#8A5A48] mt-1">Try selecting "All" categories or changing keywords.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
@@ -161,50 +161,50 @@ export const ShopPage: React.FC = () => {
                   return (
                     <div
                       key={product._id}
-                      className="bg-white rounded-2xl p-3.5 border border-[#EAD2D3] shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                      className="bg-white rounded-2xl p-3.5 border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] hover:shadow-[7px_7px_0_#4A2218] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                     >
                       <div>
                         {/* Image */}
-                        <div className="relative aspect-square rounded-xl overflow-hidden bg-[#FDEEEF] mb-3">
+                        <div className="relative aspect-square rounded-xl overflow-hidden bg-[#FFF3E2] mb-3">
                           <img
                             src={product.image}
                             alt={product.name}
                             loading="lazy"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
-                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/95 text-[#98494B] text-[9px] font-black uppercase tracking-wider shadow">
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/95 text-[#8E3B22] text-[9px] font-black uppercase tracking-wider shadow">
                             {product.category}
                           </span>
                         </div>
 
                         {/* Title & Reviews */}
-                        <h3 className="font-extrabold text-xs sm:text-sm text-[#292323] group-hover:text-[#C96366] transition line-clamp-2">
+                        <h3 className="font-extrabold text-xs sm:text-sm text-[#3E1F1A] group-hover:text-[#C2572F] transition line-clamp-2">
                           {product.name}
                         </h3>
 
                         <div className="flex items-center gap-1.5 mt-1">
                           <div className="flex items-center text-amber-500">
                             <Star className="w-3 h-3 fill-amber-400" />
-                            <span className="text-[11px] font-black ml-1 text-[#292323]">
+                            <span className="text-[11px] font-black ml-1 text-[#3E1F1A]">
                               {product.rating.toFixed(1)}
                             </span>
                           </div>
-                          <span className="text-[10px] text-[#A89898]">({product.reviewsCount})</span>
+                          <span className="text-[10px] text-[#B99A86]">({product.reviewsCount})</span>
                         </div>
 
-                        <p className="text-[11px] text-[#736363] mt-1.5 line-clamp-2 font-medium">
+                        <p className="text-[11px] text-[#8A5A48] mt-1.5 line-clamp-2 font-medium">
                           {product.description}
                         </p>
                       </div>
 
                       {/* Pricing & Add Button */}
-                      <div className="mt-3 pt-3 border-t border-[#F4E4E4] flex items-center justify-between gap-2">
+                      <div className="mt-3 pt-3 border-t border-[#F3DCC0] flex items-center justify-between gap-2">
                         <div>
-                          <div className="text-sm sm:text-base font-black text-[#C96366]">
+                          <div className="text-sm sm:text-base font-black text-[#C2572F]">
                             ${product.price.toFixed(2)}
                           </div>
                           {product.originalPrice && product.originalPrice > product.price && (
-                            <div className="text-[10px] text-[#A89898] line-through">
+                            <div className="text-[10px] text-[#B99A86] line-through">
                               ${product.originalPrice.toFixed(2)}
                             </div>
                           )}
@@ -216,7 +216,7 @@ export const ShopPage: React.FC = () => {
                           className={`px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer ${
                             isJustAdded
                               ? 'bg-emerald-600 text-white'
-                              : 'bg-[#C96366] hover:bg-[#98494B] text-white active:scale-95'
+                              : 'bg-[#C2572F] hover:bg-[#8E3B22] text-white active:scale-95'
                           }`}
                         >
                           {isJustAdded ? (
@@ -241,40 +241,40 @@ export const ShopPage: React.FC = () => {
 
           {/* ── Screen 8 Cart Summary & Order Card ───────────────────── */}
           {items.length > 0 && (
-            <div className="lg:col-span-4 sticky top-20 bg-white rounded-3xl p-5 sm:p-6 border border-[#EAD2D3] shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#F4E4E4]">
-                <h3 className="font-black text-base text-[#292323] flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-[#C96366]" />
+            <div className="lg:col-span-4 sticky top-20 bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#F3DCC0]">
+                <h3 className="font-black text-base text-[#3E1F1A] flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5 text-[#C2572F]" />
                   <span>Your Order ({totalCount})</span>
                 </h3>
-                <span className="text-xs font-bold text-[#C96366]">Delivery Ready</span>
+                <span className="text-xs font-bold text-[#C2572F]">Delivery Ready</span>
               </div>
 
               {/* Items List (Matches Screen 8 item cards) */}
-              <div className="max-h-72 overflow-y-auto divide-y divide-[#F4E4E4] pr-1 space-y-2">
+              <div className="max-h-72 overflow-y-auto divide-y divide-[#F3DCC0] pr-1 space-y-2">
                 {items.map(({ product, quantity }) => (
                   <div key={product._id} className="pt-2 flex items-center gap-3">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#EAD2D3]"
+                      className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#EBC9A5]"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-xs text-[#292323] truncate">{product.name}</h4>
-                      <p className="text-xs font-extrabold text-[#C96366] mt-0.5">
+                      <h4 className="font-bold text-xs text-[#3E1F1A] truncate">{product.name}</h4>
+                      <p className="text-xs font-extrabold text-[#C2572F] mt-0.5">
                         ${(product.price * quantity).toFixed(2)}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={() => updateQuantity(product._id, quantity - 1)}
-                          className="w-5 h-5 rounded-full bg-[#F3E6E6] text-[#292323] flex items-center justify-center text-xs hover:bg-[#EAD2D3]"
+                          className="w-5 h-5 rounded-full bg-[#FCE8D0] text-[#3E1F1A] flex items-center justify-center text-xs hover:bg-[#EBC9A5]"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
                         <span className="text-xs font-black px-1">{quantity}</span>
                         <button
                           onClick={() => updateQuantity(product._id, quantity + 1)}
-                          className="w-5 h-5 rounded-full bg-[#F3E6E6] text-[#292323] flex items-center justify-center text-xs hover:bg-[#EAD2D3]"
+                          className="w-5 h-5 rounded-full bg-[#FCE8D0] text-[#3E1F1A] flex items-center justify-center text-xs hover:bg-[#EBC9A5]"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
@@ -282,7 +282,7 @@ export const ShopPage: React.FC = () => {
                     </div>
                     <button
                       onClick={() => removeFromCart(product._id)}
-                      className="text-[#A89898] hover:text-rose-500 p-1"
+                      className="text-[#B99A86] hover:text-rose-500 p-1"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -291,18 +291,18 @@ export const ShopPage: React.FC = () => {
               </div>
 
               {/* Price Calculations */}
-              <div className="pt-3 border-t border-[#F4E4E4] space-y-1.5 text-xs font-bold">
-                <div className="flex justify-between text-[#736363]">
+              <div className="pt-3 border-t border-[#F3DCC0] space-y-1.5 text-xs font-bold">
+                <div className="flex justify-between text-[#8A5A48]">
                   <span>Sub Total</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-[#736363]">
+                <div className="flex justify-between text-[#8A5A48]">
                   <span>Delivery Fee</span>
                   <span>{shippingFee === 0 ? 'FREE' : `$${shippingFee.toFixed(2)}`}</span>
                 </div>
-                <div className="flex justify-between text-base font-black text-[#292323] pt-2 border-t border-[#F4E4E4]">
+                <div className="flex justify-between text-base font-black text-[#3E1F1A] pt-2 border-t border-[#F3DCC0]">
                   <span>Total</span>
-                  <span className="text-[#C96366]">${total.toFixed(2)}</span>
+                  <span className="text-[#C2572F]">${total.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -310,13 +310,13 @@ export const ShopPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/checkout')}
-                className="w-full py-3.5 rounded-full bg-[#C96366] hover:bg-[#98494B] text-white font-black text-sm tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                className="w-full py-3.5 rounded-full bg-[#C2572F] hover:bg-[#8E3B22] text-white font-black text-sm tracking-wide shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
               >
                 <span>ORDER</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <p className="text-[10px] text-center text-[#A89898] font-medium">
+              <p className="text-[10px] text-center text-[#B99A86] font-medium">
                 🔒 Safe checkout with simulated payment & doorstep delivery tracking
               </p>
             </div>

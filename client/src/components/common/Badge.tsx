@@ -11,21 +11,23 @@ export const StatusBadge: React.FC<BadgeProps> = ({ status, size = 'md', classNa
   const getStyles = (): { bg: string; color: string; dot: string } => {
     switch (status) {
       case 'Available':
-        return { bg: 'rgba(38,58,50,0.10)',   color: '#263A32', dot: '#263A32' };
+        return { bg: 'rgba(38,58,50,0.10)',   color: '#8E3B22', dot: '#8E3B22' };
       case 'Reserved':
         return { bg: 'rgba(200,121,90,0.12)', color: '#9B5A3A', dot: '#C8795A' };
       case 'Adopted':
-        return { bg: 'rgba(107,112,104,0.12)', color: '#6B7068', dot: '#9BA097' };
+        return { bg: 'rgba(107,112,104,0.12)', color: '#8A5A48', dot: '#B99A86' };
       case 'Pending':
         return { bg: 'rgba(200,121,90,0.08)', color: '#9B5A3A', dot: '#C8795A' };
       case 'Approved':
-        return { bg: 'rgba(38,58,50,0.10)',   color: '#263A32', dot: '#263A32' };
+        return { bg: 'rgba(38,58,50,0.10)',   color: '#8E3B22', dot: '#8E3B22' };
       case 'Rejected':
         return { bg: 'rgba(180,50,50,0.08)',  color: '#8B3232', dot: '#B05050' };
+      case 'Withdrawn':
+        return { bg: 'rgba(107,112,104,0.10)', color: '#8A5A48', dot: '#B99A86' };
       case 'Completed':
-        return { bg: 'rgba(107,112,104,0.12)', color: '#6B7068', dot: '#9BA097' };
+        return { bg: 'rgba(107,112,104,0.12)', color: '#8A5A48', dot: '#B99A86' };
       default:
-        return { bg: 'rgba(107,112,104,0.10)', color: '#6B7068', dot: '#9BA097' };
+        return { bg: 'rgba(107,112,104,0.10)', color: '#8A5A48', dot: '#B99A86' };
     }
   };
 
@@ -45,7 +47,7 @@ export const StatusBadge: React.FC<BadgeProps> = ({ status, size = 'md', classNa
       style={{
         background: bg,
         color,
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Bricolage Grotesque', sans-serif",
       }}
     >
       <span

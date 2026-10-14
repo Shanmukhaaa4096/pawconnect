@@ -59,6 +59,7 @@ export const createPet = async (req, res) => {
       location,
       adoptionFee,
       status,
+      rehomingReason,
     } = req.body;
 
     if (!name || !species || !breed || age === undefined || !gender || !description) {
@@ -115,6 +116,7 @@ export const createPet = async (req, res) => {
       location: parsedLocation,
       adoptionFee: adoptionFee ? Number(adoptionFee) : 50,
       status: status || 'Available',
+      rehomingReason: String(rehomingReason || '').slice(0, 400),
       shelter: req.user._id,
     });
 
@@ -136,7 +138,16 @@ export const updatePet = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to modify this pet' });
     }
 
-    const updatedPet = await repository.updatePet(req.params.id, req.body);
+    const ALLOWED = [
+      'name', 'species', 'breed', 'age', 'gender', 'size', 'weightKg', 'health', 'temperament',
+      'goodWith', 'description', 'photos', 'location', 'adoptionFee', 'status', 'rehomingReason',
+    ];
+    const changes = {};
+    ALLOWED.forEach((k) => {
+      if (req.body[k] !== undefined) changes[k] = req.body[k];
+    });
+
+    const updatedPet = await repository.updatePet(req.params.id, changes);
     res.json({ message: 'Pet updated successfully', pet: updatedPet });
   } catch (error) {
     console.error('updatePet error:', error);

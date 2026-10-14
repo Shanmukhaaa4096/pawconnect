@@ -3,11 +3,14 @@ import {
   Pet,
   PetFilterOptions,
   Application,
+  AppNotification,
+  ShelterReview,
   Conversation,
   Message,
   ApplicationQuestionnaire,
   PetStatus,
   ApplicationStatus,
+  ApplicationHandover,
   Product,
   Order,
   DeliveryTracking,
@@ -224,6 +227,59 @@ export const api = {
     return customFetch<{ message: string; shelter: User }>(`/shelters/${id}/verify`, {
       method: 'PATCH',
       body: JSON.stringify({ verified }),
+    });
+  },
+
+  // Admin
+  async getAdminUsers() {
+    return customFetch<{ count: number; users: User[] }>('/admin/users');
+  },
+
+  async setUserSuspended(id: string, suspended: boolean) {
+    return customFetch<{ message: string; user: User }>(`/admin/users/${id}/suspend`, {
+      method: 'PATCH',
+      body: JSON.stringify({ suspended }),
+    });
+  },
+
+  async updateHandover(id: string, data: Partial<ApplicationHandover>) {
+    return customFetch<{ message: string; application: Application }>(`/applications/${id}/handover`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Notifications
+  async getNotifications() {
+    return customFetch<{ notifications: AppNotification[]; unreadCount: number }>('/notifications');
+  },
+
+  async markNotificationRead(id: string) {
+    return customFetch<{ message: string }>(`/notifications/${id}/read`, { method: 'PATCH' });
+  },
+
+  async markAllNotificationsRead() {
+    return customFetch<{ message: string }>('/notifications/read-all', { method: 'PATCH' });
+  },
+
+  // Applications: withdraw
+  async withdrawApplication(id: string) {
+    return customFetch<{ message: string; application: Application }>(`/applications/${id}/withdraw`, {
+      method: 'PATCH',
+    });
+  },
+
+  // Shelter reviews
+  async getShelterReviews(shelterId: string) {
+    return customFetch<{ reviews: ShelterReview[]; count: number; average: number }>(
+      `/shelters/${shelterId}/reviews`
+    );
+  },
+
+  async addShelterReview(shelterId: string, data: { applicationId: string; rating: number; comment?: string }) {
+    return customFetch<{ message: string; review: ShelterReview }>(`/shelters/${shelterId}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   },
 

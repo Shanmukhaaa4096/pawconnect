@@ -45,7 +45,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       />
 
       {/* Drawer panel (matching Screen 3 coral drawer) */}
-      <div className="fixed inset-y-0 left-0 max-w-[320px] w-full bg-[#98494B] text-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
+      <div className="fixed inset-y-0 left-0 max-w-[320px] w-full bg-[#8E3B22] text-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
         {/* Top Header / Profile Info */}
         <div className="p-6 border-b border-white/15 relative">
           <button
@@ -67,7 +67,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                   alt={user.name}
                   className="w-14 h-14 rounded-full object-cover border-2 border-white/60 shadow-md"
                 />
-                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-[#98494B] rounded-full" />
+                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-[#8E3B22] rounded-full" />
               </div>
               <div className="min-w-0">
                 <h3 className="font-extrabold text-base text-white truncate">{user.name}</h3>
@@ -83,7 +83,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
           ) : (
             <div className="mt-2 space-y-3">
               <div className="flex items-center gap-2 text-white font-black text-lg tracking-tight">
-                <PawPrint className="w-6 h-6 text-[#F7DADA]" />
+                <PawPrint className="w-6 h-6 text-[#F8DDBF]" />
                 <span>PawConnect</span>
               </div>
               <p className="text-xs text-white/80">Welcome! Sign in to adopt, message, and favorite pets.</p>
@@ -99,7 +99,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                       alert(`Lazy login failed: ${err.message}`);
                     }
                   }}
-                  className="w-full py-2.5 px-3 text-center text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 text-[#292323] rounded-full shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
+                  className="w-full py-2.5 px-3 text-center text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 text-[#3E1F1A] rounded-full shadow hover:brightness-105 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                 >
                   <Zap className="w-3.5 h-3.5 fill-current" />
                   <span>⚡ 1-Tap Lazy Login</span>
@@ -108,7 +108,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                   <Link
                     to="/login"
                     onClick={onClose}
-                    className="flex-1 py-2 text-center text-xs font-bold bg-white text-[#98494B] rounded-full shadow hover:bg-white/90 transition"
+                    className="flex-1 py-2 text-center text-xs font-bold bg-white text-[#8E3B22] rounded-full shadow hover:bg-white/90 transition"
                   >
                     Log In
                   </Link>
@@ -132,7 +132,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
           >
-            <PawPrint className="w-5 h-5 text-[#F7DADA]" />
+            <PawPrint className="w-5 h-5 text-[#F8DDBF]" />
             <span>Adoption</span>
           </Link>
 
@@ -142,7 +142,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               onClick={onClose}
               className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
             >
-              <PlusCircle className="w-5 h-5 text-[#F7DADA]" />
+              <PlusCircle className="w-5 h-5 text-[#F8DDBF]" />
               <span>Add Pet</span>
             </Link>
           ) : null}
@@ -153,11 +153,11 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             className="flex items-center justify-between px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
           >
             <div className="flex items-center gap-3.5">
-              <Heart className="w-5 h-5 text-[#F7DADA]" />
+              <Heart className="w-5 h-5 text-[#F8DDBF]" />
               <span>Favourites</span>
             </div>
             {favorites.length > 0 && (
-              <span className="text-xs bg-white text-[#98494B] font-bold px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-white text-[#8E3B22] font-bold px-2 py-0.5 rounded-full">
                 {favorites.length}
               </span>
             )}
@@ -168,7 +168,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
           >
-            <MessageCircle className="w-5 h-5 text-[#F7DADA]" />
+            <MessageCircle className="w-5 h-5 text-[#F8DDBF]" />
             <span>Messages</span>
           </Link>
 
@@ -177,7 +177,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
           >
-            <ShoppingBag className="w-5 h-5 text-[#F7DADA]" />
+            <ShoppingBag className="w-5 h-5 text-[#F8DDBF]" />
             <span>Buy (Pet Shop)</span>
           </Link>
 
@@ -186,7 +186,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             onClick={onClose}
             className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
           >
-            <Building2 className="w-5 h-5 text-[#F7DADA]" />
+            <Building2 className="w-5 h-5 text-[#F8DDBF]" />
             <span>Rescue Shelters</span>
           </Link>
 
@@ -196,7 +196,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               onClick={onClose}
               className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:text-white hover:bg-white/10 transition font-medium text-sm"
             >
-              <UserIcon className="w-5 h-5 text-[#F7DADA]" />
+              <UserIcon className="w-5 h-5 text-[#F8DDBF]" />
               <span>Profile & Applications</span>
             </Link>
           )}
@@ -209,14 +209,14 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               onClick={handleLogout}
               className="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition font-medium text-sm"
             >
-              <LogOut className="w-5 h-5 text-[#F7DADA]" />
+              <LogOut className="w-5 h-5 text-[#F8DDBF]" />
               <span>Settings / Log out</span>
             </button>
           ) : (
             <Link
               to="/login"
               onClick={onClose}
-              className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-[#98494B] font-bold rounded-xl shadow text-sm hover:bg-white/90 transition"
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-[#8E3B22] font-bold rounded-xl shadow text-sm hover:bg-white/90 transition"
             >
               <LogIn className="w-4 h-4" />
               <span>Sign In</span>

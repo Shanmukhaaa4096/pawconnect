@@ -68,19 +68,19 @@ export const BrowsePetsPage: React.FC = () => {
   const handleReset = () => setSearchParams(new URLSearchParams());
 
   return (
-    <div className="min-h-screen bg-[#F3E6E6] py-8 sm:py-12">
+    <div className="min-h-screen bg-[#FCE8D0] py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-[#EAD2D3] pb-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-[#EBC9A5] pb-6 mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDEEEF] text-[#C96366] text-xs font-black uppercase tracking-wider mb-2 border border-[#EAD2D3]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF3E2] text-[#C2572F] text-xs font-black uppercase tracking-wider mb-2 border border-[#EBC9A5]">
               <span>Adoption Directory</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#292323] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#3E1F1A] tracking-tight">
               Adoptable Pets
             </h1>
-            <p className="mt-1 text-xs sm:text-sm text-[#736363] font-medium max-w-lg">
+            <p className="mt-1 text-xs sm:text-sm text-[#8A5A48] font-medium max-w-lg">
               Verified rescue companions waiting for compassionate forever homes.
             </p>
           </div>
@@ -90,19 +90,19 @@ export const BrowsePetsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-[#EAD2D3] bg-white text-xs font-bold text-[#292323] hover:border-[#C96366] transition shadow-xs"
+              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-[#EBC9A5] bg-white text-xs font-bold text-[#3E1F1A] hover:border-[#C2572F] transition shadow-xs"
             >
-              <SlidersHorizontal className="w-4 h-4 text-[#C96366]" />
+              <SlidersHorizontal className="w-4 h-4 text-[#C2572F]" />
               Filters
             </button>
 
-            <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-full border border-[#EAD2D3] text-xs shadow-xs">
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#C96366]" />
-              <span className="text-[#A89898] font-bold">Sort:</span>
+            <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-full border border-[#EBC9A5] text-xs shadow-xs">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#C2572F]" />
+              <span className="text-[#B99A86] font-bold">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-transparent text-xs font-extrabold text-[#292323] focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs font-extrabold text-[#3E1F1A] focus:outline-none cursor-pointer"
               >
                 <option value="newest">Newest Listed</option>
                 <option value="age">Youngest First</option>
@@ -123,8 +123,8 @@ export const BrowsePetsPage: React.FC = () => {
                 onClick={() => handleFilterChange({ ...filters, species: sp })}
                 className={`px-4 py-2 rounded-full text-xs font-extrabold transition shrink-0 ${
                   isSelected
-                    ? 'bg-[#C96366] text-white shadow-sm'
-                    : 'bg-white border border-[#EAD2D3] text-[#736363] hover:border-[#C96366] hover:text-[#C96366]'
+                    ? 'bg-[#C2572F] text-white shadow-sm'
+                    : 'bg-white border border-[#EBC9A5] text-[#8A5A48] hover:border-[#C2572F] hover:text-[#C2572F]'
                 }`}
               >
                 {label}
@@ -167,27 +167,27 @@ export const BrowsePetsPage: React.FC = () => {
             <LoadingSpinner label="Loading available pets…" />
           ) : pets.length === 0 ? (
             <div
-              className="p-10 sm:p-14 text-center space-y-4 rounded-lg border border-[#DDE0D8] max-w-lg mx-auto"
-              style={{ background: '#EAECE4' }}
+              className="p-10 sm:p-14 text-center space-y-4 rounded-lg border border-[#EBC9A5] max-w-lg mx-auto"
+              style={{ background: '#F8DDBF' }}
             >
               {/* Simple paw SVG in lieu of kawaii illustration */}
               <svg
                 width="48" height="48" viewBox="0 0 32 32" fill="none"
                 xmlns="http://www.w3.org/2000/svg" className="mx-auto opacity-30"
               >
-                <ellipse cx="7"  cy="11" rx="3"   ry="4"   fill="#252825" />
-                <ellipse cx="13" cy="7"  rx="3"   ry="4.5" fill="#252825" />
-                <ellipse cx="19" cy="7"  rx="3"   ry="4.5" fill="#252825" />
-                <ellipse cx="25" cy="11" rx="3"   ry="4"   fill="#252825" />
-                <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="#252825"/>
+                <ellipse cx="7"  cy="11" rx="3"   ry="4"   fill="#3E1F1A" />
+                <ellipse cx="13" cy="7"  rx="3"   ry="4.5" fill="#3E1F1A" />
+                <ellipse cx="19" cy="7"  rx="3"   ry="4.5" fill="#3E1F1A" />
+                <ellipse cx="25" cy="11" rx="3"   ry="4"   fill="#3E1F1A" />
+                <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="#3E1F1A"/>
               </svg>
               <h3
                 className="text-lg font-semibold"
-                style={{ fontFamily: "'Lora', serif", color: '#252825' }}
+                style={{ fontFamily: "'Fraunces', serif", color: '#3E1F1A' }}
               >
                 No pets found
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#6B7068', maxWidth: '32ch', margin: '0 auto' }}>
+              <p className="text-sm leading-relaxed" style={{ color: '#8A5A48', maxWidth: '32ch', margin: '0 auto' }}>
                 Try clearing species or expanding your location to see more results.
               </p>
               <button

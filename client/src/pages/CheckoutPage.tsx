@@ -35,14 +35,14 @@ export const CheckoutPage: React.FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-[#F3E6E6] flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center border border-[#EAD2D3] shadow-md space-y-4">
-          <ShoppingBag className="w-12 h-12 text-[#C96366] mx-auto" />
-          <h2 className="text-xl font-black text-[#292323]">Your Cart is Empty</h2>
-          <p className="text-xs text-[#736363]">Add healthy pet food or supplies before checking out.</p>
+      <div className="min-h-screen bg-[#FCE8D0] flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] space-y-4">
+          <ShoppingBag className="w-12 h-12 text-[#C2572F] mx-auto" />
+          <h2 className="text-xl font-black text-[#3E1F1A]">Your Cart is Empty</h2>
+          <p className="text-xs text-[#8A5A48]">Add healthy pet food or supplies before checking out.</p>
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C96366] text-white text-xs font-black shadow hover:bg-[#98494B] transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C2572F] text-white text-xs font-black shadow hover:bg-[#8E3B22] transition"
           >
             <span>Browse Pet Shop</span>
             <ArrowRight className="w-4 h-4" />
@@ -94,13 +94,13 @@ export const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3E6E6] py-6 sm:py-10">
+    <div className="min-h-screen bg-[#FCE8D0] py-6 sm:py-10">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         {/* Top Back Link */}
         <div className="mb-4">
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 text-xs font-bold text-[#736363] hover:text-[#C96366] transition"
+            className="inline-flex items-center gap-2 text-xs font-bold text-[#8A5A48] hover:text-[#C2572F] transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Pet Shop</span>
@@ -108,12 +108,12 @@ export const CheckoutPage: React.FC = () => {
         </div>
 
         {/* ── Screen 9 Card Container ─────────────────────────── */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EAD2D3] shadow-xl space-y-6">
-          <div className="border-b border-[#F4E4E4] pb-4">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#C96366]">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] space-y-6">
+          <div className="border-b border-[#F3DCC0] pb-4">
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#C2572F]">
               Order Confirmation
             </span>
-            <h1 className="text-xl sm:text-2xl font-black text-[#292323] tracking-tight mt-0.5">
+            <h1 className="text-xl sm:text-2xl font-black text-[#3E1F1A] tracking-tight mt-0.5">
               Checkout & Delivery Details
             </h1>
           </div>
@@ -125,13 +125,13 @@ export const CheckoutPage: React.FC = () => {
           )}
 
           {!user && (
-            <div className="p-4 rounded-2xl bg-[#FFF5F5] border border-[#EAD2D3] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div className="p-4 rounded-2xl bg-[#FFF5F5] border border-[#EBC9A5] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
               <div>
-                <div className="flex items-center gap-1.5 text-xs font-black text-[#C96366]">
-                  <Zap className="w-4 h-4 fill-[#C96366]" />
+                <div className="flex items-center gap-1.5 text-xs font-black text-[#C2572F]">
+                  <Zap className="w-4 h-4 fill-[#C2572F]" />
                   <span>Guest Checkout Enabled</span>
                 </div>
-                <p className="text-[11px] text-[#736363] mt-0.5">
+                <p className="text-[11px] text-[#8A5A48] mt-0.5">
                   Click Lazy Login to complete your checkout instantly without passwords.
                 </p>
               </div>
@@ -144,7 +144,7 @@ export const CheckoutPage: React.FC = () => {
                     setErrorMsg('Lazy login failed');
                   }
                 }}
-                className="w-full sm:w-auto px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-[#C96366] text-white text-xs font-black shadow hover:opacity-95 transition cursor-pointer shrink-0"
+                className="w-full sm:w-auto px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-[#C2572F] text-white text-xs font-black shadow hover:opacity-95 transition cursor-pointer shrink-0"
               >
                 ⚡ 1-Click Lazy Login
               </button>
@@ -153,8 +153,8 @@ export const CheckoutPage: React.FC = () => {
 
           {/* 1. SELECT DELIVERY ADDRESS (Matches Screen 9) */}
           <div className="space-y-3">
-            <h3 className="font-extrabold text-sm text-[#292323] flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#C96366]" />
+            <h3 className="font-extrabold text-sm text-[#3E1F1A] flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[#C2572F]" />
               <span>Select Delivery Address</span>
             </h3>
 
@@ -163,26 +163,26 @@ export const CheckoutPage: React.FC = () => {
               onClick={() => setSelectedAddressLabel('Home')}
               className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                 selectedAddressLabel === 'Home'
-                  ? 'border-[#C96366] bg-[#FDEEEF] shadow-xs'
-                  : 'border-[#EAD2D3] bg-white hover:border-[#C96366]/50'
+                  ? 'border-[#C2572F] bg-[#FFF3E2] shadow-xs'
+                  : 'border-[#EBC9A5] bg-white hover:border-[#C2572F]/50'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedAddressLabel === 'Home' ? 'border-[#C96366]' : 'border-gray-300'
+                    selectedAddressLabel === 'Home' ? 'border-[#C2572F]' : 'border-gray-300'
                   }`}
                 >
                   {selectedAddressLabel === 'Home' && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#C96366]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#C2572F]" />
                   )}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <HomeIcon className="w-4 h-4 text-[#C96366]" />
-                    <span className="font-extrabold text-xs sm:text-sm text-[#292323]">Home</span>
+                    <HomeIcon className="w-4 h-4 text-[#C2572F]" />
+                    <span className="font-extrabold text-xs sm:text-sm text-[#3E1F1A]">Home</span>
                   </div>
-                  <p className="text-xs text-[#736363] mt-0.5">{customHomeAddress}</p>
+                  <p className="text-xs text-[#8A5A48] mt-0.5">{customHomeAddress}</p>
                 </div>
               </div>
 
@@ -193,7 +193,7 @@ export const CheckoutPage: React.FC = () => {
                   const updated = prompt('Edit Home Address:', customHomeAddress);
                   if (updated && updated.trim()) setCustomHomeAddress(updated.trim());
                 }}
-                className="p-1.5 rounded-full text-[#736363] hover:text-[#C96366] hover:bg-white transition"
+                className="p-1.5 rounded-full text-[#8A5A48] hover:text-[#C2572F] hover:bg-white transition"
                 title="Edit address"
               >
                 <Edit2 className="w-3.5 h-3.5" />
@@ -205,26 +205,26 @@ export const CheckoutPage: React.FC = () => {
               onClick={() => setSelectedAddressLabel('Office')}
               className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                 selectedAddressLabel === 'Office'
-                  ? 'border-[#C96366] bg-[#FDEEEF] shadow-xs'
-                  : 'border-[#EAD2D3] bg-white hover:border-[#C96366]/50'
+                  ? 'border-[#C2572F] bg-[#FFF3E2] shadow-xs'
+                  : 'border-[#EBC9A5] bg-white hover:border-[#C2572F]/50'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    selectedAddressLabel === 'Office' ? 'border-[#C96366]' : 'border-gray-300'
+                    selectedAddressLabel === 'Office' ? 'border-[#C2572F]' : 'border-gray-300'
                   }`}
                 >
                   {selectedAddressLabel === 'Office' && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#C96366]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#C2572F]" />
                   )}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <Building className="w-4 h-4 text-[#C96366]" />
-                    <span className="font-extrabold text-xs sm:text-sm text-[#292323]">Office</span>
+                    <Building className="w-4 h-4 text-[#C2572F]" />
+                    <span className="font-extrabold text-xs sm:text-sm text-[#3E1F1A]">Office</span>
                   </div>
-                  <p className="text-xs text-[#736363] mt-0.5">{customOfficeAddress}</p>
+                  <p className="text-xs text-[#8A5A48] mt-0.5">{customOfficeAddress}</p>
                 </div>
               </div>
 
@@ -235,7 +235,7 @@ export const CheckoutPage: React.FC = () => {
                   const updated = prompt('Edit Office Address:', customOfficeAddress);
                   if (updated && updated.trim()) setCustomOfficeAddress(updated.trim());
                 }}
-                className="p-1.5 rounded-full text-[#736363] hover:text-[#C96366] hover:bg-white transition"
+                className="p-1.5 rounded-full text-[#8A5A48] hover:text-[#C2572F] hover:bg-white transition"
                 title="Edit address"
               >
                 <Edit2 className="w-3.5 h-3.5" />
@@ -245,8 +245,8 @@ export const CheckoutPage: React.FC = () => {
 
           {/* 2. PAYMENT METHOD SELECTION (Matches Screen 9) */}
           <div className="space-y-3 pt-2">
-            <h3 className="font-extrabold text-sm text-[#292323] flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-[#C96366]" />
+            <h3 className="font-extrabold text-sm text-[#3E1F1A] flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-[#C2572F]" />
               <span>Payment Method</span>
             </h3>
 
@@ -264,20 +264,20 @@ export const CheckoutPage: React.FC = () => {
                     onClick={() => setPaymentMethod(method.id as any)}
                     className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-[#C96366] bg-[#FDEEEF] shadow-xs'
-                        : 'border-[#EAD2D3] bg-white hover:border-[#C96366]/50'
+                        ? 'border-[#C2572F] bg-[#FFF3E2] shadow-xs'
+                        : 'border-[#EBC9A5] bg-white hover:border-[#C2572F]/50'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg">{method.icon}</span>
-                      <span className="text-xs sm:text-sm font-bold text-[#292323]">{method.label}</span>
+                      <span className="text-xs sm:text-sm font-bold text-[#3E1F1A]">{method.label}</span>
                     </div>
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isSelected ? 'border-[#C96366]' : 'border-gray-300'
+                        isSelected ? 'border-[#C2572F]' : 'border-gray-300'
                       }`}
                     >
-                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#C96366]" />}
+                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#C2572F]" />}
                     </div>
                   </label>
                 );
@@ -286,18 +286,18 @@ export const CheckoutPage: React.FC = () => {
           </div>
 
           {/* 3. ORDER SUMMARY (Matches Screen 9) */}
-          <div className="bg-[#F3E6E6]/60 rounded-2xl p-4 sm:p-5 border border-[#EAD2D3] space-y-2 text-xs font-bold">
-            <div className="flex justify-between text-[#736363]">
+          <div className="bg-[#FCE8D0]/60 rounded-2xl p-4 sm:p-5 border border-[#EBC9A5] space-y-2 text-xs font-bold">
+            <div className="flex justify-between text-[#8A5A48]">
               <span>Items Total ({items.length} products)</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-[#736363]">
+            <div className="flex justify-between text-[#8A5A48]">
               <span>Estimated Delivery</span>
               <span>{shippingFee === 0 ? 'FREE' : `$${shippingFee.toFixed(2)}`}</span>
             </div>
-            <div className="flex justify-between text-base font-black text-[#292323] pt-2 border-t border-[#EAD2D3]">
+            <div className="flex justify-between text-base font-black text-[#3E1F1A] pt-2 border-t border-[#EBC9A5]">
               <span>Total Amount</span>
-              <span className="text-[#C96366]">${total.toFixed(2)}</span>
+              <span className="text-[#C2572F]">${total.toFixed(2)}</span>
             </div>
           </div>
 
@@ -306,7 +306,7 @@ export const CheckoutPage: React.FC = () => {
             type="button"
             onClick={handlePlaceOrder}
             disabled={submitting}
-            className="w-full py-4 rounded-full bg-[#C96366] hover:bg-[#98494B] text-white font-black text-sm tracking-wide shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-98"
+            className="w-full py-4 rounded-full bg-[#C2572F] hover:bg-[#8E3B22] text-white font-black text-sm tracking-wide shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-98"
           >
             {submitting ? (
               <span>Confirming Order...</span>

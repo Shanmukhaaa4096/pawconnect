@@ -203,28 +203,28 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-[#EAD2D3] shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12 h-[720px] max-h-[82vh]">
+    <div className="bg-white rounded-3xl border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] overflow-hidden grid grid-cols-1 md:grid-cols-12 h-[720px] max-h-[82vh]">
       {/* ── CONVERSATION THREADS (LEFT PANE) ─────────────────────────── */}
       <div
-        className={`md:col-span-4 lg:col-span-4 border-r border-[#EAD2D3] flex flex-col h-full bg-[#FDF7F7] ${
+        className={`md:col-span-4 lg:col-span-4 border-r border-[#EBC9A5] flex flex-col h-full bg-[#FDF7F7] ${
           showMobileChat ? 'hidden md:flex' : 'flex'
         }`}
       >
-        <div className="p-4 border-b border-[#EAD2D3] flex items-center justify-between bg-white">
+        <div className="p-4 border-b border-[#EBC9A5] flex items-center justify-between bg-white">
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-[#C96366]" />
-            <h3 className="font-extrabold text-[#292323] text-sm">Inbox & Inquiries</h3>
+            <MessageSquare className="w-5 h-5 text-[#C2572F]" />
+            <h3 className="font-extrabold text-[#3E1F1A] text-sm">Inbox & Inquiries</h3>
           </div>
-          <span className="text-xs font-black px-2 py-0.5 rounded-full bg-[#FDEEEF] text-[#C96366] border border-[#EAD2D3]">
+          <span className="text-xs font-black px-2 py-0.5 rounded-full bg-[#FFF3E2] text-[#C2572F] border border-[#EBC9A5]">
             {conversations.length}
           </span>
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-[#F4E4E4]">
+        <div className="flex-1 overflow-y-auto divide-y divide-[#F3DCC0]">
           {conversations.length === 0 ? (
-            <div className="p-8 text-center text-[#736363] space-y-2">
-              <p className="text-xs font-extrabold text-[#292323]">No messages yet</p>
-              <p className="text-[11px] text-[#A89898] leading-relaxed font-medium">
+            <div className="p-8 text-center text-[#8A5A48] space-y-2">
+              <p className="text-xs font-extrabold text-[#3E1F1A]">No messages yet</p>
+              <p className="text-[11px] text-[#B99A86] leading-relaxed font-medium">
                 Click "Message Shelter" on any pet profile to start a direct inquiry.
               </p>
             </div>
@@ -240,7 +240,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     setShowMobileChat(true);
                   }}
                   className={`w-full text-left p-3.5 flex items-start gap-3 transition-all ${
-                    isSelected ? 'bg-[#FDEEEF] border-l-4 border-[#C96366]' : 'hover:bg-white'
+                    isSelected ? 'bg-[#FFF3E2] border-l-4 border-[#C2572F]' : 'hover:bg-white'
                   }`}
                 >
                   <div className="relative shrink-0">
@@ -250,22 +250,22 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
                       }
                       alt={recipient?.name || 'User'}
-                      className="w-11 h-11 rounded-2xl object-cover border border-[#EAD2D3]"
+                      className="w-11 h-11 rounded-2xl object-cover border border-[#EBC9A5]"
                     />
                     <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-black text-[#292323] truncate">
+                      <p className="text-xs font-black text-[#3E1F1A] truncate">
                         {recipient?.name || 'PawConnect User'}
                       </p>
                     </div>
                     {conv.pet && (
-                      <p className="text-[10px] font-bold text-[#C96366] truncate mt-0.5">
+                      <p className="text-[10px] font-bold text-[#C2572F] truncate mt-0.5">
                         Regarding {conv.pet.name}
                       </p>
                     )}
-                    <p className="text-[11px] text-[#736363] truncate mt-0.5 font-medium">
+                    <p className="text-[11px] text-[#8A5A48] truncate mt-0.5 font-medium">
                       {conv.lastMessage || 'Start conversation...'}
                     </p>
                   </div>
@@ -278,7 +278,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {/* ── ACTIVE CHAT SCREEN (Screen 7 Reference Mockup) ───────────── */}
       <div
-        className={`md:col-span-8 lg:col-span-8 flex flex-col h-full bg-[#F3E6E6]/40 ${
+        className={`md:col-span-8 lg:col-span-8 flex flex-col h-full bg-[#FCE8D0]/40 ${
           showMobileChat ? 'flex' : 'hidden md:flex'
         }`}
       >
@@ -288,7 +288,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             {(() => {
               const recipient = getRecipient(activeConversation);
               return (
-                <div className="p-3.5 sm:p-4 border-b border-[#EAD2D3] bg-[#C96366] text-white flex items-center justify-between shadow-sm">
+                <div className="p-3.5 sm:p-4 border-b border-[#EBC9A5] bg-[#C2572F] text-white flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setShowMobileChat(false)}
@@ -307,7 +307,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                         alt={recipient?.name}
                         className="w-10 h-10 rounded-full object-cover border-2 border-white/60"
                       />
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#C96366] rounded-full" />
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#C2572F] rounded-full" />
                     </div>
 
                     <div>
@@ -342,11 +342,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             })()}
 
             {/* Chat Messages Pane */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#F3E6E6]/30">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#FCE8D0]/30">
               {messages.length === 0 ? (
-                <div className="text-center py-12 text-[#736363] space-y-2">
-                  <p className="text-xs font-bold text-[#292323]">Start of your message thread</p>
-                  <p className="text-[11px] text-[#A89898] max-w-sm mx-auto">
+                <div className="text-center py-12 text-[#8A5A48] space-y-2">
+                  <p className="text-xs font-bold text-[#3E1F1A]">Start of your message thread</p>
+                  <p className="text-[11px] text-[#B99A86] max-w-sm mx-auto">
                     Say hello, ask questions about pet habits, or coordinate a friendly shelter visit!
                   </p>
                 </div>
@@ -364,8 +364,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       <div
                         className={`max-w-[80%] sm:max-w-[70%] px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-sm flex items-end gap-2 ${
                           isMine
-                            ? 'bg-[#C96366] text-white rounded-2xl rounded-br-xs font-medium'
-                            : 'bg-white text-[#292323] border border-[#EAD2D3] rounded-2xl rounded-bl-xs font-medium'
+                            ? 'bg-[#C2572F] text-white rounded-2xl rounded-br-xs font-medium'
+                            : 'bg-white text-[#3E1F1A] border border-[#EBC9A5] rounded-2xl rounded-bl-xs font-medium'
                         }`}
                       >
                         <span className="flex-1">{msg.text}</span>
@@ -373,7 +373,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       </div>
 
                       {/* Timestamp */}
-                      <span className="text-[9px] text-[#A89898] mt-1 px-1 font-semibold">
+                      <span className="text-[9px] text-[#B99A86] mt-1 px-1 font-semibold">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -386,8 +386,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
               {/* Typing indicator */}
               {typingUser && (
-                <div className="flex items-center gap-1.5 text-xs text-[#C96366] italic font-bold">
-                  <span className="w-2 h-2 rounded-full bg-[#C96366] animate-ping" />
+                <div className="flex items-center gap-1.5 text-xs text-[#C2572F] italic font-bold">
+                  <span className="w-2 h-2 rounded-full bg-[#C2572F] animate-ping" />
                   <span>{typingUser} is typing...</span>
                 </div>
               )}
@@ -398,12 +398,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             {/* Bottom Input Bar (Matches Screen 7: Type message..., Mic, Attach, Send) */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3 sm:p-4 bg-white border-t border-[#EAD2D3] flex items-center gap-2"
+              className="p-3 sm:p-4 bg-white border-t border-[#EBC9A5] flex items-center gap-2"
             >
               <button
                 type="button"
                 onClick={() => alert('File attachment feature simulation')}
-                className="p-2 text-[#A89898] hover:text-[#C96366] transition"
+                className="p-2 text-[#B99A86] hover:text-[#C2572F] transition"
                 title="Attach photo"
               >
                 <Paperclip className="w-4 h-4" />
@@ -412,7 +412,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               <button
                 type="button"
                 onClick={() => alert('Voice note feature simulation')}
-                className="p-2 text-[#A89898] hover:text-[#C96366] transition"
+                className="p-2 text-[#B99A86] hover:text-[#C2572F] transition"
                 title="Record voice note"
               >
                 <Mic className="w-4 h-4" />
@@ -423,13 +423,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 value={inputText}
                 onChange={handleInputChange}
                 placeholder="Type message..."
-                className="flex-1 h-10 px-4 rounded-full bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs sm:text-sm text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
+                className="flex-1 h-10 px-4 rounded-full bg-[#FCE8D0]/60 border border-[#EBC9A5] text-xs sm:text-sm text-[#3E1F1A] placeholder-[#B99A86] focus:outline-none focus:border-[#C2572F]"
               />
 
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="w-10 h-10 rounded-full bg-[#C96366] hover:bg-[#98494B] text-white flex items-center justify-center transition disabled:opacity-40 shadow"
+                className="w-10 h-10 rounded-full bg-[#C2572F] hover:bg-[#8E3B22] text-white flex items-center justify-center transition disabled:opacity-40 shadow"
                 title="Send message"
               >
                 <Send className="w-4 h-4" />
@@ -437,10 +437,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             </form>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#736363] space-y-2">
-            <MessageSquare className="w-12 h-12 text-[#EAD2D3]" />
-            <h4 className="text-base font-black text-[#292323]">Select a Conversation</h4>
-            <p className="text-xs text-[#A89898] max-w-sm font-medium">
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#8A5A48] space-y-2">
+            <MessageSquare className="w-12 h-12 text-[#EBC9A5]" />
+            <h4 className="text-base font-black text-[#3E1F1A]">Select a Conversation</h4>
+            <p className="text-xs text-[#B99A86] max-w-sm font-medium">
               Choose a message thread from the left or visit any pet to contact their shelter directly.
             </p>
           </div>

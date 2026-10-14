@@ -195,8 +195,8 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                   {!user && (
                     <div className="p-3.5 rounded-2xl bg-[#FFF5F5] border border-[#FFC6D9] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
                       <div>
-                        <p className="text-xs font-black text-[#C96366] flex items-center gap-1.5">
-                          <Zap className="w-3.5 h-3.5 fill-[#C96366]" />
+                        <p className="text-xs font-black text-[#C2572F] flex items-center gap-1.5">
+                          <Zap className="w-3.5 h-3.5 fill-[#C2572F]" />
                           <span>1-Click Lazy Login Available</span>
                         </p>
                         <p className="text-[11px] text-[#7A6B88] font-medium">
@@ -212,7 +212,7 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                             setError('Lazy login failed');
                           }
                         }}
-                        className="w-full sm:w-auto px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C96366] text-white text-xs font-black shadow hover:opacity-95 transition cursor-pointer shrink-0"
+                        className="w-full sm:w-auto px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C2572F] text-white text-xs font-black shadow hover:opacity-95 transition cursor-pointer shrink-0"
                       >
                         ⚡ 1-Click Lazy Login
                       </button>

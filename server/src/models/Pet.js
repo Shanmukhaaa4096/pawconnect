@@ -61,6 +61,13 @@ const petSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // Individual owners explain why they are rehoming (builds trust with adopters)
+    rehomingReason: {
+      type: String,
+      trim: true,
+      maxlength: 400,
+      default: '',
+    },
     photos: {
       type: [String],
       required: true,

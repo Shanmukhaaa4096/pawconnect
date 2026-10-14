@@ -17,6 +17,10 @@ export const verifyToken = async (req, res, next) => {
       return res.status(401).json({ message: 'User belonging to this token no longer exists' });
     }
 
+    if (user.isSuspended) {
+      return res.status(403).json({ message: 'This account has been suspended' });
+    }
+
     req.user = user;
     next();
   } catch (error) {

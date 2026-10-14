@@ -13,7 +13,7 @@ interface PetFiltersProps {
 const FilterLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <label
     className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5"
-    style={{ color: '#9BA097', fontFamily: "'Inter', sans-serif" }}
+    style={{ color: '#B99A86', fontFamily: "'Bricolage Grotesque', sans-serif" }}
   >
     {children}
   </label>
@@ -50,10 +50,10 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
       onClick={onClick}
       className="px-3 py-1 text-xs font-medium rounded border transition-all"
       style={{
-        background:   selected ? '#263A32' : '#FFFFFF',
-        color:        selected ? '#F7F5EF' : '#6B7068',
-        borderColor:  selected ? '#263A32' : '#DDE0D8',
-        fontFamily:   "'Inter', sans-serif",
+        background:   selected ? '#8E3B22' : '#FFFFFF',
+        color:        selected ? '#FCE8D0' : '#8A5A48',
+        borderColor:  selected ? '#8E3B22' : '#EBC9A5',
+        fontFamily:   "'Bricolage Grotesque', sans-serif",
       }}
     >
       {label}
@@ -63,14 +63,14 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
   return (
     <div
       className="rounded-lg border p-5 space-y-5"
-      style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
+      style={{ background: '#FFFFFF', borderColor: '#EBC9A5' }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: '#E8EBE3' }}>
-        <h3 className="font-semibold text-sm" style={{ color: '#252825' }}>Filters</h3>
+      <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: '#F8DDBF' }}>
+        <h3 className="font-semibold text-sm" style={{ color: '#3E1F1A' }}>Filters</h3>
         <span
           className="text-[11px] font-medium px-2.5 py-0.5 rounded"
-          style={{ background: '#EAECE4', color: '#263A32' }}
+          style={{ background: '#F8DDBF', color: '#8E3B22' }}
         >
           {totalCount} {totalCount === 1 ? 'pet' : 'pets'}
         </span>
@@ -80,7 +80,7 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
       <div>
         <FilterLabel>Keyword</FilterLabel>
         <div className="relative">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#B99A86' }} />
           <input
             type="text"
             value={filters.search || ''}
@@ -96,7 +96,7 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
       <div>
         <FilterLabel>Location</FilterLabel>
         <div className="relative">
-          <MapPin className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
+          <MapPin className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#B99A86' }} />
           <input
             type="text"
             value={filters.location || ''}
@@ -196,8 +196,8 @@ export const PetFilters: React.FC<PetFiltersProps> = ({
       <button
         type="button"
         onClick={onReset}
-        className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded border transition-colors hover:bg-[#EAECE4]"
-        style={{ color: '#6B7068', borderColor: '#DDE0D8' }}
+        className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded border transition-colors hover:bg-[#F8DDBF]"
+        style={{ color: '#8A5A48', borderColor: '#EBC9A5' }}
       >
         <RotateCcw className="w-3.5 h-3.5" />
         Reset filters

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import '../models/Notification.js';
+import '../models/Review.js';
 
 export const memoryStore = {
   users: [],
@@ -12,6 +14,8 @@ export const memoryStore = {
   orders: [],
   deliveries: [],
   feedbacks: [],
+  notifications: [],
+  reviews: [],
 };
 
 const generateId = () => new mongoose.Types.ObjectId().toString();
@@ -75,6 +79,13 @@ export const repository = {
     return safeUser;
   },
 
+  async findAllUsers() {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('User').find({}).select('-password').sort({ createdAt: -1 });
+    }
+    return memoryStore.users.map(({ password, ...u }) => u);
+  },
+
   async findShelters() {
     if (mongoose.connection.readyState === 1) {
       return mongoose.model('User').find({ role: 'shelter' }).select('-password');
@@ -110,7 +121,7 @@ export const repository = {
           { 'location.city': regex },
         ];
       }
-      return mongoose.model('Pet').find(query).populate('shelter', 'name email phone avatar organization location').sort({ createdAt: -1 });
+      return mongoose.model('Pet').find(query).populate('shelter', 'name email phone avatar organization location role').sort({ createdAt: -1 });
     }
 
     // In-memory filter
@@ -150,6 +161,7 @@ export const repository = {
                 phone: shelterObj.phone,
                 avatar: shelterObj.avatar,
                 organization: shelterObj.organization,
+                role: shelterObj.role,
                 location: shelterObj.location,
               }
             : pet.shelter,
@@ -160,7 +172,7 @@ export const repository = {
 
   async findPetById(id) {
     if (mongoose.connection.readyState === 1) {
-      return mongoose.model('Pet').findById(id).populate('shelter', 'name email phone avatar organization location bio');
+      return mongoose.model('Pet').findById(id).populate('shelter', 'name email phone avatar organization location bio role');
     }
     const pet = memoryStore.pets.find((p) => p._id.toString() === id.toString());
     if (!pet) return null;
@@ -175,6 +187,7 @@ export const repository = {
             phone: shelterObj.phone,
             avatar: shelterObj.avatar,
             organization: shelterObj.organization,
+            role: shelterObj.role,
             location: shelterObj.location,
             bio: shelterObj.bio,
           }
@@ -185,7 +198,7 @@ export const repository = {
   async createPet(petData) {
     if (mongoose.connection.readyState === 1) {
       const pet = await mongoose.model('Pet').create(petData);
-      return pet.populate('shelter', 'name email phone avatar organization location');
+      return pet.populate('shelter', 'name email phone avatar organization location role');
     }
     const newPet = {
       _id: generateId(),
@@ -200,7 +213,7 @@ export const repository = {
 
   async updatePet(id, updateData) {
     if (mongoose.connection.readyState === 1) {
-      return mongoose.model('Pet').findByIdAndUpdate(id, updateData, { new: true }).populate('shelter', 'name email phone avatar organization location');
+      return mongoose.model('Pet').findByIdAndUpdate(id, updateData, { new: true }).populate('shelter', 'name email phone avatar organization location role');
     }
     const index = memoryStore.pets.findIndex((p) => p._id.toString() === id.toString());
     if (index === -1) return null;
@@ -227,7 +240,7 @@ export const repository = {
     if (mongoose.connection.readyState === 1) {
       const favs = await mongoose.model('Favorite').find({ user: userId }).populate({
         path: 'pet',
-        populate: { path: 'shelter', select: 'name organization location avatar' },
+        populate: { path: 'shelter', select: 'name organization location avatar role' },
       });
       return favs.map((f) => f.pet).filter(Boolean);
     }
@@ -282,7 +295,7 @@ export const repository = {
       return app.populate([
         { path: 'pet', populate: { path: 'shelter' } },
         { path: 'adopter', select: 'name email phone avatar' },
-        { path: 'shelter', select: 'name email organization phone' },
+        { path: 'shelter', select: 'name email organization phone role' },
       ]);
     }
     const newApp = {
@@ -307,7 +320,7 @@ export const repository = {
       return mongoose.model('Application').findById(id).populate([
         { path: 'pet' },
         { path: 'adopter', select: 'name email phone avatar location' },
-        { path: 'shelter', select: 'name email organization phone avatar' },
+        { path: 'shelter', select: 'name email organization phone avatar role' },
       ]);
     }
     const app = memoryStore.applications.find((a) => a._id.toString() === id.toString());
@@ -327,7 +340,7 @@ export const repository = {
     if (mongoose.connection.readyState === 1) {
       return mongoose.model('Application').find({ adopter: adopterId }).populate([
         { path: 'pet' },
-        { path: 'shelter', select: 'name email organization phone avatar location' },
+        { path: 'shelter', select: 'name email organization phone avatar location role' },
       ]).sort({ createdAt: -1 });
     }
     const apps = memoryStore.applications.filter((a) => a.adopter.toString() === adopterId.toString());
@@ -384,6 +397,21 @@ export const repository = {
     } else if (status === 'Completed') {
       await this.updatePet(app.pet, { status: 'Adopted' });
     }
+    return this.findApplicationById(id);
+  },
+
+  async updateApplicationHandover(id, handover) {
+    if (mongoose.connection.readyState === 1) {
+      const app = await mongoose.model('Application').findById(id);
+      if (!app) return null;
+      app.handover = { ...(app.handover?.toObject?.() || app.handover || {}), ...handover };
+      await app.save();
+      return this.findApplicationById(id);
+    }
+    const app = memoryStore.applications.find((a) => a._id.toString() === id.toString());
+    if (!app) return null;
+    app.handover = { meetGreet: false, homeCheck: false, vetRecords: false, agreement: false, handoverDate: null, ...(app.handover || {}), ...handover };
+    app.updatedAt = new Date();
     return this.findApplicationById(id);
   },
 
@@ -518,6 +546,102 @@ export const repository = {
       ...newMsg,
       sender,
     };
+  },
+
+  // NOTIFICATIONS
+  async createNotification({ user, type = 'system', title, body = '', link = '' }) {
+    // Collapse chat spam: reuse the newest unread message notification for the same thread.
+    if (mongoose.connection.readyState === 1) {
+      const Notification = mongoose.model('Notification');
+      if (type === 'message') {
+        const existing = await Notification.findOne({ user, type, link, read: false }).sort({ createdAt: -1 });
+        if (existing) {
+          existing.title = title;
+          existing.body = body;
+          existing.createdAt = new Date();
+          await existing.save();
+          return existing;
+        }
+      }
+      return Notification.create({ user, type, title, body, link });
+    }
+    if (type === 'message') {
+      const existing = memoryStore.notifications.find(
+        (n) => n.user.toString() === user.toString() && n.type === type && n.link === link && !n.read
+      );
+      if (existing) {
+        Object.assign(existing, { title, body, createdAt: new Date() });
+        return existing;
+      }
+    }
+    const n = { _id: generateId(), user, type, title, body, link, read: false, createdAt: new Date(), updatedAt: new Date() };
+    memoryStore.notifications.push(n);
+    return n;
+  },
+
+  async getNotifications(userId, limit = 30) {
+    if (mongoose.connection.readyState === 1) {
+      const Notification = mongoose.model('Notification');
+      const [notifications, unreadCount] = await Promise.all([
+        Notification.find({ user: userId }).sort({ createdAt: -1 }).limit(limit),
+        Notification.countDocuments({ user: userId, read: false }),
+      ]);
+      return { notifications, unreadCount };
+    }
+    const mine = memoryStore.notifications
+      .filter((n) => n.user.toString() === userId.toString())
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return { notifications: mine.slice(0, limit), unreadCount: mine.filter((n) => !n.read).length };
+  },
+
+  async markNotificationsRead(userId, id = null) {
+    if (mongoose.connection.readyState === 1) {
+      const filter = { user: userId, read: false };
+      if (id) filter._id = id;
+      await mongoose.model('Notification').updateMany(filter, { read: true });
+      return;
+    }
+    memoryStore.notifications.forEach((n) => {
+      if (n.user.toString() === userId.toString() && (!id || n._id.toString() === id.toString())) n.read = true;
+    });
+  },
+
+  // REVIEWS
+  async createReview(data) {
+    if (mongoose.connection.readyState === 1) {
+      const review = await mongoose.model('Review').create(data);
+      return review.populate('adopter', 'name avatar');
+    }
+    const r = { _id: generateId(), ...data, createdAt: new Date(), updatedAt: new Date() };
+    memoryStore.reviews.push(r);
+    const adopter = await this.findUserById(r.adopter);
+    return { ...r, adopter: adopter && { _id: adopter._id, name: adopter.name, avatar: adopter.avatar } };
+  },
+
+  async findReviewByApplication(applicationId) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Review').findOne({ application: applicationId });
+    }
+    return memoryStore.reviews.find((r) => r.application.toString() === applicationId.toString()) || null;
+  },
+
+  async getReviewsByShelter(shelterId) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose
+        .model('Review')
+        .find({ shelter: shelterId })
+        .sort({ createdAt: -1 })
+        .populate('adopter', 'name avatar');
+    }
+    const list = memoryStore.reviews
+      .filter((r) => r.shelter.toString() === shelterId.toString())
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return Promise.all(
+      list.map(async (r) => {
+        const a = await this.findUserById(r.adopter);
+        return { ...r, adopter: a && { _id: a._id, name: a.name, avatar: a.avatar } };
+      })
+    );
   },
 
   // STATS & ADMIN

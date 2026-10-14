@@ -1,4 +1,4 @@
-export type UserRole = 'adopter' | 'shelter' | 'admin';
+export type UserRole = 'adopter' | 'owner' | 'shelter' | 'admin';
 
 export interface User {
   _id: string;
@@ -21,6 +21,7 @@ export interface User {
     website?: string;
     verified?: boolean;
   };
+  isSuspended?: boolean;
   createdAt?: string;
 }
 
@@ -42,6 +43,14 @@ export interface PetGoodWith {
   children: boolean;
   dogs: boolean;
   cats: boolean;
+}
+
+export interface ApplicationHandover {
+  meetGreet?: boolean;
+  homeCheck?: boolean;
+  vetRecords?: boolean;
+  agreement?: boolean;
+  handoverDate?: string | null;
 }
 
 export interface Pet {
@@ -66,12 +75,13 @@ export interface Pet {
   };
   status: PetStatus;
   adoptionFee: number;
+  rehomingReason?: string;
   shelter: User | string;
   viewsCount?: number;
   createdAt: string;
 }
 
-export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected' | 'Completed';
+export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Withdrawn';
 
 export interface ApplicationQuestionnaire {
   fullName: string;
@@ -102,6 +112,7 @@ export interface Application {
   status: ApplicationStatus;
   questionnaire: ApplicationQuestionnaire;
   shelterNotes?: string;
+  handover?: ApplicationHandover;
   timeline: ApplicationTimeline[];
   createdAt: string;
   updatedAt: string;
@@ -230,4 +241,24 @@ export interface Feedback {
   emoji: string; // 😡 🙁 😐 😊 🤩
   comment?: string;
   createdAt?: string;
+}
+
+export interface AppNotification {
+  _id: string;
+  type: 'application' | 'message' | 'review' | 'system';
+  title: string;
+  body?: string;
+  link?: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface ShelterReview {
+  _id: string;
+  shelter: string;
+  application: string;
+  adopter: { _id: string; name: string; avatar?: string } | null;
+  rating: number;
+  comment?: string;
+  createdAt: string;
 }
