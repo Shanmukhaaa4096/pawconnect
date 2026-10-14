@@ -36,7 +36,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       await lazyLogin(role);
-      navigate(role === 'shelter' ? '/dashboard' : '/browse');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Lazy login failed. Please try again.');
     } finally {
@@ -45,11 +45,11 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#C96366] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#C2572F] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm space-y-6">
         {/* Screen 2 Mascot & Logo */}
         <div className="text-center space-y-2">
-          <div className="w-20 h-20 rounded-full bg-white text-[#C96366] flex items-center justify-center mx-auto shadow-xl">
+          <div className="w-20 h-20 rounded-full bg-white text-[#C2572F] flex items-center justify-center mx-auto border-2 border-[#4A2218] shadow-[4px_4px_0_#4A2218] -rotate-6">
             <svg width="42" height="42" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="7" cy="11" rx="3" ry="4" fill="currentColor" />
               <ellipse cx="13" cy="7" rx="3" ry="4.5" fill="currentColor" />
@@ -65,10 +65,10 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
-          <div className="border-b border-[#F4E4E4] pb-3 text-center">
-            <h1 className="text-lg font-black text-[#292323]">Sign In & Quick Access</h1>
-            <p className="text-xs text-[#736363] mt-0.5 font-medium">Choose Lazy Login or enter credentials</p>
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-[#4A2218] shadow-[8px_8px_0_#4A2218] space-y-5">
+          <div className="border-b border-[#F3DCC0] pb-3 text-center">
+            <h1 className="text-lg font-black text-[#3E1F1A]">Sign In & Quick Access</h1>
+            <p className="text-xs text-[#8A5A48] mt-0.5 font-medium">Choose Lazy Login or enter credentials</p>
           </div>
 
           {error && (
@@ -78,25 +78,26 @@ export const LoginPage: React.FC = () => {
           )}
 
           {/* ── ⚡ 1-CLICK LAZY LOGIN HERO BOX ── */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FFF5F5] via-[#FDEEEF] to-[#F3E6E6] border-2 border-[#EAD2D3] shadow-xs space-y-3">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FFF5F5] via-[#FFF3E2] to-[#FCE8D0] border-2 border-[#EBC9A5] shadow-xs space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-[#C96366] font-black text-xs uppercase tracking-wider">
-                <Zap className="w-4 h-4 fill-[#C96366]" />
+              <div className="flex items-center gap-1.5 text-[#C2572F] font-black text-xs uppercase tracking-wider">
+                <Zap className="w-4 h-4 fill-[#C2572F]" />
                 <span>Lazy Login</span>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#C96366] text-white">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#C2572F] text-white">
                 Instant 1-Click
               </span>
             </div>
 
-            <p className="text-[11px] text-[#736363] font-medium leading-relaxed">
+            <p className="text-[11px] text-[#8A5A48] font-medium leading-relaxed">
               No password needed! Click below to jump straight into PawConnect.
             </p>
 
             {/* Role Persona Selector */}
-            <div className="grid grid-cols-3 gap-1.5 pt-1">
+            <div className="grid grid-cols-4 gap-1.5 pt-1">
               {[
                 { role: 'adopter' as UserRole, label: 'Adopter', icon: '🐶' },
+                { role: 'owner' as UserRole, label: 'Owner', icon: '🧡' },
                 { role: 'shelter' as UserRole, label: 'Shelter', icon: '🏡' },
                 { role: 'admin' as UserRole, label: 'Admin', icon: '🛡️' },
               ].map(({ role, label, icon }) => (
@@ -106,8 +107,8 @@ export const LoginPage: React.FC = () => {
                   onClick={() => setLazyRole(role)}
                   className={`py-1.5 px-2 rounded-xl text-[11px] font-extrabold transition flex flex-col items-center gap-0.5 border cursor-pointer ${
                     lazyRole === role
-                      ? 'bg-[#C96366] text-white border-[#C96366] shadow-sm'
-                      : 'bg-white/80 text-[#292323] border-[#EAD2D3] hover:bg-white'
+                      ? 'bg-[#C2572F] text-white border-[#C2572F] shadow-sm'
+                      : 'bg-white/80 text-[#3E1F1A] border-[#EBC9A5] hover:bg-white'
                   }`}
                 >
                   <span className="text-sm">{icon}</span>
@@ -121,7 +122,7 @@ export const LoginPage: React.FC = () => {
               type="button"
               disabled={loading}
               onClick={() => handleLazyLogin(lazyRole)}
-              className="w-full h-11 rounded-full bg-gradient-to-r from-amber-500 via-[#C96366] to-[#98494B] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
+              className="w-full h-11 rounded-full bg-gradient-to-r from-amber-500 via-[#C2572F] to-[#8E3B22] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
             >
               <Zap className="w-4 h-4 fill-white" />
               <span>{loading ? 'Authenticating...' : `⚡ Lazy Login as ${lazyRole}`}</span>
@@ -130,8 +131,8 @@ export const LoginPage: React.FC = () => {
 
           {/* Divider */}
           <div className="relative flex items-center justify-center">
-            <div className="border-t border-[#F4E4E4] w-full" />
-            <span className="bg-white px-2.5 text-[10px] font-black uppercase tracking-wider text-[#A89898] absolute">
+            <div className="border-t border-[#F3DCC0] w-full" />
+            <span className="bg-white px-2.5 text-[10px] font-black uppercase tracking-wider text-[#B99A86] absolute">
               or enter password
             </span>
           </div>
@@ -139,41 +140,41 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-wider text-[#A89898] mb-1">
+              <label className="block text-[10px] font-black uppercase tracking-wider text-[#B99A86] mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A89898]" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B99A86]" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="adopter@pawconnect.org"
                   required
-                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs font-medium text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
+                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#FCE8D0]/60 border-2 border-[#4A2218]/70 text-xs font-medium text-[#3E1F1A] placeholder-[#B99A86] focus:outline-none focus:border-[#4A2218] focus:shadow-[3px_3px_0_#4A2218]"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-[10px] font-black uppercase tracking-wider text-[#A89898] mb-1">
+              <label className="block text-[10px] font-black uppercase tracking-wider text-[#B99A86] mb-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A89898]" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B99A86]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full h-11 pl-10 pr-10 rounded-xl bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs font-medium text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
+                  className="w-full h-11 pl-10 pr-10 rounded-xl bg-[#FCE8D0]/60 border-2 border-[#4A2218]/70 text-xs font-medium text-[#3E1F1A] placeholder-[#B99A86] focus:outline-none focus:border-[#4A2218] focus:shadow-[3px_3px_0_#4A2218]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A89898] hover:text-[#292323]"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#B99A86] hover:text-[#3E1F1A]"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -184,16 +185,16 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-full bg-[#292323] hover:bg-[#3D3333] text-white font-black text-xs uppercase tracking-wider shadow-md transition disabled:opacity-50 cursor-pointer active:scale-98"
+              className="w-full h-11 rounded-full bg-[#3E1F1A] hover:bg-[#3D3333] text-white font-black text-xs uppercase tracking-wider shadow-md transition disabled:opacity-50 cursor-pointer active:scale-98"
             >
               {loading ? 'Signing In...' : 'Log In With Password'}
             </button>
           </form>
 
           <div className="text-center pt-2">
-            <p className="text-xs text-[#736363]">
+            <p className="text-xs text-[#8A5A48]">
               Don't have an account?{' '}
-              <Link to="/register" className="font-extrabold text-[#C96366] hover:underline">
+              <Link to="/register" className="font-extrabold text-[#C2572F] hover:underline">
                 Sign Up
               </Link>
             </p>

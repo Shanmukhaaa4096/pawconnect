@@ -1,5 +1,6 @@
 import { repository } from '../store/inMemoryStore.js';
 import { getIO } from '../sockets/chatSocket.js';
+import { notify } from '../utils/notify.js';
 
 export const getConversations = async (req, res) => {
   try {
@@ -66,6 +67,13 @@ export const sendMessage = async (req, res) => {
     } catch (sockErr) {
       console.warn('Socket broadcast warning:', sockErr.message);
     }
+
+    notify(receiverId, {
+      type: 'message',
+      title: `New message from ${req.user.name}`,
+      body: text.trim().slice(0, 120),
+      link: '/messages',
+    });
 
     res.status(201).json({ message: 'Message sent', data: message });
   } catch (error) {

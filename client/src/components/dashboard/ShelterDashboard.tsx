@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
   Plus, PawPrint, FileText, Clock,
-  CheckCircle2, Trash2, MessageSquare, X, Building2,
+  CheckCircle2, Trash2, MessageSquare, X, BarChart3, Pencil, Star, ShieldCheck,
 } from 'lucide-react';
-import { Pet, Application, PetStatus, ApplicationStatus } from '../../types';
+import { Pet, Application, PetStatus, ApplicationStatus, ShelterReview } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/Badge';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import { ShelterStats } from './ShelterStats';
+import { EditPetModal } from './EditPetModal';
+import { ApplicationReviewModal } from './ApplicationReviewModal';
+import { AddPetModal } from './AddPetModal';
+import { DashboardShell } from './DashboardShell';
+import { useDashTab, useConsumeNewParam } from './useDashTab';
+import { Stars } from '../common/Stars';
 import { useNavigate } from 'react-router-dom';
 
 /* ─── Shared primitives ─────────────────────────────────────── */
@@ -18,7 +25,7 @@ const TabBtn = ({
   <button
     onClick={onClick}
     className="flex items-center gap-2 py-3 px-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 relative"
-    style={{ borderColor: active ? '#263A32' : 'transparent', color: active ? '#263A32' : '#6B7068' }}
+    style={{ borderColor: active ? '#8E3B22' : 'transparent', color: active ? '#8E3B22' : '#8A5A48' }}
   >
     {icon}
     <span>{label}</span>
@@ -38,18 +45,18 @@ const MetricCard = ({
 }: { label: string; value: number | string; icon: React.ReactNode; color: string }) => (
   <div
     className="rounded-lg border p-5"
-    style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
+    style={{ background: '#FFFFFF', borderColor: '#EBC9A5' }}
   >
     <div className="flex items-center justify-between mb-3">
-      <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#9BA097' }}>{label}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#B99A86' }}>{label}</span>
       <span style={{ color }}>{icon}</span>
     </div>
-    <p className="text-2xl sm:text-3xl font-semibold" style={{ color, fontFamily: "'Lora', serif" }}>{value}</p>
+    <p className="text-2xl sm:text-3xl font-semibold" style={{ color, fontFamily: "'Fraunces', serif" }}>{value}</p>
   </div>
 );
 
 const FieldLabel = ({ children }: { children: React.ReactNode }) => (
-  <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: '#9BA097' }}>
+  <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: '#B99A86' }}>
     {children}
   </label>
 );
@@ -63,29 +70,15 @@ export const ShelterDashboard: React.FC = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'pets' | 'applications'>('pets');
+  const [activeTab, setActiveTab] = useDashTab(['pets', 'applications', 'reviews', 'stats'] as const, 'pets');
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const newParam = useConsumeNewParam(() => setIsAddModalOpen(true));
+  useEffect(() => { if (newParam.wants) newParam.consume(); }, [newParam.wants]);
+  const [editingPet, setEditingPet] = useState<Pet | null>(null);
+  const [reviews, setReviews] = useState<ShelterReview[]>([]);
+  const [rating, setRating] = useState({ average: 0, count: 0 });
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const [statusUpdateNote, setStatusUpdateNote] = useState('');
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-
-  const [newPet, setNewPet] = useState({
-    name: '',
-    species: 'Dog',
-    breed: '',
-    age: '1',
-    gender: 'Male',
-    size: 'Medium',
-    weightKg: '15',
-    health: { vaccinated: true, spayedNeutered: true, specialNeeds: false, microchipped: true },
-    temperament: 'Friendly, Playful, Loyal',
-    description: '',
-    photos: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=800&q=80',
-    adoptionFee: '60',
-    city: user?.location?.city || 'Austin',
-    state: user?.location?.state || 'TX',
-  });
 
   const fetchData = async () => {
     try {
@@ -104,6 +97,14 @@ export const ShelterDashboard: React.FC = () => {
   };
 
   useEffect(() => { fetchData(); }, [user]);
+
+  useEffect(() => {
+    if (!user?._id) return;
+    api.getShelterReviews(user._id).then((r) => {
+      setReviews(r.reviews);
+      setRating({ average: r.average, count: r.count });
+    }).catch(() => undefined);
+  }, [user?._id]);
 
   const handlePetStatusChange = async (petId: string, newStatus: PetStatus) => {
     try {
@@ -124,116 +125,87 @@ export const ShelterDashboard: React.FC = () => {
     }
   };
 
-  const handleUpdateAppStatus = async (appId: string, newStatus: ApplicationStatus) => {
-    try {
-      setIsUpdatingStatus(true);
-      const res = await api.updateApplicationStatus(appId, newStatus, statusUpdateNote);
-      setApplications((prev) => prev.map((a) => (a._id === appId ? res.application : a)));
-      setSelectedApplication(null);
-      setStatusUpdateNote('');
-      fetchData();
-    } catch (err: any) {
-      alert(`Could not update application: ${err.message}`);
-    } finally {
-      setIsUpdatingStatus(false);
-    }
-  };
-
-  const handleCreatePet = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append('name', newPet.name);
-      formData.append('species', newPet.species);
-      formData.append('breed', newPet.breed);
-      formData.append('age', newPet.age);
-      formData.append('gender', newPet.gender);
-      formData.append('size', newPet.size);
-      formData.append('weightKg', newPet.weightKg);
-      formData.append('description', newPet.description);
-      formData.append('adoptionFee', newPet.adoptionFee);
-      formData.append('location', JSON.stringify({ city: newPet.city, state: newPet.state }));
-      formData.append('health', JSON.stringify(newPet.health));
-      formData.append('temperament', JSON.stringify(newPet.temperament.split(',').map((t) => t.trim()).filter(Boolean)));
-      formData.append('photos', JSON.stringify([newPet.photos]));
-      await api.createPet(formData);
-      setIsAddModalOpen(false);
-      fetchData();
-    } catch (err: any) {
-      alert(`Failed to create pet listing: ${err.message}`);
-    }
-  };
-
   const pendingApps     = applications.filter((a) => a.status === 'Pending');
   const availablePets   = pets.filter((p) => p.status === 'Available');
   const adoptedPets     = pets.filter((p) => p.status === 'Adopted');
 
-  return (
-    <div className="space-y-6">
+  const orgName = user?.organization?.name || user?.name;
+  const verified = Boolean(user?.organization?.verified);
 
-      {/* Profile banner */}
-      <div
-        className="rounded-lg border p-6 flex flex-col md:flex-row md:items-center justify-between gap-5"
-        style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-12 h-12 rounded flex items-center justify-center shrink-0"
-            style={{ background: '#EAECE4' }}
-          >
-            <Building2 className="w-6 h-6" style={{ color: '#263A32' }} />
-          </div>
-          <div>
-            <p className="section-label" style={{ margin: 0 }}>Rescue management portal</p>
-            <h2 className="text-lg font-semibold mt-0.5" style={{ color: '#252825', fontFamily: "'Lora', serif" }}>
-              {user?.organization?.name || user?.name}
-            </h2>
-            <div className="flex items-center gap-2 mt-0.5">
-              <p className="text-xs" style={{ color: '#9BA097' }}>
-                {user?.location?.city}, {user?.location?.state} · Licence: {user?.organization?.licenseNumber || 'Active NGO'}
-              </p>
-              {user?.organization?.verified ? (
-                <span className="text-[10px] px-2 py-0.5 rounded font-semibold bg-[#263A32]/10 text-[#263A32]">
-                  Verified
-                </span>
-              ) : (
-                <span className="text-[10px] px-2 py-0.5 rounded font-medium bg-[#9BA097]/15 text-[#6B7068]">
-                  Verification Pending
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+  return (
+    <DashboardShell
+      role="shelter"
+      active={activeTab}
+      onChange={(id) => setActiveTab(id as typeof activeTab)}
+      title={orgName || 'Your shelter'}
+      subtitle={`${[user?.location?.city, user?.location?.state].filter(Boolean).join(', ') || 'Rescue desk'} · Licence ${user?.organization?.licenseNumber || 'not provided'}`}
+      actions={
         <button onClick={() => setIsAddModalOpen(true)} className="btn-primary shrink-0 gap-2">
           <Plus className="w-4 h-4" />
           <span>List new pet</span>
         </button>
+      }
+      nav={[
+        { id: 'pets', label: 'Listings', icon: <PawPrint className="w-4 h-4" />, badge: pets.length },
+        { id: 'applications', label: 'Applications', icon: <FileText className="w-4 h-4" />, badge: pendingApps.length },
+        { id: 'reviews', label: 'Reviews', icon: <Star className="w-4 h-4" />, badge: rating.count },
+        { id: 'stats', label: 'Insights', icon: <BarChart3 className="w-4 h-4" /> },
+      ]}
+    >
+      {/* Verification status */}
+      <div
+        className="rounded-2xl border-2 px-4 py-3 flex items-center gap-3 text-sm font-bold"
+        style={{
+          background: verified ? '#E6F4EA' : '#FEF1DC',
+          color: verified ? '#137333' : '#7A4B00',
+          borderColor: '#4A2218',
+        }}
+      >
+        <ShieldCheck className="w-5 h-5 shrink-0" />
+        <span>
+          {verified
+            ? 'Verified shelter. A badge shows on your listings and profile.'
+            : 'Verification pending. An admin will review your licence. Complete your profile to speed this up.'}
+        </span>
       </div>
 
       {/* Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <MetricCard label="Total listed"     value={pets.length}          icon={<PawPrint className="w-4 h-4" />}     color="#252825" />
-        <MetricCard label="Available"        value={availablePets.length} icon={<span className="w-2 h-2 rounded-full bg-[#263A32] inline-block animate-pulse" />} color="#263A32" />
+        <MetricCard label="Total listed"     value={pets.length}          icon={<PawPrint className="w-4 h-4" />}     color="#3E1F1A" />
+        <MetricCard label="Available"        value={availablePets.length} icon={<span className="w-2 h-2 rounded-full bg-[#8E3B22] inline-block animate-pulse" />} color="#8E3B22" />
         <MetricCard label="Pending requests" value={pendingApps.length}   icon={<Clock className="w-4 h-4" />}        color="#C8795A" />
-        <MetricCard label="Adopted"          value={adoptedPets.length}   icon={<CheckCircle2 className="w-4 h-4" />} color="#6B7068" />
+        <MetricCard label="Adopted"          value={adoptedPets.length}   icon={<CheckCircle2 className="w-4 h-4" />} color="#8A5A48" />
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b gap-1 overflow-x-auto pb-px" style={{ borderColor: '#DDE0D8' }}>
-        <TabBtn
-          active={activeTab === 'pets'}
-          onClick={() => setActiveTab('pets')}
-          icon={<PawPrint className="w-4 h-4" />}
-          label={`Pets (${pets.length})`}
-        />
-        <TabBtn
-          active={activeTab === 'applications'}
-          onClick={() => setActiveTab('applications')}
-          icon={<FileText className="w-4 h-4" />}
-          label={`Applications (${applications.length})`}
-          badge={pendingApps.length}
-        />
-      </div>
+      {activeTab === 'reviews' && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            {rating.count > 0 ? (
+              <>
+                <Stars value={rating.average} size={22} />
+                <span className="text-2xl font-black" style={{ color: '#8E3B22', fontFamily: 'var(--font-serif)' }}>{rating.average.toFixed(1)}</span>
+                <span className="text-sm" style={{ color: '#8A5A48' }}>from {rating.count} review{rating.count === 1 ? '' : 's'}</span>
+              </>
+            ) : (
+              <p className="text-sm" style={{ color: '#8A5A48' }}>No reviews yet. Adopters can rate you once an adoption is completed.</p>
+            )}
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {reviews.map((r) => (
+              <article key={r._id} className="rounded-2xl border-2 bg-white p-5 space-y-2" style={{ borderColor: '#4A2218', boxShadow: '3px 3px 0 #4A2218' }}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-bold text-sm" style={{ color: '#3E1F1A' }}>{r.adopter?.name || 'Adopter'}</span>
+                  <Stars value={r.rating} />
+                </div>
+                {r.comment && <p className="text-sm" style={{ color: '#8A5A48' }}>{r.comment}</p>}
+                <p className="text-[11px]" style={{ color: '#B99A86' }}>{new Date(r.createdAt).toLocaleDateString()}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'stats' && <ShelterStats pets={pets} applications={applications} />}
 
       {/* ── TAB 1: PET MANAGEMENT ── */}
       {activeTab === 'pets' && (
@@ -243,22 +215,22 @@ export const ShelterDashboard: React.FC = () => {
           ) : pets.length === 0 ? (
             <div
               className="p-10 text-center rounded-lg border max-w-md mx-auto"
-              style={{ background: '#EAECE4', borderColor: '#DDE0D8' }}
+              style={{ background: '#F8DDBF', borderColor: '#EBC9A5' }}
             >
               <PawPrint className="w-8 h-8 mx-auto mb-3 opacity-30" />
-              <p className="font-semibold text-sm" style={{ color: '#252825', fontFamily: "'Lora', serif" }}>No pets listed yet</p>
-              <p className="text-xs mt-1.5" style={{ color: '#6B7068' }}>Click "List new pet" to add your first companion.</p>
+              <p className="font-semibold text-sm" style={{ color: '#3E1F1A', fontFamily: "'Fraunces', serif" }}>No pets listed yet</p>
+              <p className="text-xs mt-1.5" style={{ color: '#8A5A48' }}>Click "List new pet" to add your first companion.</p>
             </div>
           ) : (
             <div
               className="rounded-lg border overflow-hidden"
-              style={{ borderColor: '#DDE0D8' }}
+              style={{ borderColor: '#EBC9A5' }}
             >
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead
                     className="text-[10px] font-semibold uppercase tracking-widest border-b"
-                    style={{ background: '#F7F5EF', color: '#9BA097', borderColor: '#DDE0D8' }}
+                    style={{ background: '#FCE8D0', color: '#B99A86', borderColor: '#EBC9A5' }}
                   >
                     <tr>
                       <th className="px-6 py-3.5">Pet</th>
@@ -273,8 +245,8 @@ export const ShelterDashboard: React.FC = () => {
                     {pets.map((pet, i) => (
                       <tr
                         key={pet._id}
-                        className="border-b transition-colors hover:bg-[#F7F5EF]"
-                        style={{ borderColor: i < pets.length - 1 ? '#E8EBE3' : 'transparent' }}
+                        className="border-b transition-colors hover:bg-[#FCE8D0]"
+                        style={{ borderColor: i < pets.length - 1 ? '#F8DDBF' : 'transparent' }}
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
@@ -282,16 +254,16 @@ export const ShelterDashboard: React.FC = () => {
                               src={pet.photos[0] || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=150&q=80'}
                               alt={pet.name}
                               className="w-10 h-10 rounded object-cover shrink-0"
-                              style={{ border: '1px solid #DDE0D8' }}
+                              style={{ border: '1px solid #EBC9A5' }}
                             />
                             <div>
-                              <p className="font-medium text-sm" style={{ color: '#252825' }}>{pet.name}</p>
-                              <p className="text-xs" style={{ color: '#9BA097' }}>{pet.location.city}, {pet.location.state}</p>
+                              <p className="font-medium text-sm" style={{ color: '#3E1F1A' }}>{pet.name}</p>
+                              <p className="text-xs" style={{ color: '#B99A86' }}>{pet.location.city}, {pet.location.state}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-sm" style={{ color: '#6B7068' }}>{pet.species} · {pet.breed}</td>
-                        <td className="px-4 py-4 text-xs" style={{ color: '#9BA097' }}>{pet.age} yrs · {pet.gender}</td>
+                        <td className="px-4 py-4 text-sm" style={{ color: '#8A5A48' }}>{pet.species} · {pet.breed}</td>
+                        <td className="px-4 py-4 text-xs" style={{ color: '#B99A86' }}>{pet.age} yrs · {pet.gender}</td>
                         <td className="px-4 py-4">
                           <select
                             value={pet.status}
@@ -299,7 +271,7 @@ export const ShelterDashboard: React.FC = () => {
                             className="text-xs font-medium px-2.5 py-1 rounded border cursor-pointer focus:outline-none"
                             style={{
                               background: pet.status === 'Available' ? 'rgba(38,58,50,0.08)' : pet.status === 'Reserved' ? 'rgba(200,121,90,0.08)' : 'rgba(107,112,104,0.08)',
-                              color:      pet.status === 'Available' ? '#263A32' : pet.status === 'Reserved' ? '#9B5A3A' : '#6B7068',
+                              color:      pet.status === 'Available' ? '#8E3B22' : pet.status === 'Reserved' ? '#9B5A3A' : '#8A5A48',
                               borderColor: pet.status === 'Available' ? 'rgba(38,58,50,0.2)' : pet.status === 'Reserved' ? 'rgba(200,121,90,0.2)' : 'rgba(107,112,104,0.2)',
                             }}
                           >
@@ -308,14 +280,23 @@ export const ShelterDashboard: React.FC = () => {
                             <option value="Adopted">Adopted</option>
                           </select>
                         </td>
-                        <td className="px-4 py-4 text-sm" style={{ color: '#252825' }}>
+                        <td className="px-4 py-4 text-sm" style={{ color: '#3E1F1A' }}>
                           {pet.adoptionFee ? `$${pet.adoptionFee}` : 'Free'}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button
+                            onClick={() => setEditingPet(pet)}
+                            className="p-2 rounded transition-colors hover:bg-[#F8DDBF]"
+                            style={{ color: '#8A5A48' }}
+                            title="Edit listing"
+                            aria-label={`Edit ${pet.name}`}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
                             onClick={() => handleDeletePet(pet._id)}
-                            className="p-2 rounded transition-colors hover:bg-[#EAECE4]"
-                            style={{ color: '#9BA097' }}
+                            className="p-2 rounded transition-colors hover:bg-[#F8DDBF]"
+                            style={{ color: '#B99A86' }}
                             title="Remove listing"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -337,11 +318,11 @@ export const ShelterDashboard: React.FC = () => {
           {applications.length === 0 ? (
             <div
               className="p-10 text-center rounded-lg border max-w-md mx-auto"
-              style={{ background: '#EAECE4', borderColor: '#DDE0D8' }}
+              style={{ background: '#F8DDBF', borderColor: '#EBC9A5' }}
             >
               <FileText className="w-8 h-8 mx-auto mb-3 opacity-30" />
-              <p className="font-semibold text-sm" style={{ color: '#252825', fontFamily: "'Lora', serif" }}>No applications yet</p>
-              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: '#6B7068' }}>
+              <p className="font-semibold text-sm" style={{ color: '#3E1F1A', fontFamily: "'Fraunces', serif" }}>No applications yet</p>
+              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: '#8A5A48' }}>
                 Applications from prospective adopters will appear here.
               </p>
             </div>
@@ -350,14 +331,14 @@ export const ShelterDashboard: React.FC = () => {
               <div
                 key={app._id}
                 className="rounded-lg border p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
-                style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
+                style={{ background: '#FFFFFF', borderColor: '#EBC9A5' }}
               >
                 <div className="flex items-start gap-4">
                   <img
                     src={app.pet?.photos?.[0]}
                     alt={app.pet?.name}
                     className="w-14 h-14 rounded object-cover shrink-0"
-                    style={{ border: '1px solid #DDE0D8' }}
+                    style={{ border: '1px solid #EBC9A5' }}
                   />
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -366,14 +347,14 @@ export const ShelterDashboard: React.FC = () => {
                       </span>
                       <StatusBadge status={app.status} size="sm" />
                     </div>
-                    <h4 className="font-semibold text-sm" style={{ color: '#252825' }}>
+                    <h4 className="font-semibold text-sm" style={{ color: '#3E1F1A' }}>
                       {app.questionnaire?.fullName || app.adopter?.name}
                     </h4>
-                    <p className="text-xs mt-0.5" style={{ color: '#9BA097' }}>
+                    <p className="text-xs mt-0.5" style={{ color: '#B99A86' }}>
                       {app.questionnaire?.housingType} ({app.questionnaire?.ownership}) · Experience: {app.questionnaire?.petExperience}
                     </p>
                     {app.questionnaire?.reasonForAdopting && (
-                      <p className="text-xs mt-2 italic leading-relaxed" style={{ color: '#6B7068', maxWidth: '48ch' }}>
+                      <p className="text-xs mt-2 italic leading-relaxed" style={{ color: '#8A5A48', maxWidth: '48ch' }}>
                         "{app.questionnaire.reasonForAdopting}"
                       </p>
                     )}
@@ -403,231 +384,33 @@ export const ShelterDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* ── REVIEW APPLICATION MODAL ── */}
       {selectedApplication && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(37,40,37,0.5)' }}>
-          <div
-            className="w-full max-w-xl rounded-lg border p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto"
-            style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
-          >
-            <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: '#E8EBE3' }}>
-              <div>
-                <p className="section-label" style={{ margin: 0 }}>Adoption review</p>
-                <h3 className="font-semibold text-lg mt-0.5" style={{ color: '#252825', fontFamily: "'Lora', serif" }}>
-                  {selectedApplication.pet?.name}
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedApplication(null)}
-                className="p-1.5 rounded transition-colors hover:bg-[#EAECE4]"
-                style={{ color: '#6B7068' }}
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="rounded border p-4 space-y-2.5 text-xs" style={{ background: '#F7F5EF', borderColor: '#DDE0D8' }}>
-              {[
-                { label: 'Applicant',     value: selectedApplication.questionnaire?.fullName },
-                { label: 'Phone',         value: selectedApplication.questionnaire?.phone },
-                { label: 'Address',       value: selectedApplication.questionnaire?.address || 'Not provided' },
-                { label: 'Household',     value: `${selectedApplication.questionnaire?.housingType} (${selectedApplication.questionnaire?.ownership})` },
-                { label: 'Other pets / children', value: `${selectedApplication.questionnaire?.hasOtherPets ? 'Yes' : 'No'} / ${selectedApplication.questionnaire?.hasChildren ? 'Yes' : 'No'}` },
-                { label: 'Hours alone daily', value: `${selectedApplication.questionnaire?.hoursAlonePerDay} hours` },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex justify-between gap-4">
-                  <span className="font-medium shrink-0" style={{ color: '#9BA097' }}>{label}</span>
-                  <span className="text-right" style={{ color: '#252825' }}>{value}</span>
-                </div>
-              ))}
-              <div>
-                <span className="font-medium block mb-1.5" style={{ color: '#9BA097' }}>Reason for adopting</span>
-                <p className="text-xs italic leading-relaxed p-3 rounded border" style={{ background: '#FFFFFF', borderColor: '#DDE0D8', color: '#6B7068' }}>
-                  "{selectedApplication.questionnaire?.reasonForAdopting}"
-                </p>
-              </div>
-            </div>
-
-            {/* Notes */}
-            <div>
-              <FieldLabel>Shelter feedback note (shared with adopter)</FieldLabel>
-              <textarea
-                rows={2}
-                value={statusUpdateNote}
-                onChange={(e) => setStatusUpdateNote(e.target.value)}
-                placeholder="e.g. Approved for home visit — vet reference verified."
-                className="editorial-input"
-                style={{ height: 'auto', padding: '0.625rem 0.875rem', resize: 'vertical' }}
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                disabled={isUpdatingStatus}
-                onClick={() => handleUpdateAppStatus(selectedApplication._id, 'Approved')}
-                className="py-2.5 px-3 rounded text-white text-xs font-medium transition-colors disabled:opacity-60"
-                style={{ background: '#263A32' }}
-              >
-                Approve (reserve)
-              </button>
-              <button
-                type="button"
-                disabled={isUpdatingStatus}
-                onClick={() => handleUpdateAppStatus(selectedApplication._id, 'Completed')}
-                className="py-2.5 px-3 rounded text-white text-xs font-medium transition-colors disabled:opacity-60"
-                style={{ background: '#4A6659' }}
-              >
-                Finalise adoption
-              </button>
-              <button
-                type="button"
-                disabled={isUpdatingStatus}
-                onClick={() => handleUpdateAppStatus(selectedApplication._id, 'Rejected')}
-                className="py-2.5 px-3 rounded text-xs font-medium transition-colors disabled:opacity-60 border"
-                style={{ background: 'rgba(200,121,90,0.08)', color: '#9B5A3A', borderColor: 'rgba(200,121,90,0.25)' }}
-              >
-                Reject
-              </button>
-            </div>
-          </div>
-        </div>
+        <ApplicationReviewModal
+          key={selectedApplication._id}
+          app={selectedApplication}
+          onClose={() => setSelectedApplication(null)}
+          onChanged={(updated, closed) => {
+            setApplications((prev) => prev.map((x) => (x._id === updated._id ? { ...x, ...updated } : x)));
+            if (closed) fetchData();
+            else setSelectedApplication(updated);
+          }}
+        />
       )}
 
-      {/* ── ADD NEW PET MODAL ── */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(37,40,37,0.5)' }}>
-          <div
-            className="w-full max-w-2xl rounded-lg border p-6 sm:p-8 space-y-5 max-h-[92vh] overflow-y-auto"
-            style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
-          >
-            <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: '#E8EBE3' }}>
-              <div>
-                <p className="section-label" style={{ margin: 0 }}>New listing</p>
-                <h3 className="font-semibold text-xl mt-0.5" style={{ color: '#252825', fontFamily: "'Lora', serif" }}>
-                  Add a pet to your shelter
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="p-1.5 rounded transition-colors hover:bg-[#EAECE4]"
-                style={{ color: '#6B7068' }}
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreatePet} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <FieldLabel>Pet name *</FieldLabel>
-                  <input type="text" required value={newPet.name} onChange={(e) => setNewPet({ ...newPet, name: e.target.value })} placeholder="e.g. Copper" className="editorial-input" />
-                </div>
-                <div>
-                  <FieldLabel>Species *</FieldLabel>
-                  <select value={newPet.species} onChange={(e) => setNewPet({ ...newPet, species: e.target.value })} className="editorial-input cursor-pointer">
-                    <option value="Dog">Dog</option>
-                    <option value="Cat">Cat</option>
-                    <option value="Rabbit">Rabbit</option>
-                    <option value="Bird">Bird</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <FieldLabel>Breed *</FieldLabel>
-                  <input type="text" required value={newPet.breed} onChange={(e) => setNewPet({ ...newPet, breed: e.target.value })} placeholder="e.g. Beagle Mix" className="editorial-input" />
-                </div>
-                <div>
-                  <FieldLabel>Age (years) *</FieldLabel>
-                  <input type="number" step="0.1" min="0" required value={newPet.age} onChange={(e) => setNewPet({ ...newPet, age: e.target.value })} className="editorial-input" />
-                </div>
-                <div>
-                  <FieldLabel>Gender *</FieldLabel>
-                  <select value={newPet.gender} onChange={(e) => setNewPet({ ...newPet, gender: e.target.value })} className="editorial-input cursor-pointer">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <FieldLabel>Size</FieldLabel>
-                  <select value={newPet.size} onChange={(e) => setNewPet({ ...newPet, size: e.target.value })} className="editorial-input cursor-pointer">
-                    <option value="Small">Small</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Large">Large</option>
-                    <option value="Extra Large">Extra Large</option>
-                  </select>
-                </div>
-                <div>
-                  <FieldLabel>City</FieldLabel>
-                  <input type="text" required value={newPet.city} onChange={(e) => setNewPet({ ...newPet, city: e.target.value })} className="editorial-input" />
-                </div>
-                <div>
-                  <FieldLabel>Adoption fee ($)</FieldLabel>
-                  <input type="number" min="0" value={newPet.adoptionFee} onChange={(e) => setNewPet({ ...newPet, adoptionFee: e.target.value })} className="editorial-input" />
-                </div>
-              </div>
-
-              <div>
-                <FieldLabel>Photo URL *</FieldLabel>
-                <input type="url" required value={newPet.photos} onChange={(e) => setNewPet({ ...newPet, photos: e.target.value })} placeholder="Paste direct image URL" className="editorial-input" />
-              </div>
-
-              <div>
-                <FieldLabel>Temperament tags (comma-separated)</FieldLabel>
-                <input type="text" value={newPet.temperament} onChange={(e) => setNewPet({ ...newPet, temperament: e.target.value })} placeholder="e.g. Playful, Good with kids, Calm" className="editorial-input" />
-              </div>
-
-              <div className="flex flex-wrap gap-5 pt-1">
-                {[
-                  { key: 'vaccinated',     label: 'Vaccinated' },
-                  { key: 'spayedNeutered', label: 'Spayed / Neutered' },
-                  { key: 'microchipped',   label: 'Microchipped' },
-                ].map(({ key, label }) => (
-                  <label key={key} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#252825' }}>
-                    <input
-                      type="checkbox"
-                      checked={(newPet.health as any)[key]}
-                      onChange={(e) => setNewPet({ ...newPet, health: { ...newPet.health, [key]: e.target.checked } })}
-                      className="rounded"
-                      style={{ accentColor: '#263A32' }}
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-
-              <div>
-                <FieldLabel>Pet bio & personality *</FieldLabel>
-                <textarea
-                  rows={3}
-                  required
-                  value={newPet.description}
-                  onChange={(e) => setNewPet({ ...newPet, description: e.target.value })}
-                  placeholder="Describe personality, habits, history, and ideal home…"
-                  className="editorial-input"
-                  style={{ height: 'auto', padding: '0.625rem 0.875rem', resize: 'vertical' }}
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t" style={{ borderColor: '#E8EBE3' }}>
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="btn-secondary">
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  Publish listing
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <AddPetModal onClose={() => setIsAddModalOpen(false)} onCreated={fetchData} />
       )}
-    </div>
+
+      {editingPet && (
+        <EditPetModal
+          pet={editingPet}
+          onClose={() => setEditingPet(null)}
+          onSaved={(updated) => {
+            setPets((prev) => prev.map((p) => (p._id === updated._id ? updated : p)));
+            setEditingPet(null);
+          }}
+        />
+      )}
+    </DashboardShell>
   );
 };

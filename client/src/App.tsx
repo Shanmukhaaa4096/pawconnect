@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { CartProvider } from './context/CartContext';
-import { Navbar } from './components/common/Navbar';
+import { SiteHeader } from './components/common/SiteHeader';
 import { Footer } from './components/common/Footer';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
-import { MobileDrawer } from './components/common/MobileDrawer';
+import { RequireRole, GuestOnly } from './components/common/RequireRole';
+import { RunningDogTransition } from './components/common/RunningDogTransition';
 
-// Pages
 import { HomePage } from './pages/HomePage';
 import { BrowsePetsPage } from './pages/BrowsePetsPage';
 import { PetDetailsPage } from './pages/PetDetailsPage';
@@ -22,54 +22,43 @@ import { DashboardPage } from './pages/DashboardPage';
 import { MessagesPage } from './pages/MessagesPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
-export const App: React.FC = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <div className="flex flex-col min-h-screen bg-[#F3E6E6] text-[#292323]">
-              {/* Top Navigation */}
-              <Navbar onOpenDrawer={() => setDrawerOpen(true)} />
-
-              {/* Mobile Slide-Out Drawer (Screen 3) */}
-              <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-
-              {/* Page View */}
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/browse" element={<BrowsePetsPage />} />
-                  <Route path="/pets/:id" element={<PetDetailsPage />} />
-                  <Route path="/favorites" element={<FavoritesPage />} />
-                  <Route path="/shop" element={<ShopPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/orders/:id/delivery" element={<DeliveryTrackingPage />} />
-                  <Route path="/shelters" element={<SheltersPage />} />
-                  <Route path="/shelters/:id" element={<ShelterDetailsPage />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/messages" element={<MessagesPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-              </main>
-
-              {/* Desktop Footer */}
-              <Footer />
-
-              {/* Mobile Bottom Navigation (Screens 4, 5, 6, 7, 8, 10) */}
-              <MobileBottomNav />
-            </div>
-          </CartProvider>
-        </FavoritesProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  );
-};
+export const App: React.FC = () => (
+  <BrowserRouter>
+    <RunningDogTransition />
+    <AuthProvider>
+      <FavoritesProvider>
+        <CartProvider>
+          <div className="flex flex-col min-h-screen bg-[#FCE8D0] text-[#3E1F1A] pb-16 md:pb-0">
+            <SiteHeader />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/browse" element={<BrowsePetsPage />} />
+                <Route path="/pets/:id" element={<PetDetailsPage />} />
+                <Route path="/favorites" element={<RequireRole roles={['adopter']}><FavoritesPage /></RequireRole>} />
+                <Route path="/shop" element={<ShopPage />} />
+                <Route path="/checkout" element={<RequireRole roles={['adopter']}><CheckoutPage /></RequireRole>} />
+                <Route path="/orders/:id/delivery" element={<RequireRole roles={['adopter', 'admin']}><DeliveryTrackingPage /></RequireRole>} />
+                <Route path="/shelters" element={<SheltersPage />} />
+                <Route path="/shelters/:id" element={<ShelterDetailsPage />} />
+                <Route path="/dashboard" element={<RequireRole><DashboardPage /></RequireRole>} />
+                <Route path="/profile" element={<RequireRole><ProfilePage /></RequireRole>} />
+                <Route path="/messages" element={<RequireRole roles={['adopter', 'owner', 'shelter']}><MessagesPage /></RequireRole>} />
+                <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
+                <Route path="/register" element={<GuestOnly><RegisterPage /></GuestOnly>} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </main>
+            <Footer />
+            <MobileBottomNav />
+          </div>
+        </CartProvider>
+      </FavoritesProvider>
+    </AuthProvider>
+  </BrowserRouter>
+);
 
 export default App;

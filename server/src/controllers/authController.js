@@ -24,7 +24,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'A user with this email address already exists' });
     }
 
-    const validRole = ['adopter', 'shelter', 'admin'].includes(role) ? role : 'adopter';
+    const validRole = ['adopter', 'owner', 'shelter', 'admin'].includes(role) ? role : 'adopter';
 
     const user = await repository.createUser({
       name,
@@ -81,6 +81,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    if (user.isSuspended) {
+      return res.status(403).json({ message: 'This account has been suspended. Contact an administrator.' });
+    }
+
     const token = generateToken(user);
     const { password: _, ...safeUser } = user.toObject ? user.toObject() : user;
 
@@ -126,12 +130,13 @@ export const updateProfile = async (req, res) => {
 export const lazyLogin = async (req, res) => {
   try {
     const { role = 'adopter', guestName } = req.body || {};
-    const validRole = ['adopter', 'shelter', 'admin'].includes(role) ? role : 'adopter';
+    const validRole = ['adopter', 'owner', 'shelter', 'admin'].includes(role) ? role : 'adopter';
 
     // Map role to standard default demo accounts
     const roleEmails = {
       adopter: 'adopter@pawconnect.org',
       shelter: 'shelter@pawconnect.org',
+      owner: 'owner@pawconnect.org',
       admin: 'admin@pawconnect.org',
     };
 
@@ -141,6 +146,40 @@ export const lazyLogin = async (req, res) => {
     // If specific email not found, search by role
     if (!user) {
       user = await repository.findUserByRole(validRole);
+    }
+
+    // Demo pet owner: create once, with one pet they want to rehome.
+    if (!user && validRole === 'owner') {
+      user = await repository.createUser({
+        name: 'Priya Sharma',
+        email: roleEmails.owner,
+        password: 'password123',
+        role: 'owner',
+        phone: '',
+        location: { city: 'Austin', state: 'TX' },
+        bio: 'Moving abroad and looking for a loving home for my dog, Coco.',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+      });
+      await repository.createPet({
+        name: 'Coco',
+        species: 'Dog',
+        breed: 'Chow Chow Mix',
+        age: 3,
+        gender: 'Female',
+        size: 'Medium',
+        weightKg: 11,
+        health: { vaccinated: true, spayedNeutered: true, specialNeeds: false, microchipped: true },
+        temperament: ['Friendly', 'Curious', 'Good with Kids'],
+        goodWith: { children: true, dogs: true, cats: false },
+        description:
+          'Coco is a sweet, fluffy cuddle-bug who loves walks and belly rubs. I am moving abroad and cannot take her with me, so I am looking for a caring family.',
+        photos: ['https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&w=800&q=80'],
+        location: { city: 'Austin', state: 'TX' },
+        adoptionFee: 0,
+        status: 'Available',
+        rehomingReason: 'I am moving abroad for work and cannot take Coco with me. She deserves a family who is home often.',
+        shelter: user._id,
+      });
     }
 
     // If still no user exists, provision a fresh guest account

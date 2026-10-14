@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['adopter', 'shelter', 'admin'],
+      enum: ['adopter', 'owner', 'shelter', 'admin'],
       default: 'adopter',
     },
     phone: {
@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
       default: '',
+    },
+    isSuspended: {
+      type: Boolean,
+      default: false,
     },
   },
   {

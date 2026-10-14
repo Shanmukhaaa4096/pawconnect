@@ -3,6 +3,7 @@ import { useSearchParams, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AdopterDashboard } from '../components/dashboard/AdopterDashboard';
 import { ShelterDashboard } from '../components/dashboard/ShelterDashboard';
+import { OwnerDashboard } from '../components/dashboard/OwnerDashboard';
 import { AdminDashboard } from '../components/dashboard/AdminDashboard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 
@@ -21,8 +22,9 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
-      {user.role === 'adopter' && <AdopterDashboard initialTab={currentTab} />}
+      {user.role === 'adopter' && <AdopterDashboard />}
       {user.role === 'shelter' && <ShelterDashboard />}
+      {user.role === 'owner' && <OwnerDashboard />}
       {user.role === 'admin' && <AdminDashboard />}
     </div>
   );

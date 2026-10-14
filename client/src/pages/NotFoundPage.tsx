@@ -6,7 +6,7 @@ export const NotFoundPage: React.FC = () => {
   return (
     <div
       className="min-h-[70vh] flex items-center justify-center px-4 py-16"
-      style={{ background: '#F7F5EF' }}
+      style={{ background: '#FCE8D0' }}
     >
       <div className="max-w-md w-full text-center space-y-6">
 
@@ -14,11 +14,11 @@ export const NotFoundPage: React.FC = () => {
         <div>
           <p
             style={{
-              fontFamily: "'Lora', serif",
+              fontFamily: "'Fraunces', serif",
               fontSize: 'clamp(5rem, 15vw, 9rem)',
               fontWeight: 600,
               lineHeight: 1,
-              color: '#EAECE4',
+              color: '#F8DDBF',
               letterSpacing: '-0.04em',
             }}
           >
@@ -30,16 +30,16 @@ export const NotFoundPage: React.FC = () => {
           <p className="section-label">Page not found</p>
           <h1
             style={{
-              fontFamily: "'Lora', serif",
+              fontFamily: "'Fraunces', serif",
               fontWeight: 600,
               fontSize: '1.75rem',
-              color: '#252825',
+              color: '#3E1F1A',
               letterSpacing: '-0.02em',
             }}
           >
             This page wandered off
           </h1>
-          <p className="text-sm leading-relaxed" style={{ color: '#6B7068', maxWidth: '36ch', margin: '0 auto' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#8A5A48', maxWidth: '36ch', margin: '0 auto' }}>
             It may have found its forever home somewhere else. Let us guide you back.
           </p>
         </div>

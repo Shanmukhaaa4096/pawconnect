@@ -19,7 +19,7 @@ const applicationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Approved', 'Rejected', 'Completed'],
+      enum: ['Pending', 'Approved', 'Rejected', 'Completed', 'Withdrawn'],
       default: 'Pending',
     },
     questionnaire: {
@@ -51,6 +51,14 @@ const applicationSchema = new mongoose.Schema(
     shelterNotes: {
       type: String,
       default: '',
+    },
+    // Handover progress, ticked by the owner/shelter after approval
+    handover: {
+      meetGreet: { type: Boolean, default: false },
+      homeCheck: { type: Boolean, default: false },
+      vetRecords: { type: Boolean, default: false },
+      agreement: { type: Boolean, default: false },
+      handoverDate: { type: Date, default: null },
     },
     timeline: [
       {
