@@ -1,432 +1,338 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
-import { Pet } from '../types';
+import {
+  Search,
+  MapPin,
+  ArrowRight,
+  ShieldCheck,
+  Dog,
+  Cat,
+  Bird,
+  Rabbit,
+  PawPrint,
+  Heart,
+  ShoppingBag,
+  Sparkles,
+  ChevronRight,
+} from 'lucide-react';
+import { Pet, Product } from '../types';
 import { api } from '../services/api';
 import { PetCard } from '../components/common/PetCard';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
-import { MaskedHeading } from '../components/common/MaskedHeading';
-
-/* ─── Hero image (editorial photography generated asset) ─── */
-const HERO_IMG = 'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?auto=format&fit=crop&w=1000&q=85';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [featuredPets, setFeaturedPets] = useState<Pet[]>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchSpecies, setSearchSpecies] = useState('All');
-  const [searchLocation, setSearchLocation] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  // Categories matching Screens 4 & 5 in reference mockup
+  const categories = [
+    { id: 'All', label: 'All', icon: PawPrint },
+    { id: 'Dog', label: 'Dogs', icon: Dog },
+    { id: 'Cat', label: 'Cats', icon: Cat },
+    { id: 'Bird', label: 'Birds', icon: Bird },
+    { id: 'Rabbit', label: 'Rabbits', icon: Rabbit },
+  ];
 
   useEffect(() => {
-    const fetchFeatured = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await api.getPets();
-        setFeaturedPets(res.pets.slice(0, 6));
+        const [petsRes, shopRes] = await Promise.all([
+          api.getPets(),
+          api.getProducts().catch(() => ({ products: [] })),
+        ]);
+        setPets(petsRes.pets || []);
+        setFeaturedProducts(shopRes.products?.slice(0, 4) || []);
       } catch (err) {
-        console.error('Failed to load featured pets:', err);
+        console.error('Failed to load home data:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchFeatured();
+    fetchData();
   }, []);
 
-  const handleHeroSearch = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (searchSpecies !== 'All') params.append('species', searchSpecies);
-    if (searchLocation.trim()) params.append('location', searchLocation.trim());
+    if (searchTerm.trim()) params.append('search', searchTerm.trim());
+    if (selectedCategory !== 'All') params.append('species', selectedCategory);
     navigate(`/browse?${params.toString()}`);
   };
 
-  const categories = [
-    { label: 'Dogs',    species: 'Dog',    desc: 'Loyal companions' },
-    { label: 'Cats',    species: 'Cat',    desc: 'Independent spirits' },
-    { label: 'Rabbits', species: 'Rabbit', desc: 'Gentle & curious' },
-    { label: 'Birds',   species: 'Bird',   desc: 'Vibrant personalities' },
-  ];
-
-  const steps = [
-    {
-      num: '01',
-      title: 'Find your match',
-      desc: 'Filter by species, temperament, activity level, and distance to find a pet suited to your lifestyle.',
-    },
-    {
-      num: '02',
-      title: 'Apply & connect',
-      desc: 'Submit a simple questionnaire and chat directly with shelter volunteers in real time.',
-    },
-    {
-      num: '03',
-      title: 'Welcome them home',
-      desc: 'Schedule a meet and greet. When approved, celebrate your new family member.',
-    },
-  ];
+  const filteredPets = pets.filter((pet) => {
+    const matchesCategory = selectedCategory === 'All' || pet.species.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch =
+      !searchTerm.trim() ||
+      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pet.breed.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div>
-
+    <div className="min-h-screen bg-[#F3E6E6] text-[#292323] pb-12">
       {/* ─────────────────────────────────────────────────
-          HERO — editorial split layout
+          TOP SEARCH BAR (Matches Screens 4 & 5)
       ───────────────────────────────────────────────── */}
-      <section style={{ background: '#F7F5EF' }} className="pt-12 pb-16 lg:pt-16 lg:pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-
-            {/* Left — copy & search */}
-            <div className="lg:col-span-6 xl:col-span-5 space-y-8">
-
-              {/* Eyebrow */}
-              <p className="section-label">Pet Adoption Platform</p>
-
-              {/* Headline with MaskedHeading */}
-              <div className="max-w-[14ch]">
-                <MaskedHeading
-                  text="Find Your Forever Friend"
-                  tag="h1"
-                  mediaType="image"
-                  src="/hero-dog.jpg"
-                  reveal="rise"
-                  trigger="view"
-                  align="left"
-                  weight={700}
-                  duration={0.9}
-                  stagger={0.06}
-                  parallax={0}
-                  drift={0}
-                  fillScale={1.2}
-                  brightness={0.9}
-                  saturation={0.9}
-                  tracking={-0.02}
-                  lineHeight={1.08}
-                  textScale={0.088}
-                  className="masked-heading--responsive"
-                  style={{
-                    fontFamily: "'Lora', serif",
-                    color: '#252825',
-                  }}
-                />
-              </div>
-
-              {/* Description */}
-              <p
-                style={{
-                  fontSize: '1.0625rem',
-                  lineHeight: 1.65,
-                  color: '#6B7068',
-                  maxWidth: '42ch',
-                }}
-              >
-                Connect with verified shelters and ethical rescues. Browse
-                thoughtfully vetted profiles, submit adoption requests, and chat
-                directly with care teams.
-              </p>
-
-              {/* Search form */}
-              <form
-                id="pet-search-form"
-                onSubmit={handleHeroSearch}
-                className="space-y-3"
-              >
-                <div
-                  className="flex flex-col sm:flex-row gap-2.5 p-2 rounded-lg border border-[#DDE0D8] bg-white"
-                  style={{ boxShadow: '0 1px 4px rgba(37,40,37,0.06)' }}
-                >
-                  {/* Species selector */}
-                  <div className="flex items-center gap-2 flex-1 px-3 py-1.5 rounded border border-[#E8EBE3] bg-[#F7F5EF]">
-                    <svg width="16" height="16" viewBox="0 0 32 32" fill="none" aria-hidden="true" className="shrink-0">
-                      <ellipse cx="7"  cy="11" rx="3"   ry="4"   fill="#263A32" />
-                      <ellipse cx="13" cy="7"  rx="3"   ry="4.5" fill="#263A32" />
-                      <ellipse cx="19" cy="7"  rx="3"   ry="4.5" fill="#263A32" />
-                      <ellipse cx="25" cy="11" rx="3"   ry="4"   fill="#263A32" />
-                      <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="#263A32"/>
-                    </svg>
-                    <select
-                      id="search-species"
-                      value={searchSpecies}
-                      onChange={(e) => setSearchSpecies(e.target.value)}
-                      className="w-full bg-transparent text-sm font-medium focus:outline-none cursor-pointer"
-                      style={{ color: '#252825' }}
-                    >
-                      <option value="All">All pet types</option>
-                      <option value="Dog">Dogs</option>
-                      <option value="Cat">Cats</option>
-                      <option value="Rabbit">Rabbits</option>
-                      <option value="Bird">Birds</option>
-                    </select>
-                  </div>
-
-                  {/* Location field */}
-                  <div className="flex items-center gap-2 flex-1 px-3 py-1.5 rounded border border-[#E8EBE3] bg-[#F7F5EF]">
-                    <MapPin className="w-4 h-4 shrink-0" style={{ color: '#9BA097' }} />
-                    <input
-                      id="search-location"
-                      type="text"
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      placeholder="City or state"
-                      className="w-full bg-transparent text-sm focus:outline-none"
-                      style={{ color: '#252825' }}
-                    />
-                  </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    id="search-submit-btn"
-                    className="btn-primary shrink-0 sm:px-6"
-                    style={{ height: '2.625rem', borderRadius: '0.375rem' }}
-                  >
-                    <Search className="w-4 h-4" />
-                    <span>Search</span>
-                  </button>
-                </div>
-
-                {/* Quick filters */}
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <span style={{ color: '#9BA097', fontWeight: 500 }}>Browse:</span>
-                  {[
-                    { to: '/browse?species=Dog&ageGroup=Baby', label: 'Puppies' },
-                    { to: '/browse?species=Cat',               label: 'Cats' },
-                    { to: '/browse?gender=Female',             label: 'Female pets' },
-                    { to: '/browse',                           label: 'All animals' },
-                  ].map(({ to, label }) => (
-                    <Link
-                      key={to}
-                      to={to}
-                      className="px-3 py-1 rounded-full border border-[#DDE0D8] font-medium transition-colors hover:border-[#263A32] hover:text-[#263A32]"
-                      style={{ color: '#6B7068', background: 'white' }}
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              </form>
-
-              {/* Trust indicator — inline, understated */}
-              <div className="flex items-center gap-2 pt-1">
-                <ShieldCheck className="w-4 h-4 shrink-0" style={{ color: '#263A32' }} />
-                <p className="text-xs" style={{ color: '#6B7068' }}>
-                  Every shelter is verified and ethically accredited before listing.
-                </p>
-              </div>
-            </div>
-
-            {/* Right — editorial photography */}
-            <div className="lg:col-span-6 xl:col-span-7 relative">
-              <div
-                className="relative overflow-hidden"
-                style={{
-                  borderRadius: '0.75rem',
-                  aspectRatio: '4/5',
-                  maxHeight: '640px',
-                  background: '#EAECE4',
-                }}
-              >
-                <img
-                  src={HERO_IMG}
-                  alt="Golden retriever dog sitting calmly in a warm, naturally lit room"
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: 'center top' }}
-                />
-                {/* Minimal, tasteful caption strip at bottom */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 px-5 py-4"
-                  style={{ background: 'linear-gradient(to top, rgba(37,40,37,0.55) 0%, transparent 100%)' }}
-                >
-                  <p className="text-white text-sm font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Partnered with verified shelters across the country
-                  </p>
-                </div>
-              </div>
-
-              {/* Accent line decoration */}
-              <div
-                className="absolute -bottom-4 -right-4 -z-10 hidden lg:block"
-                style={{
-                  width: '60%',
-                  height: '60%',
-                  border: '1px solid #DDE0D8',
-                  borderRadius: '0.75rem',
-                }}
-              />
-            </div>
-          </div>
-        </div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-4">
+        <form onSubmit={handleSearchSubmit} className="relative max-w-2xl mx-auto">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search pet to adopt (e.g. Milo, Golden Retriever)..."
+            className="w-full h-12 pl-12 pr-28 rounded-full bg-white border border-[#EAD2D3] text-sm text-[#292323] placeholder-[#A89898] shadow-sm focus:outline-none focus:border-[#C96366] focus:ring-2 focus:ring-[#C96366]/20 transition"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#C96366]" />
+          <button
+            type="submit"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-2 bg-[#C96366] hover:bg-[#98494B] text-white text-xs font-bold rounded-full shadow transition"
+          >
+            Search
+          </button>
+        </form>
       </section>
 
       {/* ─────────────────────────────────────────────────
-          PET CATEGORIES — understated grid
+          COMMUNITY HERO BANNER (Matches Screens 4 & 5)
       ───────────────────────────────────────────────── */}
-      <section className="py-14" style={{ background: '#EAECE4' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <p className="section-label">Browse by type</p>
-              <h2 style={{ fontFamily: "'Lora', serif", fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 600, color: '#252825' }}>
-                Who are you looking for?
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            {categories.map((cat) => (
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#C96366] to-[#98494B] text-white p-6 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="max-w-lg space-y-3 z-10 text-center md:text-left">
+            <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-[11px] font-black uppercase tracking-wider text-white">
+              🐾 Verified Rescue Network
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+              Join Our Animal Lovers Community
+            </h1>
+            <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-medium">
+              Connect with verified no-kill shelters, find your perfect companion, and order nutritious food and accessories with fast doorstep delivery.
+            </p>
+            <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
               <Link
-                key={cat.species}
-                to={`/browse?species=${cat.species}`}
-                className="group block bg-white rounded-lg border border-[#DDE0D8] p-5 transition-all hover:border-[#263A32] hover:shadow-md"
-                style={{ textDecoration: 'none' }}
+                to="/browse"
+                className="px-6 py-2.5 rounded-full bg-white text-[#98494B] text-xs font-extrabold shadow hover:bg-white/90 transition inline-flex items-center gap-2"
               >
-                <h3 className="font-semibold text-base mb-1 transition-colors group-hover:text-[#263A32]" style={{ color: '#252825' }}>
-                  {cat.label}
-                </h3>
-                <p className="text-sm" style={{ color: '#9BA097' }}>{cat.desc}</p>
-                <div className="flex items-center gap-1 mt-3 text-xs font-medium text-[#263A32] opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span>Browse all</span>
-                  <ArrowRight className="w-3 h-3" />
-                </div>
+                <span>Adopt a Pet</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
+              <Link
+                to="/shop"
+                className="px-6 py-2.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold border border-white/40 transition inline-flex items-center gap-2"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>Pet Shop</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Banner Photo */}
+          <div className="relative shrink-0 w-48 sm:w-64 aspect-4/3 rounded-2xl overflow-hidden shadow-xl border-2 border-white/30">
+            <img
+              src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=600&q=80"
+              alt="Happy girl with cute puppy"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────
-          FEATURED PETS
+          CATEGORY PILLS (Matches Screens 4 & 5)
       ───────────────────────────────────────────────── */}
-      <section className="py-16" style={{ background: '#F7F5EF' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-            <div>
-              <p className="section-label">Available now</p>
-              <h2 style={{ fontFamily: "'Lora', serif", fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 600, color: '#252825' }}>
-                Adoptable pets
-              </h2>
-              <p className="mt-2 text-sm" style={{ color: '#6B7068', maxWidth: '44ch' }}>
-                Vetted, vaccinated companions waiting for a permanent home.
-              </p>
-            </div>
-            <Link
-              to="/browse"
-              className="btn-ghost shrink-0"
-              style={{ textDecoration: 'none' }}
-            >
-              <span>See all pets</span>
-              <ArrowRight className="w-4 h-4 arrow" />
-            </Link>
-          </div>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base sm:text-lg font-extrabold text-[#292323] flex items-center gap-2">
+            <span>Pet Categories</span>
+          </h2>
+          <Link
+            to="/browse"
+            className="text-xs font-bold text-[#C96366] hover:text-[#98494B] flex items-center gap-1"
+          >
+            <span>View All</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
 
-          {loading ? (
-            <LoadingSpinner label="Loading available pets…" />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-              {featuredPets.map((pet) => (
-                <PetCard key={pet._id} pet={pet} />
-              ))}
-            </div>
-          )}
+        <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`flex flex-col items-center justify-center gap-1.5 min-w-[4.75rem] h-20 rounded-2xl border transition-all cursor-pointer shadow-xs ${
+                  isSelected
+                    ? 'bg-[#C96366] text-white border-[#C96366] shadow-md scale-105'
+                    : 'bg-white text-[#736363] border-[#EAD2D3] hover:border-[#C96366] hover:text-[#C96366]'
+                }`}
+              >
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
+                    isSelected ? 'bg-white/20 text-white' : 'bg-[#F3E6E6] text-[#C96366]'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="text-xs font-extrabold">{cat.label}</span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────
-          HOW IT WORKS — dark forest section
+          PETS GRID (Matches Screens 4 & 5)
       ───────────────────────────────────────────────── */}
-      <section
-        id="how-it-works"
-        className="py-16 sm:py-20"
-        style={{ background: '#263A32' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl mb-12">
-            <p className="section-label" style={{ color: '#C8795A' }}>The process</p>
-            <h2
-              style={{
-                fontFamily: "'Lora', serif",
-                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-                fontWeight: 600,
-                color: '#F7F5EF',
-                lineHeight: 1.15,
-              }}
-            >
-              Adoption made simple
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg sm:text-xl font-extrabold text-[#292323]">
+              {selectedCategory === 'All' ? 'Available for Adoption' : `${selectedCategory}s Near You`}
             </h2>
-            <p className="mt-3 text-sm leading-relaxed" style={{ color: 'rgba(247,245,239,0.65)', maxWidth: '42ch' }}>
-              We streamline the journey so you spend less time on paperwork and more time bonding with your companion.
+            <p className="text-xs text-[#736363] font-medium mt-0.5">
+              Showing {filteredPets.length} loving companions looking for a home
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {steps.map(({ num, title, desc }) => (
+          <Link
+            to="/browse"
+            className="text-xs font-extrabold px-3 py-1.5 rounded-full bg-white border border-[#EAD2D3] text-[#C96366] hover:bg-[#C96366] hover:text-white transition shadow-2xs"
+          >
+            Filter & Sort
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="py-12 flex justify-center">
+            <LoadingSpinner label="Finding adoptable pets..." />
+          </div>
+        ) : filteredPets.length === 0 ? (
+          <div className="bg-white rounded-3xl p-10 text-center max-w-md mx-auto border border-[#EAD2D3] shadow-sm my-6">
+            <div className="w-14 h-14 rounded-full bg-[#FDEEEF] text-[#C96366] flex items-center justify-center mx-auto mb-3">
+              <PawPrint className="w-7 h-7" />
+            </div>
+            <h3 className="font-extrabold text-base text-[#292323]">No pets found</h3>
+            <p className="text-xs text-[#736363] mt-1">
+              Try selecting "All" categories or adjusting your search keywords.
+            </p>
+            <button
+              onClick={() => {
+                setSelectedCategory('All');
+                setSearchTerm('');
+              }}
+              className="mt-4 px-5 py-2 text-xs font-extrabold bg-[#C96366] text-white rounded-full shadow hover:bg-[#98494B] transition"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {filteredPets.map((pet) => (
+              <PetCard key={pet._id} pet={pet} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ─────────────────────────────────────────────────
+          PET SUPPLIES & FOOD HIGHLIGHT (Screens 8 & 9)
+      ───────────────────────────────────────────────── */}
+      {featuredProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#C96366] bg-white px-2.5 py-0.5 rounded-full border border-[#EAD2D3]">
+                Doorstep Delivery
+              </span>
+              <h2 className="text-lg sm:text-xl font-extrabold text-[#292323] mt-1">
+                Pet Food & Accessories
+              </h2>
+            </div>
+            <Link
+              to="/shop"
+              className="text-xs font-bold text-[#C96366] hover:text-[#98494B] flex items-center gap-1"
+            >
+              <span>Visit Shop</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {featuredProducts.map((prod) => (
               <div
-                key={num}
-                className="border-t pt-6"
-                style={{ borderColor: 'rgba(247,245,239,0.15)' }}
+                key={prod._id}
+                className="bg-white rounded-2xl p-3 border border-[#EAD2D3] shadow-sm hover:shadow-md transition flex flex-col justify-between"
               >
-                <span
-                  className="block text-5xl font-light mb-4"
-                  style={{
-                    fontFamily: "'Lora', serif",
-                    color: '#C8795A',
-                    lineHeight: 1,
-                    fontStyle: 'italic',
-                  }}
-                >
-                  {num}
-                </span>
-                <h3 className="text-lg font-semibold mb-2" style={{ color: '#F7F5EF', fontFamily: "'Inter', sans-serif" }}>
-                  {title}
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(247,245,239,0.6)' }}>
-                  {desc}
-                </p>
+                <div className="aspect-square rounded-xl overflow-hidden bg-[#FDEEEF] mb-2.5">
+                  <img
+                    src={prod.image}
+                    alt={prod.name}
+                    className="w-full h-full object-cover hover:scale-105 transition"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-extrabold text-xs text-[#292323] truncate">{prod.name}</h4>
+                  <p className="text-[11px] text-[#736363] mt-0.5">{prod.category}</p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F4E4E4]">
+                    <span className="text-xs font-black text-[#C96366]">${prod.price.toFixed(2)}</span>
+                    <Link
+                      to="/shop"
+                      className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FDEEEF] text-[#C96366] hover:bg-[#C96366] hover:text-white transition"
+                    >
+                      Buy
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─────────────────────────────────────────────────
+          HOW ADOPTION WORKS
+      ───────────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#EAD2D3] shadow-sm">
+          <div className="text-center max-w-xl mx-auto mb-8">
+            <span className="text-[11px] font-black uppercase tracking-wider text-[#C96366]">Simple & Safe</span>
+            <h2 className="text-xl sm:text-2xl font-black text-[#292323] mt-1">How Adoption Works on PawConnect</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                step: '01',
+                title: 'Find Your Pet',
+                desc: 'Browse verified shelter animals filtered by species, age, temperament, and compatibility.',
+              },
+              {
+                step: '02',
+                title: 'Apply & Chat Online',
+                desc: 'Submit your adoption questionnaire and chat directly with shelter rescue teams in real-time.',
+              },
+              {
+                step: '03',
+                title: 'Meet & Welcome Home',
+                desc: 'Complete reference checks, visit for a friendly meet & greet, and welcome your new best friend.',
+              },
+            ].map((s) => (
+              <div key={s.step} className="p-5 rounded-2xl bg-[#F3E6E6]/60 border border-[#EAD2D3] space-y-2">
+                <span className="text-2xl font-black text-[#C96366]">{s.step}</span>
+                <h4 className="font-extrabold text-sm text-[#292323]">{s.title}</h4>
+                <p className="text-xs text-[#736363] leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* ─────────────────────────────────────────────────
-          SHELTER CTA — clean, restrained
-      ───────────────────────────────────────────────── */}
-      <section className="py-16" style={{ background: '#F7F5EF' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 px-8 sm:px-12 py-10 rounded-lg border border-[#DDE0D8]"
-            style={{ background: '#EAECE4' }}
-          >
-            <div className="max-w-xl space-y-3">
-              <p className="section-label">For organisations</p>
-              <h3
-                style={{
-                  fontFamily: "'Lora', serif",
-                  fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
-                  fontWeight: 600,
-                  color: '#252825',
-                  lineHeight: 1.2,
-                }}
-              >
-                Are you a licensed shelter or rescue organisation?
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#6B7068' }}>
-                Join PawConnect at no cost. List your animals, manage applicant
-                screening, and communicate seamlessly through a unified portal.
-              </p>
-            </div>
-
-            <Link
-              to="/register"
-              className="btn-primary shrink-0"
-              style={{ textDecoration: 'none' }}
-            >
-              <span>Register your shelter</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 };

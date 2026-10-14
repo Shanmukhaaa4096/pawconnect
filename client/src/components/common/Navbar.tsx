@@ -2,34 +2,52 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Heart,
-  MessageSquare,
+  MessageCircle,
   LayoutDashboard,
   LogOut,
   Menu,
-  X,
   ChevronDown,
-  ShieldCheck,
   Building2,
+  ShoppingBag,
+  MapPin,
+  Sparkles,
+  User as UserIcon,
+  Zap,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext';
+import { useCart } from '../../context/CartContext';
 import { UserRole } from '../../types';
 
-export const Navbar: React.FC = () => {
-  const { user, logout, demoLogin } = useAuth();
+interface NavbarProps {
+  onOpenDrawer?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenDrawer }) => {
+  const { user, logout, demoLogin, lazyLogin } = useAuth();
   const { favorites } = useFavorites();
+  const { totalCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [demoDropdownOpen, setDemoDropdownOpen] = useState(false);
+  const [locationCity, setLocationCity] = useState('Austin, TX');
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+
+  const handleLazyLogin = async (role: UserRole = 'adopter') => {
+    try {
+      await lazyLogin(role);
+      navigate(role === 'shelter' ? '/dashboard' : role === 'admin' ? '/dashboard' : '/browse');
+    } catch (err: any) {
+      alert(`Lazy login failed: ${err.message}`);
+    }
+  };
 
   const handleDemo = async (role: UserRole) => {
     try {
       await demoLogin(role);
       setDemoDropdownOpen(false);
-      setMobileMenuOpen(false);
       navigate(role === 'shelter' ? '/dashboard' : role === 'admin' ? '/dashboard' : '/browse');
     } catch (err: any) {
       alert(`Demo login failed: ${err.message}`);
@@ -45,311 +63,289 @@ export const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="sticky top-0 z-40 editorial-nav transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <>
+      <header className="sticky top-0 z-30 bg-[#F3E6E6]/95 backdrop-blur-md border-b border-[#EAD2D3] transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
 
-          {/* Wordmark */}
-          <Link to="/" className="flex items-center gap-3 group">
-            {/* Paw icon — simple SVG in forest green */}
-            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <ellipse cx="7"  cy="11" rx="3"   ry="4"   fill="#263A32" />
-              <ellipse cx="13" cy="7"  rx="3"   ry="4.5" fill="#263A32" />
-              <ellipse cx="19" cy="7"  rx="3"   ry="4.5" fill="#263A32" />
-              <ellipse cx="25" cy="11" rx="3"   ry="4"   fill="#263A32" />
-              <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="#263A32"/>
-            </svg>
-            <span style={{ fontFamily: "'Lora', serif", fontWeight: 600, fontSize: '1.125rem', color: '#252825', letterSpacing: '-0.01em' }}>
-              Paw<span style={{ color: '#263A32' }}>Connect</span>
-            </span>
-          </Link>
-
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-1">
-            {[
-              { to: '/browse', label: 'Find a Pet' },
-              { to: '/shelters', label: 'Shelters' },
-              { to: '/#how-it-works', label: 'How It Works' },
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`px-3.5 py-2 rounded text-sm font-medium transition-colors duration-150 ${
-                  isActive(to)
-                    ? 'text-[#263A32] bg-[#EAECE4]'
-                    : 'text-[#6B7068] hover:text-[#252825] hover:bg-[#EAECE4]'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-2.5">
-            {/* Demo Switcher */}
-            <div className="relative">
+            {/* Left: Mobile Hamburger OR Desktop Brand */}
+            <div className="flex items-center gap-3">
+              {/* Mobile Drawer Trigger (matches Screen 4 & 5) */}
               <button
                 type="button"
-                onClick={() => setDemoDropdownOpen(!demoDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded border border-[#DDE0D8] text-[#6B7068] hover:border-[#263A32] hover:text-[#252825] transition-colors bg-white"
+                onClick={onOpenDrawer}
+                className="md:hidden p-2 -ml-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/60 transition"
+                aria-label="Open mobile menu"
               >
-                <span>Demo</span>
-                <ChevronDown className="w-3 h-3 opacity-60" />
+                <Menu className="w-6 h-6" />
               </button>
 
-              {demoDropdownOpen && (
-                <div
-                  className="absolute right-0 mt-2 w-60 dropdown-panel p-1.5 z-50"
-                  onMouseLeave={() => setDemoDropdownOpen(false)}
-                >
-                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#9BA097' }}>
-                    Switch Demo Persona
-                  </p>
-                  {[
-                    { role: 'adopter' as UserRole, label: 'Adopter Demo',      sub: 'Sarah Jenkins · Austin, TX' },
-                    { role: 'shelter' as UserRole, label: 'Shelter / NGO',     sub: 'Haven Animal Rescue' },
-                    { role: 'admin'   as UserRole, label: 'Admin Demo',        sub: 'PawConnect Moderator' },
-                  ].map(({ role, label, sub }) => (
-                    <button
-                      key={role}
-                      onClick={() => handleDemo(role)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm text-left transition-colors hover:bg-[#EAECE4]"
-                      style={{ color: '#252825' }}
-                    >
-                      <span className="w-7 h-7 rounded flex items-center justify-center shrink-0 text-white text-xs font-semibold" style={{ background: '#263A32' }}>
-                        {role[0].toUpperCase()}
-                      </span>
-                      <div>
-                        <div className="font-medium text-[13px]">{label}</div>
-                        <div className="text-[11px]" style={{ color: '#9BA097' }}>{sub}</div>
-                      </div>
-                    </button>
-                  ))}
+              {/* Brand Logo (coral styling) */}
+              <Link to="/" className="flex items-center gap-2.5 group">
+                <div className="w-9 h-9 rounded-2xl bg-[#C96366] flex items-center justify-center text-white shadow-md shadow-[#C96366]/25 group-hover:scale-105 transition">
+                  <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="7" cy="11" rx="3" ry="4" fill="currentColor" />
+                    <ellipse cx="13" cy="7" rx="3" ry="4.5" fill="currentColor" />
+                    <ellipse cx="19" cy="7" rx="3" ry="4.5" fill="currentColor" />
+                    <ellipse cx="25" cy="11" rx="3" ry="4" fill="currentColor" />
+                    <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="currentColor" />
+                  </svg>
                 </div>
-              )}
+                <div className="flex flex-col">
+                  <span className="font-extrabold text-lg text-[#292323] tracking-tight leading-none">
+                    Paw<span className="text-[#C96366]">Connect</span>
+                  </span>
+                  <span className="text-[10px] text-[#736363] font-bold tracking-wider uppercase hidden sm:block">
+                    Pet Adoption & Supplies
+                  </span>
+                </div>
+              </Link>
             </div>
 
-            {user ? (
-              <>
-                {user.role === 'adopter' && (
-                  <Link
-                    to="/dashboard?tab=favorites"
-                    className="relative p-2 rounded text-[#6B7068] hover:text-[#263A32] hover:bg-[#EAECE4] transition-colors"
-                    title="My Favourites"
-                  >
-                    <Heart className="w-4.5 h-4.5" style={{ width: '1.125rem', height: '1.125rem' }} />
-                    {favorites.length > 0 && (
-                      <span className="absolute top-0.5 right-0.5 h-3.5 min-w-3.5 px-0.5 rounded-full bg-[#C8795A] text-white text-[8px] font-semibold flex items-center justify-center">
-                        {favorites.length}
-                      </span>
-                    )}
-                  </Link>
+            {/* Center: Location Pill (Reference Screen 4, 5, 8, 9) */}
+            <button
+              type="button"
+              onClick={() => setLocationModalOpen(true)}
+              className="flex flex-col items-center px-3 py-1 rounded-xl hover:bg-white/60 transition group cursor-pointer"
+              title="Click to change location"
+            >
+              <span className="text-[10px] text-[#736363] font-bold uppercase tracking-wider">Location</span>
+              <div className="flex items-center gap-1 text-xs sm:text-sm font-extrabold text-[#C96366] group-hover:text-[#98494B]">
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate max-w-[120px] sm:max-w-none">{locationCity}</span>
+              </div>
+            </button>
+
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1">
+              {[
+                { to: '/browse', label: 'Adopt Pets' },
+                { to: '/shop', label: 'Pet Shop' },
+                { to: '/shelters', label: 'Shelters' },
+              ].map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    isActive(to)
+                      ? 'bg-[#C96366] text-white shadow-sm'
+                      : 'text-[#292323] hover:text-[#C96366] hover:bg-white/80'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Right: Actions, Cart & User Profile */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Desktop Favorites link */}
+              <Link
+                to="/favorites"
+                className={`hidden md:flex items-center justify-center p-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/80 transition relative ${
+                  isActive('/favorites') ? 'bg-white text-[#C96366]' : ''
+                }`}
+                title="Your saved favorites"
+              >
+                <Heart className="w-5 h-5" />
+                {favorites.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#C96366] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                    {favorites.length}
+                  </span>
                 )}
+              </Link>
 
-                <Link
-                  to="/messages"
-                  className="p-2 rounded text-[#6B7068] hover:text-[#263A32] hover:bg-[#EAECE4] transition-colors"
-                  title="Messages"
+              {/* Shop / Cart Icon */}
+              <Link
+                to="/shop"
+                className="flex items-center justify-center p-2 rounded-xl text-[#292323] hover:text-[#C96366] hover:bg-white/80 transition relative"
+                title="Pet Shop Cart"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {totalCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#C96366] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow">
+                    {totalCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Demo Switcher */}
+              <div className="relative hidden lg:block">
+                <button
+                  type="button"
+                  onClick={() => setDemoDropdownOpen(!demoDropdownOpen)}
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full bg-white border border-[#EAD2D3] text-[#736363] hover:text-[#C96366] transition shadow-xs"
                 >
-                  <MessageSquare style={{ width: '1.125rem', height: '1.125rem' }} />
-                </Link>
+                  <span>Demo Switcher</span>
+                  <ChevronDown className="w-3 h-3 opacity-60" />
+                </button>
 
-                <Link
-                  to="/dashboard"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#DDE0D8] text-xs font-medium text-[#252825] hover:bg-[#EAECE4] transition-colors"
-                >
-                  <LayoutDashboard style={{ width: '0.875rem', height: '0.875rem' }} />
-                  <span>Dashboard</span>
-                </Link>
+                {demoDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-[#EAD2D3] py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#A89898]">
+                      Switch Role
+                    </div>
+                    <button
+                      onClick={() => handleDemo('adopter')}
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                    >
+                      🐶 Sarah Jenkins (Adopter)
+                    </button>
+                    <button
+                      onClick={() => handleDemo('shelter')}
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                    >
+                      🏡 Haven Rescue (Shelter)
+                    </button>
+                    <button
+                      onClick={() => handleDemo('admin')}
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366] transition"
+                    >
+                      🛡️ Platform Admin
+                    </button>
+                  </div>
+                )}
+              </div>
 
-                {/* Profile Dropdown */}
+              {/* User Avatar & Dropdown */}
+              {user ? (
                 <div className="relative">
                   <button
-                    type="button"
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                    className="flex items-center gap-2 p-1 pl-2 rounded-full border border-[#DDE0D8] hover:border-[#263A32] transition-colors bg-white"
+                    className="flex items-center gap-2 p-1 rounded-full hover:bg-white/80 transition"
                   >
-                    <span className="text-xs font-medium text-[#252825] max-w-[80px] truncate hidden lg:inline">
-                      {user.name}
+                    <div className="relative">
+                      <img
+                        src={
+                          user.avatar ||
+                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+                        }
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover border-2 border-[#C96366]"
+                      />
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
+                    </div>
+                    <span className="hidden sm:block text-xs font-bold text-[#292323] max-w-[100px] truncate">
+                      {user.name.split(' ')[0]}
                     </span>
-                    <img
-                      src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
-                      alt={user.name}
-                      className="w-7 h-7 rounded-full object-cover"
-                    />
                   </button>
 
                   {profileDropdownOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-56 dropdown-panel p-1.5 z-50"
-                      onMouseLeave={() => setProfileDropdownOpen(false)}
-                    >
-                      <div className="px-3 py-2.5 border-b border-[#E8EBE3] mb-1">
-                        <p className="text-sm font-semibold" style={{ color: '#252825' }}>{user.name}</p>
-                        <p className="text-xs truncate mt-0.5" style={{ color: '#9BA097' }}>{user.email}</p>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 mt-1.5 rounded text-[10px] font-medium bg-[#EAECE4] text-[#263A32]">
-                          {user.role === 'shelter' && <Building2 className="w-3 h-3" />}
-                          {user.role === 'admin'   && <ShieldCheck className="w-3 h-3" />}
-                          {user.role === 'adopter' && <Heart className="w-3 h-3" />}
-                          {user.role} account
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-[#EAD2D3] py-2 z-50 animate-in fade-in zoom-in-95">
+                      <div className="px-4 py-2 border-b border-[#F4E4E4]">
+                        <p className="text-xs font-extrabold text-[#292323] truncate">{user.name}</p>
+                        <p className="text-[11px] text-[#736363] truncate">{user.email}</p>
+                        <span className="inline-block mt-1 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded bg-[#FDEEEF] text-[#C96366]">
+                          {user.role}
                         </span>
                       </div>
-
                       <Link
                         to="/dashboard"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 rounded text-sm font-medium text-[#6B7068] hover:bg-[#EAECE4] hover:text-[#252825] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
                       >
                         <LayoutDashboard className="w-4 h-4" />
-                        My Dashboard
+                        <span>Dashboard & Applications</span>
                       </Link>
-
                       <Link
                         to="/messages"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 rounded text-sm font-medium text-[#6B7068] hover:bg-[#EAECE4] hover:text-[#252825] transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
                       >
-                        <MessageSquare className="w-4 h-4" />
-                        Messages
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Messages</span>
                       </Link>
-
+                      <Link
+                        to="/favorites"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-[#292323] hover:bg-[#FDEEEF] hover:text-[#C96366]"
+                      >
+                        <Heart className="w-4 h-4" />
+                        <span>Saved Favourites</span>
+                      </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded text-sm font-medium text-left transition-colors hover:bg-[#EAECE4] mt-1 border-t border-[#E8EBE3] pt-2"
-                        style={{ color: '#C8795A' }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 border-t border-[#F4E4E4] mt-1"
                       >
                         <LogOut className="w-4 h-4" />
-                        Sign Out
+                        <span>Sign Out</span>
                       </button>
                     </div>
                   )}
                 </div>
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm font-medium text-[#6B7068] hover:text-[#252825] transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn-primary text-sm px-5"
-                  style={{ textDecoration: 'none' }}
-                >
-                  Adopt a Pet
-                </Link>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleLazyLogin('adopter')}
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-black bg-gradient-to-r from-amber-500 to-[#C96366] hover:from-amber-600 hover:to-[#98494B] text-white rounded-full shadow hover:shadow-md transition cursor-pointer active:scale-95"
+                    title="1-Click Instant Adopter Login"
+                  >
+                    <Zap className="w-3.5 h-3.5 fill-current" />
+                    <span>⚡ Lazy Login</span>
+                  </button>
+                  <Link
+                    to="/login"
+                    className="px-2.5 py-1.5 text-xs font-bold text-[#C96366] hover:bg-white/80 rounded-full transition"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="hidden sm:inline-block px-3 py-1.5 text-xs font-bold bg-[#C96366] text-white rounded-full shadow hover:bg-[#98494B] transition"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
 
-          {/* Mobile menu toggle */}
-          <div className="flex md:hidden items-center gap-2">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded text-[#6B7068] hover:text-[#252825] hover:bg-[#EAECE4] transition-colors"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            </div>
+
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#E8EBE3] px-4 pt-3 pb-6 space-y-4 animate-fade-up" style={{ background: '#F7F5EF' }}>
-          <div className="space-y-0.5">
-            {[
-              { to: '/browse',   label: 'Find a Pet' },
-              { to: '/shelters', label: 'Shelters' },
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2.5 rounded text-sm font-medium text-[#252825] hover:bg-[#EAECE4] transition-colors"
-              >
-                {label}
-              </Link>
-            ))}
-            {user && (
-              <>
-                <Link
-                  to="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2.5 rounded text-sm font-medium text-[#252825] hover:bg-[#EAECE4] transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/messages"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2.5 rounded text-sm font-medium text-[#252825] hover:bg-[#EAECE4] transition-colors"
-                >
-                  Messages
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Demo */}
-          <div className="pt-3 border-t border-[#E8EBE3]">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-[#9BA097] mb-2 px-1">
-              Quick Demo
+      {/* Location Selector Modal */}
+      {locationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-[#EAD2D3] animate-in zoom-in-95">
+            <h3 className="font-extrabold text-lg text-[#292323] flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-[#C96366]" />
+              Choose Your Location
+            </h3>
+            <p className="text-xs text-[#736363] mt-1">
+              Select your region to find pets and fast local pet supplies delivery.
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { role: 'adopter' as UserRole, label: 'Adopter' },
-                { role: 'shelter' as UserRole, label: 'Shelter' },
-                { role: 'admin'   as UserRole, label: 'Admin' },
-              ].map(({ role, label }) => (
+
+            <div className="mt-4 space-y-2">
+              {['Austin, TX', 'Seattle, WA', 'Denver, CO', 'Portland, OR', 'San Francisco, CA'].map((loc) => (
                 <button
-                  key={role}
-                  onClick={() => handleDemo(role)}
-                  className="py-2 px-2 text-xs font-medium rounded border border-[#DDE0D8] text-center hover:bg-[#EAECE4] transition-colors"
-                  style={{ color: '#263A32' }}
+                  key={loc}
+                  onClick={() => {
+                    setLocationCity(loc);
+                    setLocationModalOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between ${
+                    locationCity === loc
+                      ? 'bg-[#C96366] text-white shadow'
+                      : 'bg-[#F3E6E6] text-[#292323] hover:bg-[#EAD2D3]'
+                  }`}
                 >
-                  {label}
+                  <span>{loc}</span>
+                  {locationCity === loc && <span className="text-[10px]">Selected</span>}
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Mobile Auth */}
-          <div className="pt-3 border-t border-[#E8EBE3]">
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="w-full py-2.5 text-center text-sm font-medium rounded border border-[#DDE0D8] transition-colors hover:bg-[#EAECE4]"
-                style={{ color: '#C8795A' }}
-              >
-                Sign Out ({user.name})
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 text-center text-sm font-medium rounded border border-[#DDE0D8] text-[#252825] hover:bg-[#EAECE4] transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 text-center text-sm font-semibold text-white rounded transition-colors"
-                  style={{ background: '#263A32' }}
-                >
-                  Adopt a Pet
-                </Link>
-              </div>
-            )}
+            <button
+              onClick={() => setLocationModalOpen(false)}
+              className="mt-5 w-full py-2.5 text-xs font-bold text-[#736363] hover:bg-gray-100 rounded-xl transition"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };

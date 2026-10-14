@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, CheckCircle, ChevronRight, ChevronLeft, Heart, ShieldCheck, Home, User, Clock, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, CheckCircle, ChevronRight, ChevronLeft, Heart, ShieldCheck, Home, User, Clock, FileText, Zap } from 'lucide-react';
 import { Pet, ApplicationQuestionnaire } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -19,7 +19,7 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { user } = useAuth();
+  const { user, lazyLogin } = useAuth();
   const [step, setStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -39,6 +39,17 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
     petExperience: 'Experienced Caretaker',
     reasonForAdopting: '',
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: prev.fullName || user.name || '',
+        phone: prev.phone || user.phone || '',
+        address: prev.address || user.location?.address || `${user.location?.city || ''} ${user.location?.state || ''}`.trim(),
+      }));
+    }
+  }, [user]);
 
   if (!isOpen) return null;
 
@@ -115,7 +126,7 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
                 Apply to Adopt {pet.name}
               </h2>
               <p className="text-xs text-[#D8CCE6]">
-                {pet.breed} • {pet.age} yrs old • {pet.location.city}, {pet.location.state}
+                {pet.breed} • {pet.age} yrs old{pet.location?.city ? ` • ${pet.location.city}${pet.location.state ? `, ${pet.location.state}` : ''}` : ''}
               </p>
             </div>
           </div>
@@ -181,6 +192,33 @@ export const AdoptionModal: React.FC<AdoptionModalProps> = ({
               {/* STEP 1: CONTACT INFO */}
               {step === 1 && (
                 <div className="space-y-4">
+                  {!user && (
+                    <div className="p-3.5 rounded-2xl bg-[#FFF5F5] border border-[#FFC6D9] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+                      <div>
+                        <p className="text-xs font-black text-[#C96366] flex items-center gap-1.5">
+                          <Zap className="w-3.5 h-3.5 fill-[#C96366]" />
+                          <span>1-Click Lazy Login Available</span>
+                        </p>
+                        <p className="text-[11px] text-[#7A6B88] font-medium">
+                          Sign in instantly to auto-fill details and submit this application without typing passwords.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await lazyLogin('adopter');
+                          } catch (err: any) {
+                            setError('Lazy login failed');
+                          }
+                        }}
+                        className="w-full sm:w-auto px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C96366] text-white text-xs font-black shadow hover:opacity-95 transition cursor-pointer shrink-0"
+                      >
+                        ⚡ 1-Click Lazy Login
+                      </button>
+                    </div>
+                  )}
+
                   <h4 className="text-base font-black text-[#493D50] flex items-center gap-2">
                     <User className="w-4 h-4 text-[#FF6584]" />
                     Applicant Information

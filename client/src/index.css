@@ -1,51 +1,61 @@
 @import "tailwindcss";
 
 /* ============================================================
-   EDITORIAL DESIGN SYSTEM — PawConnect
-   Premium lifestyle · Nature-inspired · Photography-led
+   PAWCONNECT DESIGN SYSTEM — Coral & Blush Red Palette
+   Inspired by Reference Mobile App UI
    ============================================================ */
 
 @layer base {
   :root {
     /* ── Core Palette ─────────────────────────────────────── */
-    --color-bone:        #F7F5EF;   /* warm off-white background   */
-    --color-surface:     #FFFFFF;   /* secondary surface            */
-    --color-subtle:      #EAECE4;   /* supporting background        */
-    --color-charcoal:    #252825;   /* primary text                 */
-    --color-forest:      #263A32;   /* brand / primary action       */
-    --color-forest-mid:  #344E42;   /* forest mid-tone              */
-    --color-forest-light:#4A6659;   /* forest light                 */
-    --color-terracotta:  #C8795A;   /* accent / highlight           */
-    --color-terracotta-light: #DDA589; /* terracotta lighter        */
-    --color-text-muted:  #6B7068;   /* secondary text               */
-    --color-text-faint:  #9BA097;   /* faint / placeholder          */
-    --color-border:      #DDE0D8;   /* default border               */
-    --color-border-soft: #E8EBE3;   /* soft border                  */
+    --color-coral:        #C96366;   /* Primary Brand Coral          */
+    --color-coral-deep:   #98494B;   /* Deep Coral / Dark Accents    */
+    --color-coral-hover:  #B85558;   /* Coral Hover State            */
+    --color-coral-light:  #F7DADA;   /* Soft Blush Accent            */
+    --color-coral-tint:   #FDEEEF;   /* Very Light Coral Wash        */
+    --color-bg-app:       #F3E6E6;   /* Main Warm Blush Background   */
+    --color-surface:      #FFFFFF;   /* Pure White Cards & Modals    */
+    --color-charcoal:     #292323;   /* Primary Dark Text            */
+    --color-text-muted:   #736363;   /* Secondary Slate-Brown Text   */
+    --color-text-faint:   #A89898;   /* Muted / Border Placeholder   */
+    --color-border:       #EAD2D3;   /* Soft Coral Border            */
+    --color-border-soft:  #F4E4E4;   /* Very Soft Border             */
+
+    /* Aliases for backward-compatibility with existing components */
+    --color-bone:         var(--color-bg-app);
+    --color-subtle:       var(--color-coral-light);
+    --color-forest:       var(--color-coral);
+    --color-forest-mid:   var(--color-coral-deep);
+    --color-forest-light: #D67073;
+    --color-terracotta:   var(--color-coral);
+    --color-terracotta-light: var(--color-coral-light);
 
     /* ── Typography ──────────────────────────────────────── */
     --font-serif:   'Lora', Georgia, 'Times New Roman', serif;
-    --font-sans:    'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
     /* ── Spacing ──────────────────────────────────────────── */
-    --section-gap: 5rem;
+    --section-gap: 4rem;
 
     /* ── Radii ────────────────────────────────────────────── */
-    --radius-xs:   0.25rem;
-    --radius-sm:   0.375rem;
-    --radius-md:   0.5rem;
-    --radius-lg:   0.75rem;
-    --radius-xl:   1rem;
-    --radius-card: 0.75rem;
+    --radius-xs:   0.375rem;
+    --radius-sm:   0.5rem;
+    --radius-md:   0.75rem;
+    --radius-lg:   1rem;
+    --radius-xl:   1.25rem;
+    --radius-2xl:  1.5rem;
+    --radius-card: 1.25rem;
+    --radius-pill: 9999px;
 
     /* ── Shadows ──────────────────────────────────────────── */
-    --shadow-sm:   0 1px 3px rgba(37,40,37,0.06), 0 1px 2px rgba(37,40,37,0.04);
-    --shadow-md:   0 4px 12px rgba(37,40,37,0.08), 0 2px 4px rgba(37,40,37,0.04);
-    --shadow-card: 0 2px 8px rgba(37,40,37,0.06);
-    --shadow-card-hover: 0 8px 24px rgba(37,40,37,0.10);
+    --shadow-sm:   0 2px 6px rgba(152, 73, 75, 0.05);
+    --shadow-md:   0 6px 16px rgba(152, 73, 75, 0.08);
+    --shadow-card: 0 4px 14px rgba(152, 73, 75, 0.06);
+    --shadow-card-hover: 0 10px 28px rgba(152, 73, 75, 0.12);
 
-    /* ── Component heights ────────────────────────────────── */
-    --input-height: 2.75rem;
-    --btn-height:   2.75rem;
+    /* ── Component Heights ────────────────────────────────── */
+    --input-height: 2.875rem;
+    --btn-height:   2.875rem;
   }
 
   /* Base Reset & Typography */
@@ -55,57 +65,58 @@
   }
 
   body {
-    background-color: var(--color-bone);
+    background-color: var(--color-bg-app);
     color: var(--color-charcoal);
     font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-bottom: 4.5rem; /* Space for mobile bottom nav */
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding-bottom: 0;
+    }
   }
 
   h1, h2, h3 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
+    font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--color-charcoal);
-    line-height: 1.15;
+    line-height: 1.2;
   }
 
   h4, h5, h6 {
     font-family: var(--font-sans);
+    font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--color-charcoal);
     line-height: 1.3;
   }
 
   *:focus-visible {
-    outline: 2px solid var(--color-forest);
+    outline: 2px solid var(--color-coral);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
 
   ::selection {
-    background-color: rgba(200, 121, 90, 0.18);
-    color: var(--color-charcoal);
+    background-color: var(--color-coral-light);
+    color: var(--color-coral-deep);
   }
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--color-bone); }
+::-webkit-scrollbar-track { background: var(--color-bg-app); }
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-faint); }
-
-/* ── Navigation ────────────────────────────────────────────── */
-.editorial-nav {
-  background: rgba(247, 245, 239, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border-soft);
-}
 
 /* ── Buttons ───────────────────────────────────────────────── */
 .btn-primary {
@@ -115,22 +126,31 @@
   gap: 0.5rem;
   height: var(--btn-height);
   padding: 0 1.5rem;
-  background-color: var(--color-forest);
+  background-color: var(--color-coral);
   color: #FFFFFF;
   font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
   border: none;
-  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(201, 99, 102, 0.3);
+  transition: all 0.2s ease;
+  user-select: none;
 }
-.btn-primary:hover {
-  background-color: var(--color-forest-mid);
-  box-shadow: var(--shadow-md);
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-coral-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(152, 73, 75, 0.35);
 }
-.btn-primary:active { transform: translateY(1px); }
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
 .btn-secondary {
   display: inline-flex;
@@ -138,57 +158,61 @@
   justify-content: center;
   gap: 0.5rem;
   height: var(--btn-height);
-  padding: 0 1.5rem;
-  background-color: transparent;
-  color: var(--color-charcoal);
+  padding: 0 1.375rem;
+  background-color: var(--color-surface);
+  color: var(--color-coral-deep);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
 }
 .btn-secondary:hover {
-  border-color: var(--color-forest);
-  background-color: rgba(38, 58, 50, 0.04);
+  border-color: var(--color-coral);
+  background-color: var(--color-coral-tint);
+  color: var(--color-coral);
 }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0;
+  padding: 0.375rem 0.75rem;
   background: none;
   border: none;
-  color: var(--color-forest);
+  color: var(--color-coral-deep);
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: color 0.2s ease;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
 }
-.btn-ghost:hover { color: var(--color-terracotta); }
-.btn-ghost .arrow { transition: transform 0.2s ease; }
-.btn-ghost:hover .arrow { transform: translateX(3px); }
+.btn-ghost:hover {
+  background: var(--color-coral-tint);
+  color: var(--color-coral);
+}
 
 /* ── Inputs ────────────────────────────────────────────────── */
 .editorial-input {
   height: var(--input-height);
   width: 100%;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-charcoal);
   font-family: var(--font-sans);
   font-size: 0.9375rem;
-  padding: 0 0.875rem;
+  padding: 0 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .editorial-input:focus {
   outline: none;
-  border-color: var(--color-forest);
-  box-shadow: 0 0 0 3px rgba(38, 58, 50, 0.08);
+  border-color: var(--color-coral);
+  box-shadow: 0 0 0 3px rgba(201, 99, 102, 0.15);
 }
 .editorial-input::placeholder {
   color: var(--color-text-faint);
@@ -201,7 +225,7 @@
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
   overflow: hidden;
 }
 .editorial-card:hover {
@@ -209,120 +233,136 @@
   border-color: var(--color-border);
 }
 
-/* ── Pet Card ──────────────────────────────────────────────── */
+/* ── Pet Card (Matches Reference Grid) ─────────────────────── */
 .pet-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  transition: all 0.25s ease;
 }
 .pet-card:hover {
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: var(--color-border);
 }
 .pet-card-img {
   position: relative;
-  aspect-ratio: 4/3;
+  aspect-ratio: 1/1;
   overflow: hidden;
-  background: var(--color-subtle);
+  background: var(--color-coral-tint);
 }
 .pet-card-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
 }
-.pet-card:hover .pet-card-img img { transform: scale(1.04); }
-
-/* ── Section Labels ────────────────────────────────────────── */
-.section-label {
-  display: inline-block;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-terracotta);
-  margin-bottom: 0.75rem;
+.pet-card:hover .pet-card-img img {
+  transform: scale(1.05);
 }
 
-/* ── Status Badge (editorial) ──────────────────────────────── */
-.status-pill {
-  display: inline-flex;
+/* ── Category Pill (Screen 4 & 5) ──────────────────────────── */
+.category-pill {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.375rem;
-  padding: 0.25rem 0.625rem;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
-.status-available {
-  background: rgba(38, 58, 50, 0.1);
-  color: var(--color-forest);
-}
-.status-reserved {
-  background: rgba(200, 121, 90, 0.12);
-  color: #9B5A3A;
-}
-.status-adopted {
-  background: rgba(107, 112, 104, 0.12);
-  color: var(--color-text-muted);
-}
-.status-pending {
-  background: rgba(200, 121, 90, 0.08);
-  color: #9B5A3A;
-}
-
-/* ── Skeleton ──────────────────────────────────────────────── */
-.skeleton {
-  background: linear-gradient(90deg, var(--color-subtle) 25%, var(--color-border-soft) 50%, var(--color-subtle) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-  border-radius: var(--radius-md);
-}
-
-/* ── Animations ────────────────────────────────────────────── */
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
-}
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-up { animation: fade-up 0.4s ease forwards; }
-
-/* ── Utility ───────────────────────────────────────────────── */
-.max-prose { max-width: 60ch; }
-.section-pad { padding-top: var(--section-gap); padding-bottom: var(--section-gap); }
-
-/* ── Divider ───────────────────────────────────────────────── */
-.divider-subtle {
-  border: none;
-  border-top: 1px solid var(--color-border-soft);
-  margin: 0;
-}
-
-/* ── Dropdown ──────────────────────────────────────────────── */
-.dropdown-panel {
+  width: 4.5rem;
+  height: 4.5rem;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border-soft);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  animation: fade-up 0.18s ease forwards;
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.category-pill:hover,
+.category-pill.active {
+  background: var(--color-coral);
+  color: #FFFFFF;
+  border-color: var(--color-coral);
+  box-shadow: 0 4px 12px rgba(201, 99, 102, 0.35);
+  transform: translateY(-2px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* ── Mobile Bottom Navigation Bar ──────────────────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background: var(--color-coral);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -4px 16px rgba(152, 73, 75, 0.25);
+  z-index: 50;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+}
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 0.5rem;
+}
+.mobile-nav-item.active {
+  color: #FFFFFF;
+  transform: scale(1.1);
+}
+.mobile-nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0.25rem;
+  width: 4px;
+  height: 4px;
+  background: #FFFFFF;
+  border-radius: 9999px;
+}
+
+/* ── Chat Bubbles (Screen 7) ───────────────────────────────── */
+.chat-bubble-out {
+  background-color: var(--color-coral);
+  color: #FFFFFF;
+  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  padding: 0.75rem 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 8px rgba(201, 99, 102, 0.25);
+}
+.chat-bubble-in {
+  background-color: #FFFFFF;
+  color: var(--color-charcoal);
+  border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+  padding: 0.75rem 1rem;
+  max-width: 80%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border-soft);
+}
+
+/* ── Status Badges ─────────────────────────────────────────── */
+.badge-available {
+  background-color: #E6F4EA;
+  color: #137333;
+  border: 1px solid #CEEAD6;
+}
+.badge-reserved {
+  background-color: #FEF7E0;
+  color: #B06000;
+  border: 1px solid #FEEFC3;
+}
+.badge-adopted {
+  background-color: var(--color-coral-light);
+  color: var(--color-coral-deep);
+  border: 1px solid var(--color-border);
 }

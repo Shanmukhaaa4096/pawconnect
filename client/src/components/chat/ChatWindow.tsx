@@ -1,11 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User as UserIcon, MessageSquare, Sparkles, Building2 } from 'lucide-react';
+import {
+  Send,
+  User as UserIcon,
+  MessageSquare,
+  Sparkles,
+  Building2,
+  Phone,
+  Video,
+  Paperclip,
+  Mic,
+  Check,
+  CheckCheck,
+  ArrowLeft,
+} from 'lucide-react';
 import { Conversation, Message, Pet } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { getSocket, joinConversationRoom, leaveConversationRoom } from '../../services/socket';
 import { LoadingSpinner } from '../common/LoadingSpinner';
-import { KawaiiPaw, KawaiiSparkle } from '../common/KawaiiIcons';
 
 interface ChatWindowProps {
   initialConversationId?: string;
@@ -25,6 +37,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(true);
   const [typingUser, setTypingUser] = useState<string | null>(null);
+  const [showMobileChat, setShowMobileChat] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<any>(null);
@@ -41,11 +54,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           const found = res.conversations?.find((c) => c._id === initialConversationId);
           if (found) {
             setActiveConversation(found);
+            setShowMobileChat(true);
           }
         } else if (initialRecipientId) {
-          // Check if conversation already exists or start new
           const startRes = await api.startConversation(initialRecipientId, initialPet?._id);
           setActiveConversation(startRes.conversation);
+          setShowMobileChat(true);
           setConversations((prev) => {
             const exists = prev.some((c) => c._id === startRes.conversation._id);
             return exists ? prev : [startRes.conversation, ...prev];
@@ -87,7 +101,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     const handleReceiveMessage = (newMsg: Message) => {
       if (newMsg.conversationId === convId) {
         setMessages((prev) => {
-          // Avoid duplicates
           if (prev.some((m) => m._id === newMsg._id)) return prev;
           return [...prev, newMsg];
         });
@@ -149,7 +162,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     const text = inputText.trim();
     setInputText('');
 
-    // Clear typing
     const socket = getSocket();
     socket.emit('typing', {
       conversationId: activeConversation._id,
@@ -165,13 +177,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         text,
       });
 
-      // Append locally
       setMessages((prev) => {
         if (prev.some((m) => m._id === res.data._id)) return prev;
         return [...prev, res.data];
       });
 
-      // Update conversations list snippet
       setConversations((prev) =>
         prev.map((c) =>
           c._id === activeConversation._id
@@ -189,30 +199,33 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   if (loading) {
-    return <LoadingSpinner label="Loading cozy conversations..." />;
+    return <LoadingSpinner label="Opening conversations..." />;
   }
 
   return (
-    <div className="bg-white rounded-[2.5rem] border-2 border-[#FFE4EC] shadow-md overflow-hidden grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 h-[720px] max-h-[85vh]">
-      {/* CONVERSATION LIST (LEFT PANE) */}
-      <div className="border-r border-[#F0E6F4] flex flex-col h-full bg-[#FAF5EE]/70">
-        <div className="p-4 border-b border-[#F0E6F4] flex items-center justify-between bg-white/80 backdrop-blur-xs">
+    <div className="bg-white rounded-3xl border border-[#EAD2D3] shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-12 h-[720px] max-h-[82vh]">
+      {/* ── CONVERSATION THREADS (LEFT PANE) ─────────────────────────── */}
+      <div
+        className={`md:col-span-4 lg:col-span-4 border-r border-[#EAD2D3] flex flex-col h-full bg-[#FDF7F7] ${
+          showMobileChat ? 'hidden md:flex' : 'flex'
+        }`}
+      >
+        <div className="p-4 border-b border-[#EAD2D3] flex items-center justify-between bg-white">
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-[#FF6584]" />
-            <h3 className="font-black text-[#493D50] text-sm">Conversations</h3>
+            <MessageSquare className="w-5 h-5 text-[#C96366]" />
+            <h3 className="font-extrabold text-[#292323] text-sm">Inbox & Inquiries</h3>
           </div>
-          <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FFE4EC] border border-[#FFC6D9] text-[#FF6584]">
+          <span className="text-xs font-black px-2 py-0.5 rounded-full bg-[#FDEEEF] text-[#C96366] border border-[#EAD2D3]">
             {conversations.length}
           </span>
         </div>
 
-        <div className="flex-1 overflow-y-auto divide-y divide-[#F0E6F4]/60">
+        <div className="flex-1 overflow-y-auto divide-y divide-[#F4E4E4]">
           {conversations.length === 0 ? (
-            <div className="p-8 text-center text-[#8E7F9B] space-y-2">
-              <KawaiiPaw className="w-8 h-8 mx-auto text-[#D8CCE6]" />
-              <p className="text-xs font-black text-[#493D50]">No messages yet!</p>
-              <p className="text-[11px] text-[#8E7F9B] leading-relaxed">
-                Inquire on any pet's page to start a friendly chat with the shelter.
+            <div className="p-8 text-center text-[#736363] space-y-2">
+              <p className="text-xs font-extrabold text-[#292323]">No messages yet</p>
+              <p className="text-[11px] text-[#A89898] leading-relaxed font-medium">
+                Click "Message Shelter" on any pet profile to start a direct inquiry.
               </p>
             </div>
           ) : (
@@ -222,11 +235,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
               return (
                 <button
                   key={conv._id}
-                  onClick={() => setActiveConversation(conv)}
+                  onClick={() => {
+                    setActiveConversation(conv);
+                    setShowMobileChat(true);
+                  }}
                   className={`w-full text-left p-3.5 flex items-start gap-3 transition-all ${
-                    isSelected
-                      ? 'bg-[#FFE4EC]/50 border-l-4 border-[#FF6584]'
-                      : 'hover:bg-white/80'
+                    isSelected ? 'bg-[#FDEEEF] border-l-4 border-[#C96366]' : 'hover:bg-white'
                   }`}
                 >
                   <div className="relative shrink-0">
@@ -236,27 +250,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
                       }
                       alt={recipient?.name || 'User'}
-                      className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[#FFC6D9]"
+                      className="w-11 h-11 rounded-2xl object-cover border border-[#EAD2D3]"
                     />
-                    {recipient?.role === 'shelter' && (
-                      <span className="absolute -bottom-1 -right-1 p-0.5 bg-[#059669] text-white rounded-full">
-                        <Building2 className="w-2.5 h-2.5" />
-                      </span>
-                    )}
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-black text-[#493D50] truncate">
-                        {recipient?.name || 'Support'}
+                      <p className="text-xs font-black text-[#292323] truncate">
+                        {recipient?.name || 'PawConnect User'}
                       </p>
                     </div>
                     {conv.pet && (
-                      <p className="text-[11px] font-black text-[#FF6584] truncate flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5" /> About {conv.pet.name}
+                      <p className="text-[10px] font-bold text-[#C96366] truncate mt-0.5">
+                        Regarding {conv.pet.name}
                       </p>
                     )}
-                    <p className="text-[11px] text-[#8E7F9B] truncate mt-0.5 font-semibold">
-                      {conv.lastMessage || 'No messages yet'}
+                    <p className="text-[11px] text-[#736363] truncate mt-0.5 font-medium">
+                      {conv.lastMessage || 'Start conversation...'}
                     </p>
                   </div>
                 </button>
@@ -266,68 +276,78 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
       </div>
 
-      {/* ACTIVE CHAT AREA (RIGHT PANE) */}
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col h-full bg-white">
+      {/* ── ACTIVE CHAT SCREEN (Screen 7 Reference Mockup) ───────────── */}
+      <div
+        className={`md:col-span-8 lg:col-span-8 flex flex-col h-full bg-[#F3E6E6]/40 ${
+          showMobileChat ? 'flex' : 'hidden md:flex'
+        }`}
+      >
         {activeConversation ? (
           <>
-            {/* Chat Header */}
+            {/* Top Bar matching Screen 7: Back, Avatar, Name, Status, Call Actions */}
             {(() => {
               const recipient = getRecipient(activeConversation);
               return (
-                <div className="p-4 border-b border-[#F0E6F4] bg-white flex items-center justify-between">
+                <div className="p-3.5 sm:p-4 border-b border-[#EAD2D3] bg-[#C96366] text-white flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-3">
-                    <img
-                      src={
-                        recipient?.avatar ||
-                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
-                      }
-                      alt={recipient?.name}
-                      className="w-11 h-11 rounded-2xl object-cover ring-2 ring-[#FFC6D9]"
-                    />
+                    <button
+                      onClick={() => setShowMobileChat(false)}
+                      className="md:hidden p-1 rounded-full hover:bg-white/10 text-white"
+                      aria-label="Back to conversations"
+                    >
+                      <ArrowLeft className="w-5 h-5" />
+                    </button>
+
+                    <div className="relative">
+                      <img
+                        src={
+                          recipient?.avatar ||
+                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+                        }
+                        alt={recipient?.name}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-white/60"
+                      />
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#C96366] rounded-full" />
+                    </div>
+
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-black text-[#493D50] text-sm">
-                          {recipient?.name}
-                        </h4>
-                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FFE4EC] text-[#FF6584] border border-[#FFC6D9] capitalize">
-                          {recipient?.role}
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#8E7F9B] font-bold">
-                        {recipient?.role === 'shelter'
-                          ? recipient.organization?.name || 'Certified Rescue Shelter'
-                          : 'Adoption Applicant'}
-                      </p>
+                      <h4 className="font-extrabold text-white text-sm leading-tight">
+                        {recipient?.name}
+                      </h4>
+                      <p className="text-[10px] text-white/80 font-medium">Active Status</p>
                     </div>
                   </div>
 
-                  {/* Connected Pet Badge */}
-                  {activeConversation.pet && (
-                    <div className="flex items-center gap-2 p-1.5 pr-3 bg-[#FAF5EE] rounded-2xl border border-[#F0E6F4]">
-                      <img
-                        src={activeConversation.pet.photos?.[0]}
-                        alt={activeConversation.pet.name}
-                        className="w-8 h-8 rounded-xl object-cover"
-                      />
-                      <div className="text-left">
-                        <span className="block text-[10px] uppercase font-black text-[#A89AB8]">Regarding</span>
-                        <span className="block text-xs font-black text-[#493D50] leading-tight">
-                          {activeConversation.pet.name}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                  {/* Audio & Video Call icons matching Screen 7 */}
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <button
+                      type="button"
+                      onClick={() => alert(`Starting voice call with ${recipient?.name}... (Simulated)`)}
+                      className="p-2 rounded-full hover:bg-white/20 text-white transition"
+                      title="Audio Call"
+                    >
+                      <Phone className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => alert(`Starting video call with ${recipient?.name}... (Simulated)`)}
+                      className="p-2 rounded-full hover:bg-white/20 text-white transition"
+                      title="Video Call"
+                    >
+                      <Video className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               );
             })()}
 
-            {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#FFFDFB]">
+            {/* Chat Messages Pane */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 bg-[#F3E6E6]/30">
               {messages.length === 0 ? (
-                <div className="text-center py-12 text-[#8E7F9B] space-y-2">
-                  <p className="text-xs font-black text-[#493D50]">This is the start of your warm conversation. (✿◠‿◠)</p>
-                  <p className="text-[11px] text-[#8E7F9B] max-w-sm mx-auto font-medium">
-                    Feel free to ask about routines, meet & greets, home environments, or dietary needs!
+                <div className="text-center py-12 text-[#736363] space-y-2">
+                  <p className="text-xs font-bold text-[#292323]">Start of your message thread</p>
+                  <p className="text-[11px] text-[#A89898] max-w-sm mx-auto">
+                    Say hello, ask questions about pet habits, or coordinate a friendly shelter visit!
                   </p>
                 </div>
               ) : (
@@ -340,16 +360,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                       key={msg._id}
                       className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
                     >
+                      {/* Bubble (Matches Screen 7) */}
                       <div
-                        className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
+                        className={`max-w-[80%] sm:max-w-[70%] px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-sm flex items-end gap-2 ${
                           isMine
-                            ? 'bg-gradient-to-r from-[#FF6584] to-[#FF8DA1] text-white rounded-br-xs font-bold'
-                            : 'bg-white text-[#493D50] border-2 border-[#F0E6F4] rounded-bl-xs font-bold'
+                            ? 'bg-[#C96366] text-white rounded-2xl rounded-br-xs font-medium'
+                            : 'bg-white text-[#292323] border border-[#EAD2D3] rounded-2xl rounded-bl-xs font-medium'
                         }`}
                       >
-                        {msg.text}
+                        <span className="flex-1">{msg.text}</span>
+                        {isMine && <CheckCheck className="w-3.5 h-3.5 text-white/80 shrink-0" />}
                       </div>
-                      <span className="text-[10px] text-[#A89AB8] mt-1 px-1 font-bold">
+
+                      {/* Timestamp */}
+                      <span className="text-[9px] text-[#A89898] mt-1 px-1 font-semibold">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -362,42 +386,62 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
               {/* Typing indicator */}
               {typingUser && (
-                <div className="flex items-center gap-1.5 text-xs text-[#FF6584] italic font-black">
-                  <span className="w-2 h-2 rounded-full bg-[#FF6584] animate-ping" />
-                  <span>🐾 {typingUser} is typing...</span>
+                <div className="flex items-center gap-1.5 text-xs text-[#C96366] italic font-bold">
+                  <span className="w-2 h-2 rounded-full bg-[#C96366] animate-ping" />
+                  <span>{typingUser} is typing...</span>
                 </div>
               )}
 
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Form */}
+            {/* Bottom Input Bar (Matches Screen 7: Type message..., Mic, Attach, Send) */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3 sm:p-4 bg-white border-t border-[#F0E6F4] flex items-center gap-2"
+              className="p-3 sm:p-4 bg-white border-t border-[#EAD2D3] flex items-center gap-2"
             >
+              <button
+                type="button"
+                onClick={() => alert('File attachment feature simulation')}
+                className="p-2 text-[#A89898] hover:text-[#C96366] transition"
+                title="Attach photo"
+              >
+                <Paperclip className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => alert('Voice note feature simulation')}
+                className="p-2 text-[#A89898] hover:text-[#C96366] transition"
+                title="Record voice note"
+              >
+                <Mic className="w-4 h-4" />
+              </button>
+
               <input
                 type="text"
                 value={inputText}
                 onChange={handleInputChange}
-                placeholder="Type your friendly message..."
-                className="kawaii-input flex-1 py-3 text-sm font-medium"
+                placeholder="Type message..."
+                className="flex-1 h-10 px-4 rounded-full bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs sm:text-sm text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
               />
+
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FF6584] to-[#FF8DA1] hover:from-[#F24E71] hover:to-[#FF7893] text-white font-black transition-all shadow-md shadow-[#FF6584]/25 disabled:opacity-40 disabled:hover:from-[#FF6584] active:scale-95"
+                className="w-10 h-10 rounded-full bg-[#C96366] hover:bg-[#98494B] text-white flex items-center justify-center transition disabled:opacity-40 shadow"
+                title="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#8E7F9B] space-y-3 bg-[#FFFDFB]">
-            <MessageSquare className="w-12 h-12 text-[#D8CCE6]" />
-            <h4 className="text-base font-black text-[#493D50]">No Conversation Selected</h4>
-            <p className="text-xs text-[#8E7F9B] max-w-sm leading-relaxed font-medium">
-              Select an existing chat thread from the left or browse pets and click "Message Shelter Directly".
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-[#736363] space-y-2">
+            <MessageSquare className="w-12 h-12 text-[#EAD2D3]" />
+            <h4 className="text-base font-black text-[#292323]">Select a Conversation</h4>
+            <p className="text-xs text-[#A89898] max-w-sm font-medium">
+              Choose a message thread from the left or visit any pet to contact their shelter directly.
             </p>
           </div>
         )}

@@ -10,6 +10,7 @@ interface AuthContextType {
   login: (credentials: { email: string; password: string }) => Promise<void>;
   register: (data: Partial<User> & { password: string }) => Promise<void>;
   logout: () => void;
+  lazyLogin: (role?: UserRole, guestName?: string) => Promise<void>;
   demoLogin: (role: UserRole) => Promise<void>;
   updateUser: (updatedData: Partial<User>) => Promise<void>;
 }
@@ -64,12 +65,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-  const demoLogin = async (role: UserRole) => {
-    let email = 'adopter@pawconnect.org';
-    if (role === 'shelter') email = 'shelter@pawconnect.org';
-    if (role === 'admin') email = 'admin@pawconnect.org';
+  const lazyLogin = async (role: UserRole = 'adopter', guestName?: string) => {
+    const res = await api.lazyLogin(role, guestName);
+    setAuthToken(res.token);
+    setToken(res.token);
+    setUser(res.user);
+    joinUserRoom(res.user._id);
+  };
 
-    await login({ email, password: 'password123' });
+  const demoLogin = async (role: UserRole) => {
+    await lazyLogin(role);
   };
 
   const updateUser = async (updatedData: Partial<User>) => {
@@ -86,6 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
+        lazyLogin,
         demoLogin,
         updateUser,
       }}

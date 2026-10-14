@@ -13,6 +13,7 @@ import applicationRoutes from './routes/applicationRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import shelterRoutes from './routes/shelterRoutes.js';
+import shopRoutes from './routes/shopRoutes.js';
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/shelters', shelterRoutes);
+app.use('/api/shop', shopRoutes);
 
 // Production static serving for client
 import path from 'path';

@@ -8,6 +8,10 @@ export const memoryStore = {
   favorites: [],
   conversations: [],
   messages: [],
+  products: [],
+  orders: [],
+  deliveries: [],
+  feedbacks: [],
 };
 
 const generateId = () => new mongoose.Types.ObjectId().toString();
@@ -19,6 +23,13 @@ export const repository = {
       return mongoose.model('User').findOne({ email: email.toLowerCase() });
     }
     return memoryStore.users.find((u) => u.email.toLowerCase() === email.toLowerCase()) || null;
+  },
+
+  async findUserByRole(role) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('User').findOne({ role });
+    }
+    return memoryStore.users.find((u) => u.role === role) || null;
   },
 
   async findUserById(id) {
@@ -531,5 +542,133 @@ export const repository = {
       totalShelters: memoryStore.users.filter((u) => u.role === 'shelter').length,
       totalAdopters: memoryStore.users.filter((u) => u.role === 'adopter').length,
     };
+  },
+
+  // SHOP & PRODUCTS
+  async getProducts(filters = {}) {
+    if (mongoose.connection.readyState === 1) {
+      const query = {};
+      if (filters.category && filters.category !== 'All') query.category = filters.category;
+      if (filters.petType && filters.petType !== 'All') query.petType = { $in: [filters.petType, 'All'] };
+      if (filters.search) query.name = { $regex: filters.search, $options: 'i' };
+      return mongoose.model('Product').find(query).sort({ featured: -1, createdAt: -1 });
+    }
+
+    let result = [...memoryStore.products];
+    if (filters.category && filters.category !== 'All') {
+      result = result.filter((p) => p.category === filters.category);
+    }
+    if (filters.petType && filters.petType !== 'All') {
+      result = result.filter((p) => p.petType === filters.petType || p.petType === 'All');
+    }
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      result = result.filter((p) => p.name.toLowerCase().includes(searchLower));
+    }
+    return result;
+  },
+
+  async getProductById(id) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Product').findById(id);
+    }
+    return memoryStore.products.find((p) => p._id.toString() === id.toString()) || null;
+  },
+
+  // ORDERS & CHECKOUT
+  async createOrder(orderData) {
+    if (mongoose.connection.readyState === 1) {
+      const order = await mongoose.model('Order').create(orderData);
+      // Auto-create delivery record
+      await mongoose.model('Delivery').create({
+        order: order._id,
+        courierName: order.courier.name,
+        courierPhone: order.courier.phone,
+        courierAvatar: order.courier.avatar,
+        status: 'On The Way',
+        eta: order.estimatedDeliveryTime || '25 mins to 2h',
+        destinationLocation: {
+          address: order.deliveryAddress.address,
+        },
+        timeline: [
+          { title: 'Order Confirmed', description: 'Your order has been placed successfully.', completed: true, time: new Date() },
+          { title: 'Packed at Hub', description: 'Items verified and safely packaged.', completed: true, time: new Date() },
+          { title: 'Out with Courier', description: `${order.courier.name} is on the way on Eco Scooter.`, completed: true, time: new Date() },
+          { title: 'Delivered', description: 'Package handed over at delivery address.', completed: false, time: null },
+        ],
+      });
+      return order;
+    }
+
+    const newOrder = {
+      _id: generateId(),
+      ...orderData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    memoryStore.orders.push(newOrder);
+
+    const deliveryRecord = {
+      _id: generateId(),
+      order: newOrder._id,
+      courierName: newOrder.courier.name,
+      courierPhone: newOrder.courier.phone,
+      courierAvatar: newOrder.courier.avatar,
+      status: 'On The Way',
+      eta: newOrder.estimatedDeliveryTime || '25 mins to 2h',
+      destinationLocation: {
+        address: newOrder.deliveryAddress.address,
+      },
+      timeline: [
+        { title: 'Order Confirmed', description: 'Your order has been placed successfully.', completed: true, time: new Date() },
+        { title: 'Packed at Hub', description: 'Items verified and safely packaged.', completed: true, time: new Date() },
+        { title: 'Out with Courier', description: `${newOrder.courier.name} is on the way on Eco Scooter.`, completed: true, time: new Date() },
+        { title: 'Delivered', description: 'Package handed over at delivery address.', completed: false, time: null },
+      ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    memoryStore.deliveries.push(deliveryRecord);
+    return newOrder;
+  },
+
+  async getMyOrders(userId) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Order').find({ user: userId }).sort({ createdAt: -1 });
+    }
+    return memoryStore.orders
+      .filter((o) => o.user.toString() === userId.toString())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  async getOrderById(id) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Order').findById(id).populate('user', 'name email phone avatar');
+    }
+    const order = memoryStore.orders.find((o) => o._id.toString() === id.toString());
+    if (!order) return null;
+    const user = await this.findUserById(order.user);
+    return { ...order, user };
+  },
+
+  async getDeliveryByOrderId(orderId) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Delivery').findOne({ order: orderId });
+    }
+    return memoryStore.deliveries.find((d) => d.order.toString() === orderId.toString()) || null;
+  },
+
+  async createFeedback(feedbackData) {
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.model('Feedback').create(feedbackData);
+    }
+    const newFeedback = {
+      _id: generateId(),
+      ...feedbackData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    memoryStore.feedbacks.push(newFeedback);
+    return newFeedback;
   },
 };

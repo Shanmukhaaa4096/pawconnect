@@ -67,8 +67,8 @@ const petSchema = new mongoose.Schema(
       default: [],
     },
     location: {
-      city: { type: String, required: true },
-      state: { type: String, required: true },
+      city: { type: String, default: '' },
+      state: { type: String, default: '' },
       zipCode: { type: String, default: '' },
     },
     status: {

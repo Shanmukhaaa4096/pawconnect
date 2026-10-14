@@ -10,6 +10,7 @@ import applicationRoutes from '../server/src/routes/applicationRoutes.js';
 import favoriteRoutes from '../server/src/routes/favoriteRoutes.js';
 import messageRoutes from '../server/src/routes/messageRoutes.js';
 import shelterRoutes from '../server/src/routes/shelterRoutes.js';
+import shopRoutes from '../server/src/routes/shopRoutes.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.get('/api', (req, res) => {
       '/api/favorites',
       '/api/messages',
       '/api/shelters',
+      '/api/shop',
     ],
   });
 });
@@ -68,6 +70,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/shelters', shelterRoutes);
+app.use('/api/shop', shopRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

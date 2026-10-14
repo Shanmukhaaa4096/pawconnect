@@ -138,3 +138,96 @@ export interface PetFilterOptions {
   search?: string;
   shelterId?: string;
 }
+
+// Shop & Merchandise Types
+export interface Product {
+  _id: string;
+  name: string;
+  category: 'Food' | 'Toys' | 'Accessories' | 'Health' | 'Grooming' | 'Beds & Crates';
+  petType: 'Dog' | 'Cat' | 'Bird' | 'Rabbit' | 'All';
+  price: number;
+  originalPrice?: number;
+  image: string;
+  description: string;
+  rating: number;
+  reviewsCount: number;
+  inStock: boolean;
+  stockCount: number;
+  featured?: boolean;
+}
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface OrderItem {
+  product: string | Product;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+export interface DeliveryAddress {
+  label: 'Home' | 'Office' | 'Other';
+  recipientName: string;
+  address: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  phone?: string;
+}
+
+export interface Order {
+  _id: string;
+  orderNumber: string;
+  user: User | string;
+  items: OrderItem[];
+  subtotal: number;
+  shippingFee: number;
+  tax: number;
+  total: number;
+  deliveryAddress: DeliveryAddress;
+  paymentMethod: string;
+  paymentStatus: 'Pending' | 'Paid' | 'Failed';
+  status: 'Processing' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
+  courier: {
+    name: string;
+    phone: string;
+    vehicle?: string;
+    avatar?: string;
+  };
+  estimatedDeliveryTime?: string;
+  createdAt: string;
+}
+
+export interface DeliveryTimelineStep {
+  title: string;
+  description: string;
+  time?: string | null;
+  completed: boolean;
+}
+
+export interface DeliveryTracking {
+  order: string | Order;
+  courierName: string;
+  courierPhone: string;
+  courierAvatar: string;
+  status: string;
+  eta: string;
+  destinationLocation: {
+    address: string;
+  };
+  timeline: DeliveryTimelineStep[];
+}
+
+export interface Feedback {
+  _id?: string;
+  order: string;
+  user?: string;
+  rating: number; // 1 to 5
+  emoji: string; // 😡 🙁 😐 😊 🤩
+  comment?: string;
+  createdAt?: string;
+}

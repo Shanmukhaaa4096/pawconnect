@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Lock, Mail, Building2, ShieldCheck, Heart } from 'lucide-react';
+import { Lock, Mail, Heart, Building2, ShieldCheck, PawPrint, Eye, EyeOff, Zap, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
 
-/* Shared editorial form label */
-const FieldLabel = ({ children }: { children: React.ReactNode }) => (
-  <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1.5" style={{ color: '#9BA097' }}>
-    {children}
-  </label>
-);
-
 export const LoginPage: React.FC = () => {
-  const { login, demoLogin, user } = useAuth();
+  const { login, lazyLogin, user } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [lazyRole, setLazyRole] = useState<UserRole>('adopter');
   const [error, setError] = useState<string | null>(null);
 
   if (user) navigate('/dashboard');
@@ -36,144 +31,179 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleDemo = async (role: UserRole) => {
+  const handleLazyLogin = async (role: UserRole = lazyRole) => {
     setError(null);
     setLoading(true);
     try {
-      await demoLogin(role);
+      await lazyLogin(role);
       navigate(role === 'shelter' ? '/dashboard' : '/browse');
     } catch (err: any) {
-      setError(err.message || 'Demo login failed.');
+      setError(err.message || 'Lazy login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-14"
-      style={{ background: '#F7F5EF' }}
-    >
-      <div className="w-full max-w-md space-y-6">
-
-        {/* Header */}
-        <div className="space-y-2">
-          <p className="section-label">Welcome back</p>
-          <h1
-            style={{
-              fontFamily: "'Lora', serif",
-              fontWeight: 600,
-              fontSize: '2rem',
-              color: '#252825',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Sign in to PawConnect
-          </h1>
-          <p className="text-sm" style={{ color: '#6B7068' }}>
-            Continue your adoption journey.
-          </p>
-        </div>
-
-        {/* Demo Panel */}
-        <div
-          className="rounded-lg border p-4 space-y-3"
-          style={{ background: '#EAECE4', borderColor: '#DDE0D8' }}
-        >
-          <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#6B7068' }}>
-            Try a demo account
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { role: 'adopter' as UserRole, icon: <Heart className="w-3.5 h-3.5" />, label: 'Adopter',  sub: 'Sarah J.' },
-              { role: 'shelter' as UserRole, icon: <Building2 className="w-3.5 h-3.5" />, label: 'Shelter',  sub: 'Haven Rescue' },
-              { role: 'admin'   as UserRole, icon: <ShieldCheck className="w-3.5 h-3.5" />, label: 'Admin',    sub: 'Moderator' },
-            ].map(({ role, icon, label, sub }) => (
-              <button
-                key={role}
-                type="button"
-                onClick={() => handleDemo(role)}
-                className="flex flex-col items-center py-2.5 px-2 rounded border bg-white transition-all hover:border-[#263A32] text-center"
-                style={{ borderColor: '#DDE0D8' }}
-              >
-                <span className="mb-1" style={{ color: '#263A32' }}>{icon}</span>
-                <span className="text-xs font-medium" style={{ color: '#252825' }}>{label}</span>
-                <span className="text-[10px]" style={{ color: '#9BA097' }}>{sub}</span>
-              </button>
-            ))}
+    <div className="min-h-screen bg-[#C96366] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-sm space-y-6">
+        {/* Screen 2 Mascot & Logo */}
+        <div className="text-center space-y-2">
+          <div className="w-20 h-20 rounded-full bg-white text-[#C96366] flex items-center justify-center mx-auto shadow-xl">
+            <svg width="42" height="42" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="7" cy="11" rx="3" ry="4" fill="currentColor" />
+              <ellipse cx="13" cy="7" rx="3" ry="4.5" fill="currentColor" />
+              <ellipse cx="19" cy="7" rx="3" ry="4.5" fill="currentColor" />
+              <ellipse cx="25" cy="11" rx="3" ry="4" fill="currentColor" />
+              <path d="M16 13c-5.5 0-10 4-10 9 0 3.5 3 6 10 6s10-2.5 10-6c0-5-4.5-9-10-9z" fill="currentColor" />
+            </svg>
           </div>
+          <h2 className="text-xl font-black text-white tracking-wider uppercase mt-2">
+            PawConnect
+          </h2>
+          <p className="text-xs text-white/80 font-medium">Welcome back! Sign in to continue</p>
         </div>
 
-        {/* Login Form */}
-        <div
-          className="rounded-lg border p-6 sm:p-8 space-y-5"
-          style={{ background: '#FFFFFF', borderColor: '#DDE0D8' }}
-        >
+        {/* Login Card */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+          <div className="border-b border-[#F4E4E4] pb-3 text-center">
+            <h1 className="text-lg font-black text-[#292323]">Sign In & Quick Access</h1>
+            <p className="text-xs text-[#736363] mt-0.5 font-medium">Choose Lazy Login or enter credentials</p>
+          </div>
+
           {error && (
-            <div
-              className="p-3.5 rounded text-sm flex items-start gap-2"
-              style={{ background: 'rgba(200,121,90,0.08)', border: '1px solid rgba(200,121,90,0.25)', color: '#9B5A3A' }}
-            >
-              <span className="mt-0.5">⚠</span>
-              <span>{error}</span>
+            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold">
+              {error}
             </div>
           )}
 
-          <form id="login-form" onSubmit={handleSubmit} className="space-y-4">
+          {/* ── ⚡ 1-CLICK LAZY LOGIN HERO BOX ── */}
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FFF5F5] via-[#FDEEEF] to-[#F3E6E6] border-2 border-[#EAD2D3] shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[#C96366] font-black text-xs uppercase tracking-wider">
+                <Zap className="w-4 h-4 fill-[#C96366]" />
+                <span>Lazy Login</span>
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#C96366] text-white">
+                Instant 1-Click
+              </span>
+            </div>
+
+            <p className="text-[11px] text-[#736363] font-medium leading-relaxed">
+              No password needed! Click below to jump straight into PawConnect.
+            </p>
+
+            {/* Role Persona Selector */}
+            <div className="grid grid-cols-3 gap-1.5 pt-1">
+              {[
+                { role: 'adopter' as UserRole, label: 'Adopter', icon: '🐶' },
+                { role: 'shelter' as UserRole, label: 'Shelter', icon: '🏡' },
+                { role: 'admin' as UserRole, label: 'Admin', icon: '🛡️' },
+              ].map(({ role, label, icon }) => (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => setLazyRole(role)}
+                  className={`py-1.5 px-2 rounded-xl text-[11px] font-extrabold transition flex flex-col items-center gap-0.5 border cursor-pointer ${
+                    lazyRole === role
+                      ? 'bg-[#C96366] text-white border-[#C96366] shadow-sm'
+                      : 'bg-white/80 text-[#292323] border-[#EAD2D3] hover:bg-white'
+                  }`}
+                >
+                  <span className="text-sm">{icon}</span>
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Instant Lazy Login Button */}
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleLazyLogin(lazyRole)}
+              className="w-full h-11 rounded-full bg-gradient-to-r from-amber-500 via-[#C96366] to-[#98494B] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
+            >
+              <Zap className="w-4 h-4 fill-white" />
+              <span>{loading ? 'Authenticating...' : `⚡ Lazy Login as ${lazyRole}`}</span>
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-[#F4E4E4] w-full" />
+            <span className="bg-white px-2.5 text-[10px] font-black uppercase tracking-wider text-[#A89898] absolute">
+              or enter password
+            </span>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Field */}
             <div>
-              <FieldLabel>Email address</FieldLabel>
+              <label className="block text-[10px] font-black uppercase tracking-wider text-[#A89898] mb-1">
+                Email Address
+              </label>
               <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A89898]" />
                 <input
                   type="email"
-                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@domain.com"
-                  id="login-email"
-                  className="editorial-input pl-9"
+                  placeholder="adopter@pawconnect.org"
+                  required
+                  className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs font-medium text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
                 />
               </div>
             </div>
 
+            {/* Password Field */}
             <div>
-              <FieldLabel>Password</FieldLabel>
+              <label className="block text-[10px] font-black uppercase tracking-wider text-[#A89898] mb-1">
+                Password
+              </label>
               <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#9BA097' }} />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A89898]" />
                 <input
-                  type="password"
-                  required
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  id="login-password"
-                  className="editorial-input pl-9"
+                  required
+                  className="w-full h-11 pl-10 pr-10 rounded-xl bg-[#F3E6E6]/60 border border-[#EAD2D3] text-xs font-medium text-[#292323] placeholder-[#A89898] focus:outline-none focus:border-[#C96366]"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#A89898] hover:text-[#292323]"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              id="login-submit"
-              className="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full h-11 rounded-full bg-[#292323] hover:bg-[#3D3333] text-white font-black text-xs uppercase tracking-wider shadow-md transition disabled:opacity-50 cursor-pointer active:scale-98"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Signing in…
-                </span>
-              ) : 'Sign In'}
+              {loading ? 'Signing In...' : 'Log In With Password'}
             </button>
           </form>
 
-          <p className="text-center text-sm" style={{ color: '#9BA097' }}>
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium transition-colors" style={{ color: '#263A32' }}>
-              Register now
-            </Link>
-          </p>
+          <div className="text-center pt-2">
+            <p className="text-xs text-[#736363]">
+              Don't have an account?{' '}
+              <Link to="/register" className="font-extrabold text-[#C96366] hover:underline">
+                Sign Up
+              </Link>
+            </p>
+          </div>
         </div>
+
+        {/* Disclaimer / footer */}
+        <p className="text-[10px] text-center text-white/70 max-w-xs mx-auto leading-relaxed">
+          By signing in you agree to PawConnect’s ethical rescue standards and pet welfare terms.
+        </p>
       </div>
     </div>
   );

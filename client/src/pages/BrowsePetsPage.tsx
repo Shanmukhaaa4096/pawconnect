@@ -68,55 +68,70 @@ export const BrowsePetsPage: React.FC = () => {
   const handleReset = () => setSearchParams(new URLSearchParams());
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14" style={{ background: '#F7F5EF' }}>
+    <div className="min-h-screen bg-[#F3E6E6] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-[#DDE0D8] pb-7 mb-8">
-        <div>
-          <p className="section-label">Adoption directory</p>
-          <h1
-            style={{
-              fontFamily: "'Lora', serif",
-              fontWeight: 600,
-              fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-              color: '#252825',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Adoptable pets
-          </h1>
-          <p className="mt-2 text-sm" style={{ color: '#6B7068', maxWidth: '44ch' }}>
-            Verified companions looking for loving, permanent homes.
-          </p>
-        </div>
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-[#EAD2D3] pb-6 mb-6">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FDEEEF] text-[#C96366] text-xs font-black uppercase tracking-wider mb-2 border border-[#EAD2D3]">
+              <span>Adoption Directory</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#292323] tracking-tight">
+              Adoptable Pets
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-[#736363] font-medium max-w-lg">
+              Verified rescue companions waiting for compassionate forever homes.
+            </p>
+          </div>
 
-        {/* Controls */}
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded border border-[#DDE0D8] bg-white text-sm font-medium text-[#252825] hover:border-[#263A32] hover:bg-[#EAECE4] transition-all"
-          >
-            <SlidersHorizontal className="w-4 h-4" style={{ color: '#6B7068' }} />
-            Filters
-          </button>
-
-          <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded border border-[#DDE0D8] text-sm">
-            <ArrowUpDown className="w-3.5 h-3.5" style={{ color: '#9BA097' }} />
-            <span style={{ color: '#9BA097', fontWeight: 500 }}>Sort:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-transparent text-sm font-medium focus:outline-none cursor-pointer"
-              style={{ color: '#252825' }}
+          {/* Controls */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-[#EAD2D3] bg-white text-xs font-bold text-[#292323] hover:border-[#C96366] transition shadow-xs"
             >
-              <option value="newest">Newest</option>
-              <option value="age">Youngest first</option>
-              <option value="name">Name A–Z</option>
-            </select>
+              <SlidersHorizontal className="w-4 h-4 text-[#C96366]" />
+              Filters
+            </button>
+
+            <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-full border border-[#EAD2D3] text-xs shadow-xs">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#C96366]" />
+              <span className="text-[#A89898] font-bold">Sort:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="bg-transparent text-xs font-extrabold text-[#292323] focus:outline-none cursor-pointer"
+              >
+                <option value="newest">Newest Listed</option>
+                <option value="age">Youngest First</option>
+                <option value="name">Name A–Z</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Quick Category Filter Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-4 scrollbar-none">
+          {['', 'Dog', 'Cat', 'Bird', 'Rabbit'].map((sp) => {
+            const isSelected = (filters.species || '') === sp;
+            const label = sp === '' ? '🐾 All Pets' : sp === 'Dog' ? '🐶 Dogs' : sp === 'Cat' ? '🐱 Cats' : sp === 'Bird' ? '🦜 Birds' : '🐰 Rabbits';
+            return (
+              <button
+                key={sp}
+                onClick={() => handleFilterChange({ ...filters, species: sp })}
+                className={`px-4 py-2 rounded-full text-xs font-extrabold transition shrink-0 ${
+                  isSelected
+                    ? 'bg-[#C96366] text-white shadow-sm'
+                    : 'bg-white border border-[#EAD2D3] text-[#736363] hover:border-[#C96366] hover:text-[#C96366]'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
 
       {/* Grid: Sidebar + Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
@@ -194,5 +209,6 @@ export const BrowsePetsPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

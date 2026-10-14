@@ -8,6 +8,11 @@ import {
   ApplicationQuestionnaire,
   PetStatus,
   ApplicationStatus,
+  Product,
+  Order,
+  DeliveryTracking,
+  Feedback,
+  DeliveryAddress,
 } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL
@@ -68,6 +73,13 @@ export const api = {
     return customFetch<{ message: string; token: string; user: User }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),
+    });
+  },
+
+  async lazyLogin(role: string = 'adopter', guestName?: string) {
+    return customFetch<{ message: string; token: string; user: User; isLazyLogin?: boolean }>('/auth/lazy-login', {
+      method: 'POST',
+      body: JSON.stringify({ role, guestName }),
     });
   },
 
@@ -213,5 +225,54 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ verified }),
     });
+  },
+
+  // Shop & Merchandise
+  async getProducts(filters: { category?: string; petType?: string; search?: string } = {}) {
+    const params = new URLSearchParams();
+    if (filters.category && filters.category !== 'All') params.append('category', filters.category);
+    if (filters.petType && filters.petType !== 'All') params.append('petType', filters.petType);
+    if (filters.search) params.append('search', filters.search);
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    return customFetch<{ success: boolean; count: number; products: Product[] }>(`/shop/products${qs}`);
+  },
+
+  async getProductById(id: string) {
+    return customFetch<{ success: boolean; product: Product }>(`/shop/products/${id}`);
+  },
+
+  async createOrder(data: {
+    items: { productId: string; quantity: number }[];
+    deliveryAddress: DeliveryAddress;
+    paymentMethod?: string;
+  }) {
+    return customFetch<{ success: boolean; message: string; order: Order }>('/shop/orders', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async getMyOrders() {
+    return customFetch<{ success: boolean; count: number; orders: Order[] }>('/shop/orders/mine');
+  },
+
+  async getOrderById(id: string) {
+    return customFetch<{ success: boolean; order: Order }>(`/shop/orders/${id}`);
+  },
+
+  async getDeliveryTracking(orderId: string) {
+    return customFetch<{ success: boolean; order: Order; delivery: DeliveryTracking }>(
+      `/shop/orders/${orderId}/delivery`
+    );
+  },
+
+  async submitOrderFeedback(orderId: string, feedback: { rating: number; emoji?: string; comment?: string }) {
+    return customFetch<{ success: boolean; message: string; feedback: Feedback }>(
+      `/shop/orders/${orderId}/feedback`,
+      {
+        method: 'POST',
+        body: JSON.stringify(feedback),
+      }
+    );
   },
 };

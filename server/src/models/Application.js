@@ -24,7 +24,7 @@ const applicationSchema = new mongoose.Schema(
     },
     questionnaire: {
       fullName: { type: String, required: true },
-      phone: { type: String, required: true },
+      phone: { type: String, default: '' },
       address: { type: String, default: '' },
       housingType: {
         type: String,

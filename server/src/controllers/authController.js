@@ -51,10 +51,11 @@ export const register = async (req, res) => {
     });
 
     const token = generateToken(user);
+    const { password: _, ...safeUser } = user.toObject ? user.toObject() : user;
     res.status(201).json({
       message: 'Account created successfully',
       token,
-      user,
+      user: safeUser,
     });
   } catch (error) {
     console.error('Register error:', error);
@@ -121,3 +122,58 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Failed to update profile', error: error.message });
   }
 };
+
+export const lazyLogin = async (req, res) => {
+  try {
+    const { role = 'adopter', guestName } = req.body || {};
+    const validRole = ['adopter', 'shelter', 'admin'].includes(role) ? role : 'adopter';
+
+    // Map role to standard default demo accounts
+    const roleEmails = {
+      adopter: 'adopter@pawconnect.org',
+      shelter: 'shelter@pawconnect.org',
+      admin: 'admin@pawconnect.org',
+    };
+
+    let targetEmail = roleEmails[validRole];
+    let user = await repository.findUserByEmail(targetEmail);
+
+    // If specific email not found, search by role
+    if (!user) {
+      user = await repository.findUserByRole(validRole);
+    }
+
+    // If still no user exists, provision a fresh guest account
+    if (!user) {
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      user = await repository.createUser({
+        name: guestName || `Guest ${validRole.charAt(0).toUpperCase() + validRole.slice(1)} ${randomSuffix}`,
+        email: `guest_${validRole}_${randomSuffix}@pawconnect.org`,
+        password: 'password123',
+        role: validRole,
+        phone: '',
+        location: { city: 'Bengaluru', state: 'Karnataka' },
+        organization: validRole === 'shelter' ? { name: 'Paws Haven Rescue', verified: true } : {},
+        bio: 'Instant lazy login guest account exploring PawConnect.',
+        avatar:
+          validRole === 'shelter'
+            ? 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=400&q=80'
+            : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      });
+    }
+
+    const token = generateToken(user);
+    const { password: _, ...safeUser } = user.toObject ? user.toObject() : user;
+
+    res.json({
+      message: 'Lazy login successful! Welcome to PawConnect.',
+      token,
+      user: safeUser,
+      isLazyLogin: true,
+    });
+  } catch (error) {
+    console.error('Lazy login error:', error);
+    res.status(500).json({ message: 'Lazy login failed', error: error.message });
+  }
+};
+
